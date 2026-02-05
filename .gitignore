@@ -1,0 +1,31 @@
+# --- 1. VIRTUAL MUHIT (Eng muhimi) ---
+# Kutubxonalar papkasi GitHubga yuklanmasligi kerak (juda og'ir)
+.venv/
+venv/
+env/
+
+# --- 2. PYTHON KESH FAYLLARI ---
+# Python ishlaganda hosil bo'ladigan vaqtinchalik fayllar
+__pycache__/
+*.pyc
+
+# --- 3. MA'LUMOTLAR BAZASI VA SOZLAMALAR ---
+# Haqiqiy odamlarning ma'lumotlari bor faylni yuklamagan ma'qul
+# (Agar bo'sh shablon kerak bo'lsa, boshqa nom bilan yuklash kerak)
+mahalla_bazasi.json
+
+# Cloud ID saqlanadigan fayl (buni faqat siz bilishingiz kerak)
+gist_config.txt
+
+# --- 4. VAQTINCHALIK RASMLAR ---
+# Dastur yaratadigan QR kod rasmlari
+*.png
+*.jpg
+temp_qr.png
+t.png
+
+# --- 5. TIZIM VA MUHARRIR FAYLLARI ---
+# VS Code sozlamalari
+.vscode/
+# Windows kesh rasmlari
+Thumbs.db

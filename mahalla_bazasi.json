@@ -1,0 +1,1752 @@
+[
+    {
+        "s": "Hokimlik",
+        "m": "POP TUMAN HOKIMLIGI",
+        "f": "Hokim",
+        "t": "1",
+        "inn": "200088953"
+    },
+    {
+        "s": "Moliya",
+        "m": "POP TUMAN MOLIYA BO'LIMI",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "200088921"
+    },
+    {
+        "s": "Agentlik",
+        "m": "Yoshlar Ishlari Agentligi Pop Tuman Bo'limi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "309217703"
+    },
+    {
+        "s": "Yo'l",
+        "m": "Pop Tuman Yo'llardan Foydalanish UK",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "200087338"
+    },
+    {
+        "s": "Bandlik",
+        "m": "Pop tumani kambag'allikni qisqartirish va bandlik bo'limi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "200088834"
+    },
+    {
+        "s": "Veterinariya",
+        "m": "Pop Tumani Davlat Veterinariya Bo'limi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "200089019"
+    },
+    {
+        "s": "SES",
+        "m": "Pop Tuman Hayvonlar Kasalliklari Tashxisi Markazi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "304494744"
+    },
+    {
+        "s": "Madaniyat",
+        "m": "POP TUMANI MADANIYAT BO'LIMI DM",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "200088827"
+    },
+    {
+        "s": "O'rmon",
+        "m": "Pop Ixtisoslashgan Davlat O'rmon Xo'jaligi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "200087400"
+    },
+    {
+        "s": "Tibbiyot",
+        "m": "Pop Tuman Tibbiyot Birlashmasi",
+        "f": "Bosh shifokor",
+        "t": "",
+        "inn": "200088866"
+    },
+    {
+        "s": "Ta'lim",
+        "m": "Pop tumani maktabgacha va maktab ta'limi bo'limi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "200088724"
+    },
+    {
+        "s": "Irrigasiya",
+        "m": "Pop Tumani Irrigasiya Bo'limi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "207263762"
+    },
+    {
+        "s": "Texnikum",
+        "m": "Pop Abu Ali ibn Sino nomidagi Jamoat salomatligi texnikumi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206928804"
+    },
+    {
+        "s": "Kasb-hunar",
+        "m": "Pop tuman 1-son kasb-hunar maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "200088977"
+    },
+    {
+        "s": "Kasb-hunar",
+        "m": "Pop tuman 2-son kasb-hunar maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "200088748"
+    },
+    {
+        "s": "Kasb-hunar",
+        "m": "Pop tuman 3-son kasb-hunar maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "200088859"
+    },
+    {
+        "s": "San'at",
+        "m": "7-son Bolalar musiqa va san'at maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206986924"
+    },
+    {
+        "s": "San'at",
+        "m": "8-son Bolalar musiqa va san'at maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206986931"
+    },
+    {
+        "s": "Sport",
+        "m": "Pop Tumani 1-Son Sport Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "207239688"
+    },
+    {
+        "s": "Sport",
+        "m": "Pop Tumani 2-Son Sport Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "207315823"
+    },
+    {
+        "s": "Obodon",
+        "m": "Pop Tumani Obodonlashtirish Bo'limi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "200087567"
+    },
+    {
+        "s": "SES",
+        "m": "Pop Tuman Sanitariya-Epidemiologik Osoyishtalik Bo'limi",
+        "f": "Bosh shifokor",
+        "t": "121212",
+        "inn": "200088803"
+    },
+    {
+        "s": "Energiya",
+        "m": "Qamchiq GES UK",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "307074679"
+    },
+    {
+        "s": "Uyushma",
+        "m": "O'zbekiston Mahallalari uyushmasining Pop tumani bo'limi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "207361127"
+    },
+    {
+        "s": "Yo'l",
+        "m": "Qamchiqavtoyo'l Ihtisoslashtirilgan Yo'llardan Foydalanish UK",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "301341872"
+    },
+    {
+        "s": "Soliq",
+        "m": "POP TUMAN DAVLAT SOLIQ INSPEKTSIYASI",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "200088794"
+    },
+    {
+        "s": "Kutubxona",
+        "m": "Pop tuman Axborot kutubxona markazi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "306679795"
+    },
+    {
+        "s": "Ijtimoiy",
+        "m": "Inson ijtimoiy xizmatlar markazi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "310610651"
+    },
+    {
+        "s": "Tibbiyot",
+        "m": "PARDA TURSUN TIBBIY REABLITASIYA MARKAZI",
+        "f": "Bosh shifokor",
+        "t": "",
+        "inn": "200088906"
+    },
+    {
+        "s": "Pensiya",
+        "m": "Pop tumani pensiya jamg'armasi bo'limi",
+        "f": "Rahbar",
+        "t": "",
+        "inn": "207067626"
+    },
+    {
+        "s": "Tibbiyot",
+        "m": "Pop Tumani Ko'p Tarmoqli Markaziy Polklinika",
+        "f": "Bosh shifokor",
+        "t": "",
+        "inn": "312145682"
+    },
+    {
+        "s": "Tibbiyot",
+        "m": "Pop Tumani 20 Oilaviy Polklinika",
+        "f": "Bosh shifokor",
+        "t": "",
+        "inn": "0"
+    },
+    {
+        "s": "Tibbiyot",
+        "m": "Pop Tumani 21 Oilaviy Polklinika",
+        "f": "Bosh shifokor",
+        "t": "",
+        "inn": "0"
+    },
+    {
+        "s": "Tibbiyot",
+        "m": "Pop Tumani 22 Oilaviy Polklinika",
+        "f": "Bosh shifokor",
+        "t": "",
+        "inn": "0"
+    },
+    {
+        "s": "Tibbiyot",
+        "m": "Pop Tumani 23 Oilaviy Polklinika",
+        "f": "Bosh shifokor",
+        "t": "",
+        "inn": "0"
+    },
+    {
+        "s": "Tibbiyot",
+        "m": "Pop Tumani 24 Oilaviy Polklinika",
+        "f": "Bosh shifokor",
+        "t": "",
+        "inn": "0"
+    },
+    {
+        "s": "Tibbiyot",
+        "m": "Pop Tumani 25 Oilaviy Polklinika",
+        "f": "Bosh shifokor",
+        "t": "",
+        "inn": "0"
+    },
+    {
+        "s": "Maktab",
+        "m": "1-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907102"
+    },
+    {
+        "s": "Maktab",
+        "m": "2-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907807"
+    },
+    {
+        "s": "Maktab",
+        "m": "3-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906863"
+    },
+    {
+        "s": "Maktab",
+        "m": "4-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907119"
+    },
+    {
+        "s": "Maktab",
+        "m": "5-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907220"
+    },
+    {
+        "s": "Maktab",
+        "m": "6-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907126"
+    },
+    {
+        "s": "Maktab",
+        "m": "7-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "non 9133",
+        "inn": "203325576"
+    },
+    {
+        "s": "Maktab",
+        "m": "8-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906870"
+    },
+    {
+        "s": "Maktab",
+        "m": "9-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906887"
+    },
+    {
+        "s": "Maktab",
+        "m": "10-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907141"
+    },
+    {
+        "s": "Maktab",
+        "m": "11-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906894"
+    },
+    {
+        "s": "Maktab",
+        "m": "12-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906903"
+    },
+    {
+        "s": "Maktab",
+        "m": "13-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906626"
+    },
+    {
+        "s": "Maktab",
+        "m": "14-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906910"
+    },
+    {
+        "s": "Maktab",
+        "m": "15-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907237"
+    },
+    {
+        "s": "Maktab",
+        "m": "16-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907158"
+    },
+    {
+        "s": "Maktab",
+        "m": "17-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906927"
+    },
+    {
+        "s": "Maktab",
+        "m": "18-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906934"
+    },
+    {
+        "s": "Maktab",
+        "m": "19-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907165"
+    },
+    {
+        "s": "Maktab",
+        "m": "20-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906942"
+    },
+    {
+        "s": "Maktab",
+        "m": "21-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906959"
+    },
+    {
+        "s": "Maktab",
+        "m": "22-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907205"
+    },
+    {
+        "s": "Maktab",
+        "m": "23-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907173"
+    },
+    {
+        "s": "Maktab",
+        "m": "24-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907180"
+    },
+    {
+        "s": "Maktab",
+        "m": "25-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907197"
+    },
+    {
+        "s": "Maktab",
+        "m": "26-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906966"
+    },
+    {
+        "s": "Maktab",
+        "m": "27-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906641"
+    },
+    {
+        "s": "Maktab",
+        "m": "28-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "207130294"
+    },
+    {
+        "s": "Maktab",
+        "m": "29-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906974"
+    },
+    {
+        "s": "Maktab",
+        "m": "30-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906981"
+    },
+    {
+        "s": "Maktab",
+        "m": "31-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906665"
+    },
+    {
+        "s": "Maktab",
+        "m": "32-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906673"
+    },
+    {
+        "s": "Maktab",
+        "m": "33-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906680"
+    },
+    {
+        "s": "Maktab",
+        "m": "34-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906998"
+    },
+    {
+        "s": "Maktab",
+        "m": "35-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907008"
+    },
+    {
+        "s": "Maktab",
+        "m": "36-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907015"
+    },
+    {
+        "s": "Maktab",
+        "m": "37-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907205"
+    },
+    {
+        "s": "Maktab",
+        "m": "38-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907244"
+    },
+    {
+        "s": "Maktab",
+        "m": "39-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906697"
+    },
+    {
+        "s": "Maktab",
+        "m": "40-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907023"
+    },
+    {
+        "s": "Maktab",
+        "m": "41-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907030"
+    },
+    {
+        "s": "Maktab",
+        "m": "42-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "207304314"
+    },
+    {
+        "s": "Maktab",
+        "m": "43-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907047"
+    },
+    {
+        "s": "Maktab",
+        "m": "44-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906705"
+    },
+    {
+        "s": "Maktab",
+        "m": "45-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907054"
+    },
+    {
+        "s": "Maktab",
+        "m": "46-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906713"
+    },
+    {
+        "s": "Maktab",
+        "m": "47-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906720"
+    },
+    {
+        "s": "Maktab",
+        "m": "48-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906737"
+    },
+    {
+        "s": "Maktab",
+        "m": "49-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906744"
+    },
+    {
+        "s": "Maktab",
+        "m": "50-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907213"
+    },
+    {
+        "s": "Maktab",
+        "m": "51-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906752"
+    },
+    {
+        "s": "Maktab",
+        "m": "52-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906769"
+    },
+    {
+        "s": "Maktab",
+        "m": "53-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906776"
+    },
+    {
+        "s": "Maktab",
+        "m": "54-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906784"
+    },
+    {
+        "s": "Maktab",
+        "m": "55-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906791"
+    },
+    {
+        "s": "Maktab",
+        "m": "56-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906809"
+    },
+    {
+        "s": "Maktab",
+        "m": "57-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907062"
+    },
+    {
+        "s": "Maktab",
+        "m": "59-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906824"
+    },
+    {
+        "s": "Maktab",
+        "m": "60-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906831"
+    },
+    {
+        "s": "Maktab",
+        "m": "61-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "207304322"
+    },
+    {
+        "s": "Maktab",
+        "m": "62-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906855"
+    },
+    {
+        "s": "Maktab",
+        "m": "63-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907079"
+    },
+    {
+        "s": "Maktab",
+        "m": "64-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907086"
+    },
+    {
+        "s": "Maktab",
+        "m": "65-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907094"
+    },
+    {
+        "s": "Maktab",
+        "m": "66-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907269"
+    },
+    {
+        "s": "Maktab",
+        "m": "67-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906934"
+    },
+    {
+        "s": "Maktab",
+        "m": "69-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "207130294"
+    },
+    {
+        "s": "Maktab",
+        "m": "70-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "200088731"
+    },
+    {
+        "s": "Maktab",
+        "m": "71-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "200088874"
+    },
+    {
+        "s": "Maktab",
+        "m": "72-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "207304346"
+    },
+    {
+        "s": "Maktab",
+        "m": "73-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "207304339"
+    },
+    {
+        "s": "Maktab",
+        "m": "74-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "310150354"
+    },
+    {
+        "s": "Maktab",
+        "m": "76-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "310970743"
+    },
+    {
+        "s": "Maktab",
+        "m": "78-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "310905591"
+    },
+    {
+        "s": "Maktab",
+        "m": "80-Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "312352609"
+    },
+    {
+        "s": "Maktab",
+        "m": "11-Ixtisoslashtirilgan Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206906894"
+    },
+    {
+        "s": "Maktab",
+        "m": "16-Ixtisoslashtirilgan Sonli Umumiy O'rta Ta'lim Maktabi",
+        "f": "Direktor",
+        "t": "",
+        "inn": "206907158"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "1 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "305515730"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "2 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207029363"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "3 MTT",
+        "f": "Mudira",
+        "t": "121",
+        "inn": "207006320"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "4 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207087181"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "5 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006337"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "6 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207029370"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "7 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "305652751"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "8 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207104476"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "9 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "306187633"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "10 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207306873"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "11 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207098896"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "12 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207104484"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "13 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006352"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "14 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207104491"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "15 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207098904"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "16 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006369"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "17 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006376"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "18 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "305652640"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "19 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "305653806"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "20 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "305547177"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "21 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207104509"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "22 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "305515629"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "23 MTT",
+        "f": "Mudira",
+        "t": "kadr 947013101",
+        "inn": "207320493"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "24 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207029394"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "25 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "305905356"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "26 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207029403"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "27 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207098912"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "28 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207029410"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "30 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006448"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "31 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "307968958"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "32 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207104516"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "33 MTT",
+        "f": "Mudira",
+        "t": "2222",
+        "inn": "207029427"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "34 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207087198"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "35 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "310530174"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "36 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "310807531"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "37 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207104531"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "38 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006391"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "39 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207029434"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "40 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207104548"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "41 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "310113669"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "42 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006409"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "44 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006416"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "45 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207104570"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "46 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207098929"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "47 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207104587"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "48 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207029442"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "49 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "310956989"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "50 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006455"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "51 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207029459"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "52 MTT",
+        "f": "Mudira",
+        "t": "993933812",
+        "inn": "207029466"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "53 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006424"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "54 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207006431"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "55 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "305401098"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "56 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "305401461"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "57 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "305401572"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "58 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "207305660"
+    },
+    {
+        "s": "Bog'cha",
+        "m": "60 MTT",
+        "f": "Mudira",
+        "t": "",
+        "inn": "307990616"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Abdulla Qaxxor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707726"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Alisher Navoiy MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707765"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Anxor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701458"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Birlashgan MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701624"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Bodomzor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707694"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Bog' ko'cha MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701576"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Bog' mahalla MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701419"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Bog'ishamol MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701727"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Boyon MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701687"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Bunyodkor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701892"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Chig'anoq MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701838"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Chinor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "203595219"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Chodak boshi MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701900"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Chorkesar MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701860"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Chortoq MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701766"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Eski To'da MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701781"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Guliston MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701663"
+    },
+    {
+        "s": "Mahalla",
+        "m": "G'urumsaroy MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701552"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Guzar MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701379"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Hamid Olimjon nomli MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "200089381"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Iftxor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707813"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Imon ota MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701884"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Ipak o'li MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707719"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Iskovut MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701932"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Istqbol MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701465"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Istqlol MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202709734"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Ittifoq MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701616"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Kelachi MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707741"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Kenagas MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701853"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Madaniyat MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701877"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Marg'izor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701537"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Maydon MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701694"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Mirishkor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701584"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Muqimi MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701394"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Mustaqillik MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707758"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Navbahor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701924"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Navro'z MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701655"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Nayman MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701845"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Nurobod MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701441"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Obihayot MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701798"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Obod MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707702"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Olmazor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707780"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Orom MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202766614"
+    },
+    {
+        "s": "Mahalla",
+        "m": "O'rta Marg'izor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701520"
+    },
+    {
+        "s": "Mahalla",
+        "m": "O'rta Хonobod MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701710"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Oybek MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701386"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Ozod MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701434"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Paxtakor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707773"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Pillakash MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701402"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Pilol MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701774"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Pop MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701473"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Qandig'on MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701648"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Qo'shminor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701742"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Qo'shtepa MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "203631290"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Shayxon MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701670"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Sohibkor MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "203599806"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Temir yo'l MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701426"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Tepaqo'rg'on MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701609"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Tinchlik MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202898750"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Toshqo'rg'on MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701569"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Tuman MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701513"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Uch uli MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701480"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Ultarma MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701497"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Uyg'ur MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701505"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Uyg'ursoy MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701917"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Vodiy MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "203628720"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Yakkatut MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701814"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Yangi To'da MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701806"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Yangi Хo'jaobod MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701759"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Yangichek MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701591"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Yangier MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701544"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Yangiobod MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701631"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Yuksalish MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701821"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Yuqori Chodak boshi MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "206915758"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Yuqori Хonobod MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202701703"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Хazrat bob MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "202707805"
+    },
+    {
+        "s": "Mahalla",
+        "m": "Хo'jaobod MFY",
+        "f": "Rais",
+        "t": "",
+        "inn": "203628752"
+    },
+    {
+        "s": "Bog'",
+        "m": "Pop milliy tabiat bog`i",
+        "f": "Boshqaruvchi",
+        "t": "",
+        "inn": "309729041"
+    },
+    {
+        "s": "a",
+        "m": "a",
+        "f": "a",
+        "t": "a",
+        "inn": "a"
+    }
+]
