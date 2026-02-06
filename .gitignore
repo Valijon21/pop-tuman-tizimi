@@ -11,21 +11,28 @@ __pycache__/
 
 # --- 3. MA'LUMOTLAR BAZASI VA SOZLAMALAR ---
 # Haqiqiy odamlarning ma'lumotlari bor faylni yuklamagan ma'qul
-# (Agar bo'sh shablon kerak bo'lsa, boshqa nom bilan yuklash kerak)
 mahalla_bazasi.json
+trash.json
+categories.json
+backups/
 
-# Cloud ID saqlanadigan fayl (buni faqat siz bilishingiz kerak)
+# SIRLI KALITLAR (ENG MUHIMI)
+service_account.json
+norse-botany-*.json
+sync_config.json
 gist_config.txt
 
-# --- 4. VAQTINCHALIK RASMLAR ---
-# Dastur yaratadigan QR kod rasmlari
+# --- 4. LOGLAR VA VAQTINCHALIK FAYLLAR ---
+app.log
+Thumbs.db
+
+# --- 5. RASMLAR ---
+# Barcha rasmlarni ignor qilish (chunki QR kodlar ko'payib ketadi)
 *.png
 *.jpg
-temp_qr.png
-t.png
+# LEKIN LOGO KERAK:
+!popdata.png
 
-# --- 5. TIZIM VA MUHARRIR FAYLLARI ---
-# VS Code sozlamalari
+# --- 6. TIZIM VA MUHARRIR FAYLLARI ---
 .vscode/
-# Windows kesh rasmlari
-Thumbs.db
+.idea/
