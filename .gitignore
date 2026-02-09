@@ -11,9 +11,9 @@ __pycache__/
 
 # --- 3. MA'LUMOTLAR BAZASI VA SOZLAMALAR ---
 # Haqiqiy odamlarning ma'lumotlari bor faylni yuklamagan ma'qul
-mahalla_bazasi.json
+
 trash.json
-categories.json
+
 backups/
 
 # SIRLI KALITLAR (ENG MUHIMI)
