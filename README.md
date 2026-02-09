@@ -7,9 +7,18 @@ Ushbu dastur orqali siz tashkilot rahbarlari, telefon raqamlari va INN ma'lumotl
 
 ---
 
-## 🚀 Asosiy Imkoniyatlar
+## 🚀 Yangiliklar (v2.1)
 
-### 🛠 Ma'lumotlarni Boshqarish
+*   **QR Kod Tizimi:** Telefon raqamli QR kodlar endi "835" kabi ortiqcha kodlarsiz, toza va aniq ishlaydi. Skaner qilganda to'g'ridan-to'g'ri qo'ng'iroq qilish imkoniyati.
+*   **Avto-Format:** Telefon raqam kiritishda avtomatik `+998 (XX) XXX-XX-XX` andozasi qo'shildi.
+*   **O'zbekcha Kod:** Dastur kodi to'liq o'zbek tilida izohlandi (O'zbek dasturchilari uchun qulaylik).
+*   **Ma'lumotlar Xavfsizligi:** Yangi qo'shilgan ma'lumotlar avtomatik tarzda bazaning oxiriga qo'shiladi va eskilariga zarar yetkazmaydi.
+
+---
+
+## 🛠 Asosiy Imkoniyatlar
+
+### 📋 Ma'lumotlarni Boshqarish
 *   **Qo'shish / Tahrirlash / O'chirish:** Tashkilotlarni oson boshqarish.
 *   **Qidiruv:** INN, Tashkilot nomi yoki rahbari bo'yicha tezkor qidiruv.
 *   **Filter:** Mahallalar, Maktablar va Bog'chalarni alohida saralash.
@@ -78,5 +87,5 @@ Dastur to'g'ri ishlashi uchun quyidagi fayllar kerak:
 Dastur bo'yicha savollar yoki takliflar bo'lsa, dasturchi bilan bog'laning.
 
 **Muallif:** Valijon
-**Versiya:** 2.0 (Auto-Sync qo'shilgan)
+**Versiya:** 2.1 (QR Fix & Uzbek Comments)
 **Oxirgi yangilanish:** 2026-yil Fevral
