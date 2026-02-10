@@ -261,6 +261,7 @@ class MahallaDasturi:
 
         # Holatni saqlash
         self.current_view = None
+        self.cat_var = tk.StringVar(value="Barchasi") # Global filter variable
         self.style = ttk.Style()
         self.update_style() # Initial style
         self.show_dashboard()
@@ -335,7 +336,7 @@ class MahallaDasturi:
         else:
             ctk.set_appearance_mode("Dark")
             self.current_theme = "dark"
-            self.btn_theme.configure(text="☀ Kunduzgi Rejim")
+            self.btn_theme.configure(text="☀ Kunduzi Rejim")
             
         # Manually update Treeview
         self.update_treeview_style()
@@ -387,10 +388,14 @@ class MahallaDasturi:
         self.clear_content()
         self.current_view = "dashboard"
         
+        # MAIN SCROLLABLE CONTAINER
+        scroll_dash = ctk.CTkScrollableFrame(self.content_area, fg_color="transparent")
+        scroll_dash.pack(fill="both", expand=True)
+
         t = self.themes[self.current_theme]
         
         # Header Frame
-        head_frame = tk.Frame(self.content_area, bg=t["content_bg"])
+        head_frame = ctk.CTkFrame(scroll_dash, fg_color=t["content_bg"])
         head_frame.pack(fill="x", padx=40, pady=(30,20))
         
         # Text
@@ -406,99 +411,161 @@ class MahallaDasturi:
         except: pass
         
         # ASOSIY AJRATILGAN OYNA (Chap: Kartalar, O'ng: Diagramma)
-        split_frame = tk.Frame(self.content_area, bg=t["content_bg"])
+        split_frame = ctk.CTkFrame(scroll_dash, fg_color=t["content_bg"])
         split_frame.pack(fill="x", padx=30)
         
         # CHAP: STATISTIKA KARTALARI
-        left_side = tk.Frame(split_frame, bg=t["content_bg"])
+        left_side = ctk.CTkFrame(split_frame, fg_color=t["content_bg"])
         left_side.pack(side="left", fill="both", expand=True)
 
-        # 1. Kartalar qatori
-        self.create_modern_card(left_side, "Jami Tashkilotlar", len(self.data), "#3b82f6", "🏢")
+        # 1. Jami (Katta Karta - To'liq Eniga)
+        self.create_modern_card(left_side, "Jami Tashkilotlar", len(self.data), "#2c3e50", "🏢", pady=10)
         
-        mahalla = sum(1 for i in self.data if "mfy" in str(i.get("m", "")).lower())
-        maktab = sum(1 for i in self.data if "maktab" in str(i.get("m", "")).lower())
-        bogcha = sum(1 for i in self.data if "mtt" in str(i.get("m", "")).lower())
+        # Grid Container uchun Frame
+        grid_frame = ctk.CTkFrame(left_side, fg_color="transparent")
+        grid_frame.pack(fill="both", expand=True, pady=10)
         
-        self.create_modern_card(left_side, "Mahallalar", mahalla, "#10b981", "🏘", pady=10)
-        self.create_modern_card(left_side, "Maktablar", maktab, "#f59e0b", "🏫", pady=10)
-        self.create_modern_card(left_side, "Bog'chalar", bogcha, "#8b5cf6", "🧸", pady=10)
+        # Grid ustunlarini moslash (3 ta ustun)
+        grid_frame.grid_columnconfigure(0, weight=1)
+        grid_frame.grid_columnconfigure(1, weight=1)
+        grid_frame.grid_columnconfigure(2, weight=1)
 
-        # O'NG: DIAGRAMMA (DONUT CHART)
+        # Dinamik Kategoriyalar
+        colors = ["#10b981", "#f59e0b", "#8b5cf6", "#3b82f6", "#e11d48", "#14b8a6", "#f97316", "#6366f1"]
+        chart_data = []
+
+        # Mavjud kategoriyalar bo'yicha hisoblash
+        total_categorized = 0
+        for idx, cat in enumerate(self.data_manager.categories):
+             # Filter logic mirrors filter_data STRICT match + Legacy
+             count = 0
+             for i in self.data:
+                 s_val = str(i.get("s", "")).strip()
+                 is_match = (s_val == cat)
+                 # Legacy
+                 if not is_match:
+                    if cat == "Mahalla (MFY)" and s_val in ["Mahalla", "MFY"]: is_match = True
+                    elif cat == "Maktab" and s_val in ["Maktablar"]: is_match = True
+                    elif cat == "Bog'cha (MTT)" and s_val in ["MTT", "Bog'cha"]: is_match = True
+                 
+                 if is_match: count += 1
+             
+             total_categorized += count
+             col = colors[idx % len(colors)]
+             chart_data.append((cat, count, col))
+             
+             # Icon selection
+             icon = "📌"
+             if "Mahalla" in cat: icon = "🏘"
+             elif "Maktab" in cat: icon = "🏫"
+             elif "Bog'cha" in cat: icon = "🧸"
+             
+             # Grid Card yaratish
+             r = idx // 3
+             c = idx % 3
+             self.create_grid_card(grid_frame, cat, count, col, icon, r, c)
+             
+        # Add "Boshqa" category if data is missing from chart
+        total_items = len(self.data)
+        if total_categorized < total_items:
+            diff = total_items - total_categorized
+            chart_data.append(("Boshqa (Kategoriyasiz)", diff, "#95a5a6"))
+
+        # O'NG: DIAGRAMMA (DONUT CHART) + LEGEND
         right_side = tk.Frame(split_frame, bg=t["content_bg"])
-        right_side.pack(side="right", padx=20)
+        right_side.pack(side="right", padx=20, fill="y")
         
-        self.draw_donut_chart(right_side, [
-            ("Mahalla", mahalla, "#10b981"),
-            ("Maktab", maktab, "#f59e0b"),
-            ("Bog'cha", bogcha, "#8b5cf6")
-        ])
+        self.draw_donut_chart(right_side, chart_data)
 
         # So'nggi Faoliyat
-        tk.Label(self.content_area, text="So'nggi Faoliyat", font=("Segoe UI", int(self.font_size * 1.2), "bold"), bg=t["content_bg"], fg=t["text"]).pack(anchor="w", padx=40, pady=(40,15))
+        tk.Label(scroll_dash, text="So'nggi Faoliyat", font=("Segoe UI", int(self.font_size * 1.2), "bold"), bg=t["content_bg"], fg=t["text"]).pack(anchor="w", padx=40, pady=(40,15))
         
         # Log konteyneri
-        log_frame = tk.Frame(self.content_area, bg=t["card_bg"], highlightbackground="#e2e8f0", highlightthickness=1)
+        log_frame = tk.Frame(scroll_dash, bg=t["card_bg"], highlightbackground="#e2e8f0", highlightthickness=1)
         log_frame.pack(fill="both", expand=True, padx=40, pady=(0, 40))
         
         row_col = "#f1f5f9" if self.current_theme == "light" else "#334155"
-        for i in range(5): # Namuna qatorlari
-            f = tk.Frame(log_frame, bg=t["card_bg"])
-            f.pack(fill="x", pady=1)
-            tk.Label(f, text=f"• Tizimga muvaffaqiyatli kirildi", font=("Segoe UI", int(self.font_size * 0.9)), bg=t["card_bg"], fg=t["text"]).pack(side="left", padx=15, pady=12)
-            tk.Label(f, text=time.strftime("%H:%M"), font=("Segoe UI", int(self.font_size * 0.7)), bg=t["card_bg"], fg="#94a3b8").pack(side="right", padx=15)
-            tk.Frame(log_frame, height=1, bg=row_col).pack(fill="x")
+        
+        # Show actual last 5 logs from DataManager or dummy if empty
+        recent_logs = self.data_manager.activity_log[:5] if self.data_manager.activity_log else []
+        
+        if not recent_logs:
+             for i in range(3): # Dummy
+                f = tk.Frame(log_frame, bg=t["card_bg"])
+                f.pack(fill="x", pady=1)
+                tk.Label(f, text="• Tizim ishga tushdi", font=("Segoe UI", int(self.font_size * 0.9)), bg=t["card_bg"], fg=t["text"]).pack(side="left", padx=15, pady=12)
+                tk.Frame(log_frame, height=1, bg=row_col).pack(fill="x")
+        else:
+            for log in recent_logs:
+                f = tk.Frame(log_frame, bg=t["card_bg"])
+                f.pack(fill="x", pady=1)
+                txt = f"• {log.get('user', '?').upper()}: {log.get('action')} - {log.get('details')}"
+                tk.Label(f, text=txt, font=("Segoe UI", int(self.font_size * 0.9)), bg=t["card_bg"], fg=t["text"]).pack(side="left", padx=15, pady=12)
+                tk.Label(f, text=log.get("time", "")[-8:], font=("Segoe UI", int(self.font_size * 0.7)), bg=t["card_bg"], fg="#94a3b8").pack(side="right", padx=15)
+                tk.Frame(log_frame, height=1, bg=row_col).pack(fill="x")
 
     def draw_donut_chart(self, parent, data):
         # Canvas asosidagi zamonaviy diagramma
         t = self.themes[self.current_theme]
-        sz = 220
+        sz = 340 # KATTALASHTIRILDI (220 -> 340)
         canvas = tk.Canvas(parent, width=sz, height=sz, bg=t["content_bg"], bd=0, highlightthickness=0)
         canvas.pack()
         
         total = sum(d[1] for d in data)
-        if total == 0: return
+        if total == 0: 
+            canvas.create_text(sz/2, sz/2, text="Ma'lumot yo'q", font=("Segoe UI", 12), fill="gray")
+            return
         
         start_deg = 90
         center = sz/2
-        radius = 80
-        width = 25
+        radius = 120 # KATTALASHTIRILDI (80 -> 120)
+        width = 40 # KATTALASHTIRILDI (25 -> 40)
+        
+        # LEGENDA ORQALI KO'RSATISH
+        legend_frame = tk.Frame(parent, bg=t["content_bg"])
+        legend_frame.pack(pady=(10, 0))
         
         for name, val, col in data:
             if val == 0: continue
+            
+            # Foizni hisoblash
+            percent = (val / total) * 100
             extent = (val / total) * 360
             
-            # Ark chizish (Yorliq bilan)
+            # Ark chizish
             tag_name = f"slice_{name}"
-            canvas.create_arc(center-radius, center-radius, center+radius, center+radius, 
-                              start=start_deg, extent=-extent, style="arc", outline=col, width=width, tags=(tag_name, "slice"))
+            safe_tag = "".join(x for x in tag_name if x.isalnum())
             
-            # Bosishni tinglash (Click Binding)
-            canvas.tag_bind(tag_name, "<Button-1>", lambda e, n=name: self.filter_from_chart(n))
-            canvas.tag_bind(tag_name, "<Enter>", lambda e, c=canvas, t=tag_name: c.itemconfigure(t, width=width+5))
-            canvas.tag_bind(tag_name, "<Leave>", lambda e, c=canvas, t=tag_name: c.itemconfigure(t, width=width))
+            canvas.create_arc(center-radius, center-radius, center+radius, center+radius, 
+                              start=start_deg, extent=-extent, style="arc", outline=col, width=width, tags=(safe_tag, "slice"))
+            
+            canvas.tag_bind(safe_tag, "<Button-1>", lambda e, n=name: self.filter_from_chart(n))
+            canvas.tag_bind(safe_tag, "<Enter>", lambda e, c=canvas, t=safe_tag: c.itemconfigure(t, width=width+5))
+            canvas.tag_bind(safe_tag, "<Leave>", lambda e, c=canvas, t=safe_tag: c.itemconfigure(t, width=width))
             
             start_deg -= extent
             
+            # Legenda qatori (Rang - Nom - Soni - Foiz)
+            l_row = tk.Frame(legend_frame, bg=t["content_bg"])
+            l_row.pack(anchor="w", pady=1)
+            
+            tk.Frame(l_row, bg=col, width=10, height=10).pack(side="left", padx=(0, 5))
+            tk.Label(l_row, text=f"{name}:", font=("Segoe UI", int(self.font_size*0.9), "bold"), bg=t["content_bg"], fg=t["text"]).pack(side="left")
+            tk.Label(l_row, text=f"{val} ({percent:.1f}%)", font=("Segoe UI", int(self.font_size*0.9)), bg=t["content_bg"], fg="#64748b").pack(side="left", padx=5)
+
         # Markaziy Matn
-        canvas.create_text(center, center-10, text="Statistika", font=("Segoe UI", int(self.font_size*0.7), "bold"), fill="#94a3b8")
-        canvas.create_text(center, center+15, text=f"{total}", font=("Segoe UI", int(self.font_size*1.3), "bold"), fill=t["text"])
+        canvas.create_text(center, center-15, text="Statistika", font=("Segoe UI", int(self.font_size*0.9), "bold"), fill="#94a3b8")
+        canvas.create_text(center, center+20, text=f"{total}", font=("Segoe UI", int(self.font_size*1.8), "bold"), fill=t["text"])
         
         # Yordamchi matn
-        tk.Label(parent, text="(Bo'limni ko'rish uchun bosing)", font=("Segoe UI", int(self.font_size*0.5)), bg=t["content_bg"], fg="#94a3b8").pack()
+        tk.Label(parent, text="(Bo'limni ko'rish uchun diagrammaga bosing)", font=("Segoe UI", int(self.font_size*0.5)), bg=t["content_bg"], fg="#94a3b8").pack(pady=5)
 
     def filter_from_chart(self, category):
-        # Interactive filter
-        map_cat = {
-            "Mahalla": "Mahallalar",
-            "Maktab": "Maktablar",
-            "Bog'cha": "Bog'chalar"
-        }
-        target = map_cat.get(category, "Barchasi")
-        self.cat_var.set(target)
+        # Interactive filter - Direct Match
+        self.cat_var.set(category)
         self.show_table() # Switch to table
         self.filter_data() # Apply filter
-        self.show_toast(f"{target} bo'yicha saralandi!")
+        self.show_toast(f"{category} bo'yicha saralandi!")
 
     def show_toast(self, message):
         # Zamonaviy bloklanmagan bildirishnoma
@@ -538,6 +605,42 @@ class MahallaDasturi:
         info.pack(side="left", padx=(15, 0))
         tk.Label(info, text=title, font=("Segoe UI", int(self.font_size * 0.6), "bold"), fg="#64748b", bg=t["card_bg"]).pack(anchor="w")
         tk.Label(info, text=str(value), font=("Segoe UI", int(self.font_size * 1.2), "bold"), fg=t["text"], bg=t["card_bg"]).pack(anchor="w")
+
+    def create_grid_card(self, parent, title, value, color, icon, row, col):
+        t = self.themes[self.current_theme]
+        # Frame
+        card = ctk.CTkFrame(parent, fg_color=t["card_bg"], corner_radius=8)
+        
+        # Click handler
+        def on_click(e):
+            self.filter_from_chart(title)
+            
+        # Left Color Bar (Fake border effect)
+        bar = tk.Frame(card, bg=color, width=4)
+        bar.pack(side="left", fill="y", padx=(0, 5))
+        
+        # Icon
+        lbl_icon = tk.Label(card, text=icon, font=("Segoe UI", 18), bg=t["card_bg"], fg=color)
+        lbl_icon.pack(side="left", padx=5)
+        
+        # Info
+        info_frame = tk.Frame(card, bg=t["card_bg"])
+        info_frame.pack(side="left", fill="both", expand=True, pady=10, padx=5)
+        
+        lbl_title = tk.Label(info_frame, text=title, font=("Segoe UI", int(self.font_size * 0.85), "bold"), fg="#64748b", bg=t["card_bg"], anchor="w")
+        lbl_title.pack(fill="x")
+        
+        lbl_val = tk.Label(info_frame, text=str(value), font=("Segoe UI", int(self.font_size * 1.4), "bold"), fg=t["text"], bg=t["card_bg"], anchor="w")
+        lbl_val.pack(fill="x")
+        
+        # Bind events
+        for w in [card, bar, lbl_icon, info_frame, lbl_title, lbl_val]:
+            w.bind("<Button-1>", on_click)
+            try: w.configure(cursor="hand2")
+            except: pass
+            
+        card.grid(row=row, column=col, sticky="nsew", padx=5, pady=5)
+        return card
 
     def show_trash(self):
         self.clear_content()
@@ -602,6 +705,45 @@ class MahallaDasturi:
     def show_settings(self):
         # XAVFSIZLIK TEKSHIRUVI
         if not self.check_password(): return
+
+        # QO'SHIMCHA HUBQUQ TEKSHIRUVI (Faqat Admin)
+        if self.current_role != "admin":
+            # Custom Admin Password Dialog
+            dialog = ctk.CTkToplevel(self.root)
+            dialog.title("Admin Tasdiqlash")
+            dialog.geometry("350x200")
+            dialog.transient(self.root)
+            dialog.grab_set()
+            dialog.resizable(False, False)
+            
+            # Center
+            x = self.root.winfo_x() + (self.root.winfo_width()//2) - 175
+            y = self.root.winfo_y() + (self.root.winfo_height()//2) - 100
+            dialog.geometry(f"+{x}+{y}")
+            
+            ctk.CTkLabel(dialog, text="🔒 Admin Ruxsati", font=("Segoe UI", 16, "bold"), text_color="#e74c3c").pack(pady=(20, 10))
+            ctk.CTkLabel(dialog, text="Sozlamalarga kirish uchun Admin parolini kiriting:", font=("Segoe UI", 12)).pack()
+            
+            entry = ctk.CTkEntry(dialog, show="*", width=220, height=35)
+            entry.pack(pady=10)
+            entry.focus()
+            
+            self.admin_pwd_res = None
+            def on_confirm(e=None):
+                self.admin_pwd_res = entry.get()
+                dialog.destroy()
+                
+            entry.bind("<Return>", on_confirm)
+            ctk.CTkButton(dialog, text="Kirish", command=on_confirm, width=220, fg_color="#e74c3c", hover_color="#c0392b").pack(pady=5)
+            
+            self.root.wait_window(dialog)
+            
+            if self.admin_pwd_res == self.users["admin"]:
+                self.current_role = "admin"
+                self.show_toast("Admin rejimi faollashdi!")
+            else:
+                if self.admin_pwd_res is not None: messagebox.showerror("Xato", "Parol noto'g'ri!")
+                return
 
         self.clear_content()
         self.current_view = "settings"
@@ -851,19 +993,37 @@ class MahallaDasturi:
         # Qo'shish tugmasi (Asosiy)
         ctk.CTkButton(btn_frame, text="+ Qo'shish", command=self.add_item, fg_color="#27ae60", height=40, font=("Segoe UI", int(self.font_size * 0.9), "bold"), width=120).pack(side="right", padx=10)
 
-        # KATEGORIYA TABLARI (Dinamik)
-        cat_frame = ctk.CTkFrame(self.content_area, fg_color="transparent")
-        cat_frame.pack(fill="x", padx=20, pady=10)
+        # KATEGORIYA TABLARI (Horizontal Scroll)
+        cat_scroll = ctk.CTkScrollableFrame(self.content_area, orientation="horizontal", height=50, fg_color="transparent")
+        cat_scroll.pack(fill="x", padx=20, pady=10)
         
         if not hasattr(self, 'cat_var'): self.cat_var = tk.StringVar(value="Barchasi")
         
-        # DataManagerdan dinamik tablar
+        self.cat_buttons = {}
         tabs = ["Barchasi"] + self.data_manager.categories
-        seg_btn = ctk.CTkSegmentedButton(cat_frame, values=tabs, 
-                                         variable=self.cat_var, command=self.filter_data_seg,
-                                         font=("Segoe UI", int(self.font_size * 0.8), "bold"), height=35)
-        seg_btn.pack(side="left", fill="x", expand=True)
-        seg_btn.set("Barchasi") # Default
+        
+        def update_tab_ui():
+            cur = self.cat_var.get()
+            for t_name, btn in self.cat_buttons.items():
+                if t_name == cur:
+                    btn.configure(fg_color=("#3b82f6", "#2563eb"), text_color="white")
+                else:
+                    btn.configure(fg_color=("#e2e8f0", "#334155"), text_color=("black", "white"))
+
+        def on_tab_click(val):
+            self.cat_var.set(val)
+            self.filter_data()
+            update_tab_ui()
+
+        for cat in tabs:
+            w = max(80, len(cat)*10 + 20)
+            btn = ctk.CTkButton(cat_scroll, text=cat, width=w, height=35,
+                                font=("Segoe UI", 12, "bold"),
+                                command=lambda c=cat: on_tab_click(c))
+            btn.pack(side="left", padx=5)
+            self.cat_buttons[cat] = btn
+            
+        update_tab_ui() # Apply initial style
 
         # JADVAL KONTEYNERI
         tree_frame = ctk.CTkFrame(self.content_area)
@@ -871,12 +1031,14 @@ class MahallaDasturi:
 
         # TABLE
         self.update_treeview_style()        # Stil yangilanganligiga ishonch hosil qilish
-        self.tree = ttk.Treeview(tree_frame, columns=("s","m","f","t","inn","inn_val","izoh"), show="headings") # fixed columns
         
-        # Note: columns logic might need adjustment if logic relies on indices. 
-        # Using same columns as before: ("s","m","f","t","inn","izoh") in previous code
-        # Using same columns as before + "num"
-        self.tree = ttk.Treeview(tree_frame, columns=("num", "s","m","f","t","inn","izoh"), show="headings")
+        # Note: Scrollbar must be packed BEFORE treeview if using side="right" on both, or AFTER if using fill.
+        # Standard: Scrollbar right fill Y, Tree left fill both expand.
+        
+        vsb = ttk.Scrollbar(tree_frame, orient="vertical")
+        vsb.pack(side="right", fill="y")
+        
+        self.tree = ttk.Treeview(tree_frame, columns=("num", "s","m","f","t","inn","izoh"), show="headings", yscrollcommand=vsb.set)
         
         headers = [("num", "№", 35), ("s","Turi", 80), ("m","Tashkilot Nomi", 300), ("f","F.I.SH", 200), 
                    ("t","Tel", 100), ("inn","INN", 100), ("izoh","Izoh (Enter=Tahrir)", 200)]
@@ -885,12 +1047,9 @@ class MahallaDasturi:
             self.tree.heading(col, text=name, command=lambda c=col: self.sort_treeview(c, False))
             self.tree.column(col, width=width, anchor="center" if col != "m" else "w")
 
-        self.tree.pack(fill="both", expand=True, padx=10, pady=10)
+        self.tree.pack(fill="both", expand=True) # Scrollbar is already packed to right
         
-        # Kaydirish chiziqlari (Scrollbars)
-        vsb = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree.yview)
-        vsb.pack(side="right", fill="y")
-        self.tree.configure(yscrollcommand=vsb.set)
+        vsb.configure(command=self.tree.yview)
 
         self.tree.bind("<Button-3>", self.show_context_menu)
         self.tree.bind("<Double-1>", self.on_double_click) 

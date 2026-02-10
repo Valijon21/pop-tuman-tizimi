@@ -5,7 +5,7 @@
         "f": "Hokim",
         "t": "1",
         "inn": "200088953",
-        "izoh": "adsfs"
+        "izoh": "3"
     },
     {
         "s": "Moliya",
@@ -13,7 +13,7 @@
         "f": "Rahbar",
         "t": "",
         "inn": "200088921",
-        "izoh": "sas"
+        "izoh": ""
     },
     {
         "s": "Agentlik",
@@ -21,7 +21,7 @@
         "f": "Rahbar",
         "t": "",
         "inn": "309217703",
-        "izoh": "s"
+        "izoh": ""
     },
     {
         "s": "Yo'l",
@@ -29,7 +29,7 @@
         "f": "Rahbar",
         "t": "",
         "inn": "200087338",
-        "izoh": "s"
+        "izoh": ""
     },
     {
         "s": "Bandlik",
@@ -37,7 +37,7 @@
         "f": "Rahbar",
         "t": "",
         "inn": "200088834",
-        "izoh": "s"
+        "izoh": "12"
     },
     {
         "s": "Veterinariya",
@@ -45,7 +45,7 @@
         "f": "Rahbar",
         "t": "",
         "inn": "200089019",
-        "izoh": ""
+        "izoh": "13"
     },
     {
         "s": "SES",
@@ -53,7 +53,7 @@
         "f": "Rahbar",
         "t": "",
         "inn": "304494744",
-        "izoh": "sfsdf"
+        "izoh": "15"
     },
     {
         "s": "Madaniyat",
@@ -61,7 +61,7 @@
         "f": "Rahbar",
         "t": "",
         "inn": "200088827",
-        "izoh": "sdfsd"
+        "izoh": "16"
     },
     {
         "s": "O'rmon",
@@ -69,7 +69,7 @@
         "f": "Rahbar",
         "t": "",
         "inn": "200087400",
-        "izoh": "33"
+        "izoh": "17"
     },
     {
         "s": "Tibbiyot",
@@ -77,7 +77,7 @@
         "f": "Bosh shifokor",
         "t": "",
         "inn": "200088866",
-        "izoh": "33"
+        "izoh": "21"
     },
     {
         "s": "Ta'lim",
@@ -85,7 +85,7 @@
         "f": "Rahbar",
         "t": "",
         "inn": "200088724",
-        "izoh": "32"
+        "izoh": "2555"
     },
     {
         "s": "Irrigasiya",
@@ -93,7 +93,7 @@
         "f": "Rahbar",
         "t": "",
         "inn": "207263762",
-        "izoh": "121321"
+        "izoh": "25556"
     },
     {
         "s": "Texnikum",
@@ -101,7 +101,7 @@
         "f": "Direktor",
         "t": "",
         "inn": "206928804",
-        "izoh": "1321332"
+        "izoh": "9632587411"
     },
     {
         "s": "Kasb-hunar",
@@ -109,7 +109,7 @@
         "f": "Direktor",
         "t": "",
         "inn": "200088977",
-        "izoh": "salom"
+        "izoh": ""
     },
     {
         "s": "Kasb-hunar",
@@ -117,7 +117,7 @@
         "f": "Direktor",
         "t": "",
         "inn": "200088748",
-        "izoh": "sdfds"
+        "izoh": ""
     },
     {
         "s": "Kasb-hunar",
@@ -965,7 +965,7 @@
         "f": "Mudira",
         "t": "",
         "inn": "207104476",
-        "izoh": "kjkljlj"
+        "izoh": ""
     },
     {
         "s": "Bog'cha",
@@ -1365,7 +1365,7 @@
         "f": "Rais",
         "t": "",
         "inn": "202707726",
-        "izoh": ""
+        "izoh": "jlkklj"
     },
     {
         "s": "Mahalla",
@@ -1373,7 +1373,7 @@
         "f": "Rais",
         "t": "(99) 891-34-23",
         "inn": "202707765",
-        "izoh": ""
+        "izoh": "luio"
     },
     {
         "s": "Mahalla",
@@ -2029,7 +2029,7 @@
         "f": "Murodjon",
         "t": "(93) 778-84-41",
         "inn": "0",
-        "izoh": "Bo'lim boshliq"
+        "izoh": ""
     },
     {
         "s": "Mahalla (MFY)",
@@ -2037,7 +2037,7 @@
         "f": "as",
         "t": "",
         "inn": "",
-        "izoh": "as"
+        "izoh": "55"
     },
     {
         "s": "unicon",
@@ -2045,7 +2045,7 @@
         "f": "Murodjon",
         "t": "(93) 778-84-41",
         "inn": "11111111",
-        "izoh": "Unicon Pop bo'lim boshliq"
+        "izoh": ""
     },
     {
         "s": "unicon",
@@ -2053,7 +2053,7 @@
         "f": "Beruniy",
         "t": "(94) 466-01-42",
         "inn": "3333333333333",
-        "izoh": "Unicon hodim"
+        "izoh": ""
     },
     {
         "s": "unicon",
@@ -2061,6 +2061,14 @@
         "f": "Valijon",
         "t": "+998 (91) 342-33-21",
         "inn": "",
-        "izoh": "hodim"
+        "izoh": ""
+    },
+    {
+        "s": "xotin qizlar",
+        "m": "sa",
+        "f": "sas",
+        "t": "+998 (56) 656",
+        "inn": "56656",
+        "izoh": "596569"
     }
 ]
