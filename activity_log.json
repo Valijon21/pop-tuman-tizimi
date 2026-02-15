@@ -1,5 +1,353 @@
 [
     {
+        "time": "2026-02-13 17:37:21",
+        "user": "admin",
+        "action": "Shrif O'zgardi",
+        "details": "Yangi o'lcham: 18"
+    },
+    {
+        "time": "2026-02-13 17:37:09",
+        "user": "admin",
+        "action": "Shrif O'zgardi",
+        "details": "Yangi o'lcham: 12"
+    },
+    {
+        "time": "2026-02-13 17:36:59",
+        "user": "admin",
+        "action": "Shrif O'zgardi",
+        "details": "Yangi o'lcham: 18"
+    },
+    {
+        "time": "2026-02-13 17:30:17",
+        "user": "admin",
+        "action": "Shrif O'zgardi",
+        "details": "Yangi o'lcham: 22"
+    },
+    {
+        "time": "2026-02-13 16:46:15",
+        "user": "admin",
+        "action": "Shrif O'zgardi",
+        "details": "Yangi o'lcham: 18"
+    },
+    {
+        "time": "2026-02-13 16:46:05",
+        "user": "admin",
+        "action": "Shrif O'zgardi",
+        "details": "Yangi o'lcham: 22"
+    },
+    {
+        "time": "2026-02-13 16:45:57",
+        "user": "admin",
+        "action": "Shrif O'zgardi",
+        "details": "Yangi o'lcham: 15"
+    },
+    {
+        "time": "2026-02-13 16:44:33",
+        "user": "admin",
+        "action": "Shrif O'zgardi",
+        "details": "Yangi o'lcham: 12"
+    },
+    {
+        "time": "2026-02-13 16:44:07",
+        "user": "admin",
+        "action": "Shrif O'zgardi",
+        "details": "Yangi o'lcham: 15"
+    },
+    {
+        "time": "2026-02-13 16:24:51",
+        "user": "admin",
+        "action": "Tahrirlash",
+        "details": "Pop tuman 2-son kasb-hunar maktabi yangilandi"
+    },
+    {
+        "time": "2026-02-13 16:11:17",
+        "user": "admin",
+        "action": "Tahrirlash",
+        "details": "49-Sonli Umumiy O'rta Ta'lim Maktabi yangilandi"
+    },
+    {
+        "time": "2026-02-13 16:10:33",
+        "user": "admin",
+        "action": "Tahrirlash",
+        "details": "49 MTT yangilandi"
+    },
+    {
+        "time": "2026-02-13 16:06:56",
+        "user": "admin",
+        "action": "Tahrirlash",
+        "details": "49 MTT yangilandi"
+    },
+    {
+        "time": "2026-02-13 10:54:51",
+        "user": "admin",
+        "action": "Tahrirlash",
+        "details": "11 MTT yangilandi"
+    },
+    {
+        "time": "2026-02-12 16:00:25",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: Xotin qizlar"
+    },
+    {
+        "time": "2026-02-12 16:00:13",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: Ijtimoiy xodim"
+    },
+    {
+        "time": "2026-02-12 16:00:02",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: Ijtimoiy hodim"
+    },
+    {
+        "time": "2026-02-12 15:59:49",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: Ijtimoiy hodim"
+    },
+    {
+        "time": "2026-02-12 15:59:38",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: Yoshlar yetakchi"
+    },
+    {
+        "time": "2026-02-12 15:59:20",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: unicon"
+    },
+    {
+        "time": "2026-02-12 15:59:18",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: xotin qizlar"
+    },
+    {
+        "time": "2026-02-12 15:59:08",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: maktab kadr"
+    },
+    {
+        "time": "2026-02-12 15:59:05",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: Yoshlar yetakchisi"
+    },
+    {
+        "time": "2026-02-12 15:24:35",
+        "user": "admin",
+        "action": "Chiqindiga tashlandi",
+        "details": "Nomi: sa"
+    },
+    {
+        "time": "2026-02-12 15:24:30",
+        "user": "admin",
+        "action": "Chiqindiga tashlandi",
+        "details": "Nomi: as"
+    },
+    {
+        "time": "2026-02-12 15:24:23",
+        "user": "admin",
+        "action": "Chiqindiga tashlandi",
+        "details": "Nomi: Pop Tumani 21 Oilaviy Polklinika"
+    },
+    {
+        "time": "2026-02-12 15:24:18",
+        "user": "admin",
+        "action": "Chiqindiga tashlandi",
+        "details": "Nomi: Pop Tumani 20 Oilaviy Polklinika"
+    },
+    {
+        "time": "2026-02-12 15:24:13",
+        "user": "admin",
+        "action": "Chiqindiga tashlandi",
+        "details": "Nomi: unicon"
+    },
+    {
+        "time": "2026-02-11 16:57:57",
+        "user": "admin",
+        "action": "Tahrirlash",
+        "details": "7-Sonli Umumiy O'rta Ta'lim Maktabi yangilandi"
+    },
+    {
+        "time": "2026-02-11 15:55:06",
+        "user": "admin",
+        "action": "Chiqindiga tashlandi",
+        "details": "Nomi: sa"
+    },
+    {
+        "time": "2026-02-11 15:07:40",
+        "user": "admin",
+        "action": "Tahrirlash",
+        "details": "21-Sonli Umumiy O'rta Ta'lim Maktabi yangilandi"
+    },
+    {
+        "time": "2026-02-11 15:06:17",
+        "user": "admin",
+        "action": "Tahrirlash",
+        "details": "Pop tuman 2-son kasb-hunar maktabi yangilandi"
+    },
+    {
+        "time": "2026-02-11 14:54:15",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: 1"
+    },
+    {
+        "time": "2026-02-11 14:54:14",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: 2"
+    },
+    {
+        "time": "2026-02-11 14:54:13",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: 3"
+    },
+    {
+        "time": "2026-02-11 14:54:11",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: 4"
+    },
+    {
+        "time": "2026-02-11 14:54:10",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: 454545"
+    },
+    {
+        "time": "2026-02-11 14:54:09",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: 44"
+    },
+    {
+        "time": "2026-02-11 14:54:08",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: 4444"
+    },
+    {
+        "time": "2026-02-11 14:54:08",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: 45544"
+    },
+    {
+        "time": "2026-02-11 14:54:07",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: 44444545"
+    },
+    {
+        "time": "2026-02-11 14:54:05",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: 4545454"
+    },
+    {
+        "time": "2026-02-11 14:54:04",
+        "user": "admin",
+        "action": "Kategoriya O'chirildi",
+        "details": "Nomi: salom"
+    },
+    {
+        "time": "2026-02-10 16:40:20",
+        "user": "admin",
+        "action": "Qo'shish",
+        "details": "sadsfsd yangi qo'shildi"
+    },
+    {
+        "time": "2026-02-10 16:40:02",
+        "user": "admin",
+        "action": "Qo'shish",
+        "details": "sa yangi qo'shildi"
+    },
+    {
+        "time": "2026-02-10 16:39:45",
+        "user": "admin",
+        "action": "Qo'shish",
+        "details": "sa yangi qo'shildi"
+    },
+    {
+        "time": "2026-02-10 16:27:25",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: salom"
+    },
+    {
+        "time": "2026-02-10 16:26:36",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: 454545"
+    },
+    {
+        "time": "2026-02-10 16:26:33",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: 4545454"
+    },
+    {
+        "time": "2026-02-10 16:26:31",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: 44444545"
+    },
+    {
+        "time": "2026-02-10 16:26:29",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: 45544"
+    },
+    {
+        "time": "2026-02-10 16:26:27",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: 4444"
+    },
+    {
+        "time": "2026-02-10 16:26:26",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: 44"
+    },
+    {
+        "time": "2026-02-10 16:26:24",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: 4"
+    },
+    {
+        "time": "2026-02-10 16:26:22",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: 3"
+    },
+    {
+        "time": "2026-02-10 16:26:20",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: 2"
+    },
+    {
+        "time": "2026-02-10 16:26:18",
+        "user": "admin",
+        "action": "Kategoriya Qo'shildi",
+        "details": "Nomi: 1"
+    },
+    {
+        "time": "2026-02-10 14:40:00",
+        "user": "admin",
+        "action": "Shrif O'zgardi",
+        "details": "Yangi o'lcham: 18"
+    },
+    {
         "time": "2026-02-10 12:12:05",
         "user": "admin",
         "action": "Shrif O'zgardi",

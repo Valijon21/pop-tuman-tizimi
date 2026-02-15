@@ -1,3 +1,6 @@
 {
-    "font_size": 22
+    "font_size": 18,
+    "custom_columns": [
+        "22"
+    ]
 }

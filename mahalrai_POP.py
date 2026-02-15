@@ -15,11 +15,13 @@ import math # Added for charts
 import customtkinter as ctk # MODERN UI
 from PIL import Image, ImageTk
 import gspread
+from openpyxl.styles import Font # Fix for Excel Export
 from oauth2client.service_account import ServiceAccountCredentials
 import threading
 import logging
 import traceback
 import re
+import uuid
 
 # Log yozishni sozlash
 logging.basicConfig(filename='app.log', level=logging.DEBUG, 
@@ -50,6 +52,10 @@ class DataManager:
             
         if not self.categories:
              self.categories = ["Mahalla (MFY)", "Maktab", "Bog'cha (MTT)", "Boshqa"]
+        
+        # Dinamik ustunlar (settingsdan yuklash)
+        if "custom_columns" not in self.settings:
+            self.settings["custom_columns"] = []
         self.ensure_backup_dir()
 
     def ensure_backup_dir(self):
@@ -183,8 +189,13 @@ class MahallaDasturi:
             }
         }
         self.current_theme = "light"
-        self.admin_password = "123" # Default
+        self.admin_password = "123456789!!" # Default
         self.last_auth_time = 0; self.auth_timeout = 20 * 60
+        
+        # Google Sheet Password Settings
+        self.gsheet_password = "21071993!!@@"
+        self.last_gsheet_auth_time = 0
+        self.gsheet_auth_timeout = 30 * 60 # 30 minut
         
         # Sinxronizatsiya sozlamalarini yuklash
         self.sheet_identifier = self.load_sync_config()
@@ -192,7 +203,7 @@ class MahallaDasturi:
         # Modern Font
         self.lbl_font = ("Segoe UI", self.font_size)
         self.head_font = ("Segoe UI", int(self.font_size * 2.1), "bold") # Katta Sarlavha
-        
+            
         # Absolyut Yo'l (Xatolikni oldini olish uchun)
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.icon_path = os.path.join(self.base_dir, "popdata.png")
@@ -201,13 +212,17 @@ class MahallaDasturi:
         try:
             icon_img = ImageTk.PhotoImage(file=self.icon_path)
             self.root.iconphoto(False, icon_img)
-            self.root.title("POP Tuman") 
+            self.root.title("POP Tuman")
         except Exception as e: print(f"Icon Load Fail: {e}")
+        
+        # Maximize Window (Force)
+        self.root.after(100, lambda: self.root.state("zoomed"))
+
         self.btn_font = ("Segoe UI", int(self.font_size * 0.9), "bold")
         
         # Foydalanuvchi Rollari
         self.current_role = None
-        self.users = {"admin": "123", "operator": "1"}
+        self.users = {"admin": "123456789!!", "operator": "1"}
 
         # ASOSIY MAKET (LAYOUT)
         self.main_container = ctk.CTkFrame(self.root, corner_radius=0, fg_color=("white", "#1a1a1a"))
@@ -525,27 +540,29 @@ class MahallaDasturi:
         legend_frame = tk.Frame(parent, bg=t["content_bg"])
         legend_frame.pack(pady=(10, 0))
         
+        data_items = [] # Store for binding
         for name, val, col in data:
-            if val == 0: continue
+            # Foizni hisoblash (0 ga bo'lishdan ehtiyot bo'lish)
+            percent = (val / total * 100) if total > 0 else 0
             
-            # Foizni hisoblash
-            percent = (val / total) * 100
-            extent = (val / total) * 360
+            # Ark chizish (Faqat qiymat bo'lsa)
+            if val > 0:
+                extent = (val / total) * 360
+                
+                # Ark chizish
+                tag_name = f"slice_{name}"
+                safe_tag = "".join(x for x in tag_name if x.isalnum())
+                
+                canvas.create_arc(center-radius, center-radius, center+radius, center+radius, 
+                                  start=start_deg, extent=-extent, style="arc", outline=col, width=width, tags=(safe_tag, "slice"))
+                
+                canvas.tag_bind(safe_tag, "<Button-1>", lambda e, n=name: self.filter_from_chart(n))
+                # Note: Enter/Leave binding moved to end to access central text ID
+                data_items.append((name, val, col, safe_tag))
+                
+                start_deg -= extent
             
-            # Ark chizish
-            tag_name = f"slice_{name}"
-            safe_tag = "".join(x for x in tag_name if x.isalnum())
-            
-            canvas.create_arc(center-radius, center-radius, center+radius, center+radius, 
-                              start=start_deg, extent=-extent, style="arc", outline=col, width=width, tags=(safe_tag, "slice"))
-            
-            canvas.tag_bind(safe_tag, "<Button-1>", lambda e, n=name: self.filter_from_chart(n))
-            canvas.tag_bind(safe_tag, "<Enter>", lambda e, c=canvas, t=safe_tag: c.itemconfigure(t, width=width+5))
-            canvas.tag_bind(safe_tag, "<Leave>", lambda e, c=canvas, t=safe_tag: c.itemconfigure(t, width=width))
-            
-            start_deg -= extent
-            
-            # Legenda qatori (Rang - Nom - Soni - Foiz)
+            # Legenda qatori (Hamma vaqt chiziladi)
             l_row = tk.Frame(legend_frame, bg=t["content_bg"])
             l_row.pack(anchor="w", pady=1)
             
@@ -553,9 +570,27 @@ class MahallaDasturi:
             tk.Label(l_row, text=f"{name}:", font=("Segoe UI", int(self.font_size*0.9), "bold"), bg=t["content_bg"], fg=t["text"]).pack(side="left")
             tk.Label(l_row, text=f"{val} ({percent:.1f}%)", font=("Segoe UI", int(self.font_size*0.9)), bg=t["content_bg"], fg="#64748b").pack(side="left", padx=5)
 
-        # Markaziy Matn
-        canvas.create_text(center, center-15, text="Statistika", font=("Segoe UI", int(self.font_size*0.9), "bold"), fill="#94a3b8")
-        canvas.create_text(center, center+20, text=f"{total}", font=("Segoe UI", int(self.font_size*1.8), "bold"), fill=t["text"])
+        # Markaziy Matn (Tags added for dynamic updates)
+        c_title = canvas.create_text(center, center-15, text="Statistika", font=("Segoe UI", int(self.font_size*0.9), "bold"), fill="#94a3b8", tags="center_title")
+        c_val = canvas.create_text(center, center+20, text=f"{total}", font=("Segoe UI", int(self.font_size*1.8), "bold"), fill=t["text"], tags="center_val")
+        
+        # Hover Handlers
+        def on_enter(e, tag, name, val):
+            canvas.itemconfigure(tag, width=width+10)
+            canvas.config(cursor="hand2")
+            canvas.itemconfigure(c_title, text=name)
+            canvas.itemconfigure(c_val, text=str(val))
+            
+        def on_leave(e, tag):
+            canvas.itemconfigure(tag, width=width)
+            canvas.config(cursor="")
+            canvas.itemconfigure(c_title, text="Statistika")
+            canvas.itemconfigure(c_val, text=str(total))
+        
+        # Re-bind events with new handlers
+        for name, val, col, s_tag in data_items:
+             canvas.tag_bind(s_tag, "<Enter>", lambda e, t=s_tag, n=name, v=val: on_enter(e, t, n, v))
+             canvas.tag_bind(s_tag, "<Leave>", lambda e, t=s_tag: on_leave(e, t))
         
         # Yordamchi matn
         tk.Label(parent, text="(Bo'limni ko'rish uchun diagrammaga bosing)", font=("Segoe UI", int(self.font_size*0.5)), bg=t["content_bg"], fg="#94a3b8").pack(pady=5)
@@ -982,9 +1017,9 @@ class MahallaDasturi:
 
         # Tugma yordamchisi
         def add_btn(txt, cmd, col, icon=None):
-            ctk.CTkButton(btn_frame, text=txt, command=cmd, fg_color=col, height=40, font=("Segoe UI", int(self.font_size * 0.8), "bold"), width=100).pack(side="right", padx=3)
+            ctk.CTkButton(btn_frame, text=txt, command=cmd, fg_color=col, height=40, font=("Segoe UI", int(self.font_size * 0.8), "bold"), width=100).pack(side="right", padx=2)
 
-        add_btn("📝 Izoh", self.manual_edit_comment, "#8e44ad")
+        add_btn("➕ Ustun", self.add_custom_column, "#34495e") # New Button
         add_btn("📱 QR", self.show_qr, "#e67e22")
         add_btn("✈ Telegram", self.send_telegram, "#0088cc")
         add_btn("📊 Excel", self.open_export_menu, "#107c41")
@@ -1032,28 +1067,45 @@ class MahallaDasturi:
         # TABLE
         self.update_treeview_style()        # Stil yangilanganligiga ishonch hosil qilish
         
-        # Note: Scrollbar must be packed BEFORE treeview if using side="right" on both, or AFTER if using fill.
-        # Standard: Scrollbar right fill Y, Tree left fill both expand.
-        
+        # Scrollbars
         vsb = ttk.Scrollbar(tree_frame, orient="vertical")
-        vsb.pack(side="right", fill="y")
-        
-        self.tree = ttk.Treeview(tree_frame, columns=("num", "s","m","f","t","inn","izoh"), show="headings", yscrollcommand=vsb.set)
-        
-        headers = [("num", "№", 35), ("s","Turi", 80), ("m","Tashkilot Nomi", 300), ("f","F.I.SH", 200), 
-                   ("t","Tel", 100), ("inn","INN", 100), ("izoh","Izoh (Enter=Tahrir)", 200)]
-        
-        for col, name, width in headers:
-            self.tree.heading(col, text=name, command=lambda c=col: self.sort_treeview(c, False))
-            self.tree.column(col, width=width, anchor="center" if col != "m" else "w")
+        hsb = ttk.Scrollbar(tree_frame, orient="horizontal")
 
-        self.tree.pack(fill="both", expand=True) # Scrollbar is already packed to right
+        # JADVAL Sarlavhalari
+        self.tree = ttk.Treeview(tree_frame, columns=[], show="headings", yscrollcommand=vsb.set, xscrollcommand=hsb.set)
         
         vsb.configure(command=self.tree.yview)
+        hsb.configure(command=self.tree.xview)
 
-        self.tree.bind("<Button-3>", self.show_context_menu)
-        self.tree.bind("<Double-1>", self.on_double_click) 
-        self.tree.bind("<Return>", self.edit_comment_inline) # Enter key binding
+        vsb.pack(side="right", fill="y")
+        hsb.pack(side="bottom", fill="x")
+        
+        self.tree.pack(fill="both", expand=True)
+
+        # Base columns - Kengaytirildi
+        base_cols = [("num", "№", 40), ("s","Turi", 180), ("m","Tashkilot Nomi", 350), ("f","F.I.SH", 250), 
+                   ("t","Tel", 120), ("inn","INN", 100), ("izoh","Izoh", 200)]
+        
+        # Add custom columns
+        custom_cols = []
+        for cc in self.data_manager.settings["custom_columns"]:
+            custom_cols.append((f"custom_{cc}", cc, 150))
+            
+        all_cols = base_cols + custom_cols
+        self.tree["columns"] = [c[0] for c in all_cols]
+        
+        for col, name, width in all_cols:
+            self.tree.heading(col, text=name, command=lambda c=col: self.sort_treeview(c, False))
+            self.tree.column(col, width=width, minwidth=50, anchor="center" if col != "m" else "w")
+
+        self.tree.bind("<Button-3>", self.show_context_menu) # Tana qismi uchun
+        self.tree.bind("<Button-2>", self.show_header_menu) # Mac
+        # Header click binding is tricky in Tkinter. 
+        # We bind to the widget and check region in the handler.
+        self.tree.bind("<Button-3>", self.on_right_click) # Generic right click handler
+
+        self.tree.bind("<Double-1>", self.on_double_click_cell) # Changed to generic cell handler
+        self.tree.bind("<Return>", self.edit_comment_inline) # Keep enter for legacy quick edit
 
         # PASTKI RAMKA (Jami hisobi)
         footer = ctk.CTkFrame(self.content_area, fg_color="transparent", height=30)
@@ -1067,73 +1119,203 @@ class MahallaDasturi:
         self.cat_var.set(value)
         self.filter_data()
         
-    def manual_edit_comment(self):
-        # Satr ichida tahrirlash uchun tugma toetkisi
-        self.edit_comment_inline(None)
+    def on_right_click(self, event):
+        region = self.tree.identify_region(event.x, event.y)
+        if region == "heading":
+            self.show_header_menu(event)
+        else:
+            self.show_context_menu(event)
 
-    def edit_comment_inline(self, event):
-        # Get selected item
+    def show_header_menu(self, event):
+        col_id = self.tree.identify_column(event.x)
+        col_name = self.tree.column(col_id, "id")
+        
+        if not col_name.startswith("custom_"): return # Only custom columns
+        
+        real_name = col_name.replace("custom_", "")
+        
+        # Menu
+        menu = tk.Menu(self.root, tearoff=0, font=("Segoe UI", 14))
+        menu.add_command(label=f"✏ '{real_name}' ni o'zgartirish", command=lambda: self.rename_custom_column(real_name))
+        menu.add_separator()
+        menu.add_command(label=f"🗑 '{real_name}' ni o'chirish", command=lambda: self.delete_custom_column(real_name))
+        menu.post(event.x_root, event.y_root)
+
+    def rename_custom_column(self, old_name):
+        new_name = self.ask_string_modern("Nomni O'zgartirish", f"'{old_name}' uchun yangi nom:", old_name)
+        if not new_name or new_name == old_name: return
+        
+        # Update Settings
+        cols = self.data_manager.settings["custom_columns"]
+        if new_name in cols:
+            self.show_toast("Bu nom allaqachon mavjud!")
+            return
+            
+        idx = cols.index(old_name)
+        cols[idx] = new_name
+        self.data_manager.save_settings()
+        
+        # Update Data Keys
+        for item in self.data:
+            if old_name in item:
+                item[new_name] = item.pop(old_name)
+        self.data_manager.save_data()
+        
+        self.show_table()
+        self.show_toast("O'zgartirildi!")
+        self.sync_background()
+
+    def delete_custom_column(self, name):
+        if not messagebox.askyesno("O'chirish", f"'{name}' ustunini va undagi barcha ma'lumotlarni o'chirmoqchimisiz?"): return
+        
+        # Update Settings
+        self.data_manager.settings["custom_columns"].remove(name)
+        self.data_manager.save_settings()
+        
+        # Update Data
+        for item in self.data:
+            if name in item: del item[name]
+        self.data_manager.save_data()
+        
+        self.show_table()
+        self.show_toast("O'chirildi!")
+        self.sync_background()
+
+    def ask_string_modern(self, title, prompt, initial_value=""):
+        # Custom Modern Dialog
+        dialog = ctk.CTkToplevel(self.root)
+        dialog.title(title)
+        dialog.geometry("350x200")
+        dialog.transient(self.root)
+        dialog.grab_set()
+        
+        # Center
+        x = self.root.winfo_x() + (self.root.winfo_width()//2) - 175
+        y = self.root.winfo_y() + (self.root.winfo_height()//2) - 100
+        dialog.geometry(f"+{x}+{y}")
+        
+        ctk.CTkLabel(dialog, text=title, font=("Segoe UI", 16, "bold")).pack(pady=(20, 10))
+        ctk.CTkLabel(dialog, text=prompt, font=("Segoe UI", 12), text_color="gray").pack()
+        
+        entry = ctk.CTkEntry(dialog, width=250, height=35)
+        entry.pack(pady=15)
+        entry.insert(0, initial_value)
+        entry.focus()
+        
+        self.dialog_res = None
+        def on_ok(event=None):
+            self.dialog_res = entry.get()
+            dialog.destroy()
+            
+        entry.bind("<Return>", on_ok)
+        ctk.CTkButton(dialog, text="Saqlash", command=on_ok, width=250, height=35, fg_color="#27ae60").pack(pady=5)
+        
+        self.root.wait_window(dialog)
+        return self.dialog_res
+
+    def add_custom_column(self):
+        new_col = self.ask_string_modern("Yangi Ustun", "Ustun nomini kiriting:")
+        if not new_col: return
+        new_col = new_col.strip()
+        
+        # Check duplicates
+        if new_col in self.data_manager.settings["custom_columns"]:
+            self.show_toast("Bu ustun allaqachon mavjud!")
+            return
+            
+        self.data_manager.settings["custom_columns"].append(new_col)
+        self.data_manager.save_settings()
+        self.show_table() # Refresh table
+        self.show_toast(f"'{new_col}' ustuni qo'shildi!")
+        self.sync_background()
+
+    def on_double_click_cell(self, event):
+        # Identify region
+        region = self.tree.identify("region", event.x, event.y)
+        if region != "cell": return
+        
+        # Identify column
+        col_id = self.tree.identify_column(event.x) # Returns #1, #2 etc
+        col_name = self.tree.column(col_id, "id")
+        
+        # Check if editable (Izoh or Custom)
+        is_custom = col_name.startswith("custom_")
+        if col_name == "izoh" or is_custom:
+            self.edit_cell(col_name)
+        else:
+            self.edit_item() # Default validation edit
+
+    def edit_cell(self, col_name):
+        # Generic cell editor
         sel = self.tree.focus()
         if not sel: return
-        
-        # Ensure item is visible
         self.tree.see(sel)
-        self.root.update_idletasks() # Maket hisoblanishini ta'minlash
+        self.root.update_idletasks()
         
-        # "izoh" ustuni katakchasi koordinatalarini olish
         try:
-            bbox = self.tree.bbox(sel, "izoh")
-            if not bbox: return # Ustun ko'rinmayapti
+            bbox = self.tree.bbox(sel, col_name)
+            if not bbox: return
             x, y, w, h = bbox
-        except: return 
+        except: return
         
-        # Kirish vidjeti qatlami (overlay) yaratish
-        # Frame helps with border visibility if needed, but direct Entry is usually enough
         entry = tk.Entry(self.tree, font=("Segoe UI", self.font_size))
         entry.place(x=x, y=y, width=w, height=h)
         
-        # Hozirgi qiymatni o'rnatish
-        current_val = self.tree.item(sel)["values"][6] # Izoh is @ index 6 (0=num, 1=s, 2=m, 3=f, 4=t, 5=inn, 6=izoh)
+        # Get current val
+        vals = self.tree.item(sel)["values"]
+        
+        # Find index in values list
+        # We need to know the index of this column in the current columns list
+        cols = self.tree["columns"]
+        try:
+            col_idx = cols.index(col_name)
+        except: return
+        
+        current_val = vals[col_idx]
         entry.insert(0, str(current_val))
         entry.select_range(0, tk.END)
-        entry.focus_force() # Fokusni majburlash
-
-        def save_edit(event):
-            new_text = entry.get()
-            # 1. UI ni yangilash
-            current_values = list(self.tree.item(sel)["values"])
-            current_values[6] = new_text
-            self.tree.item(sel, values=current_values)
+        entry.focus_force()
+        
+        def save(event):
+            new_txt = entry.get()
             
-            # 2. Ma'lumot manbasini yangilash
-            inn = str(current_values[5]) # INN is @ index 5
+            # Update UI
+            cur_vals = list(self.tree.item(sel)["values"])
+            cur_vals[col_idx] = new_txt
+            self.tree.item(sel, values=cur_vals)
+            
+            # Update Data
+            inn = str(cur_vals[5]) # INN is always at 5 (num=0, s=1, m=2, f=3, t=4, inn=5)
+            # Find item
             item = next((i for i in self.data if str(i.get("inn")) == inn), None)
             if item:
-                item["izoh"] = new_text
+                if col_name == "izoh":
+                    item["izoh"] = new_txt
+                elif col_name.startswith("custom_"):
+                    real_key = col_name.replace("custom_", "")
+                    item[real_key] = new_txt
                 self.data_manager.save_data()
             
             entry.destroy()
-            try:
-                self.tree.focus_set() # Fokusni daraxtga qaytarish
-                
-                # Keyingi elementga o'tish (Excel uslubi)
-                next_item = self.tree.next(sel)
-                if next_item:
-                    self.tree.selection_set(next_item)
-                    self.tree.focus(next_item)
-                    self.tree.see(next_item)
-                else:
-                    self.tree.focus(sel) # Stay if last
+            try: self.tree.focus_set()
             except: pass
             
             self.sync_background() # Avto Sinxronlash
 
-        def cancel_edit(event):
+        def cancel(event): 
             entry.destroy()
-            self.tree.focus_set() # Fokusni daraxtga qaytarish
+            self.tree.focus_set()
 
-        entry.bind("<Return>", save_edit) # Enter saves
-        entry.bind("<Escape>", cancel_edit) # Esc cancels
+        entry.bind("<Return>", save)
+        entry.bind("<Escape>", cancel)
+
+    def manual_edit_comment(self):
+        # Deprecated wrapper, points to generic editor for 'izoh'
+        self.edit_cell("izoh")
+
+    def edit_comment_inline(self, event):
+        # Legacy enter key support
+        self.manual_edit_comment()
 
     def open_cloud_menu(self):
         # Yon panel tugmasi uchun mini menyu
@@ -1148,12 +1330,12 @@ class MahallaDasturi:
     def open_export_menu(self):
          # Mini menu implementation
         win = tk.Toplevel(self.root)
-        win.title("Export"); win.geometry("300x200")
+        win.title("Export"); win.geometry("400x250")
         win.configure(bg=self.themes[self.current_theme]["content_bg"]) # Theme fix
 
-        tk.Button(win, text="📥 Joriy Jadvalni Excelga Yuklash", bg="#1f618d", fg="white", command=self.export_excel_pro).pack(fill="x", padx=20, pady=5)
-        tk.Button(win, text="📊 Google Sheet", bg="#107c41", fg="white", command=self.export_to_gsheet_dummy).pack(fill="x", padx=20, pady=5)
-        tk.Button(win, text="🔄 Google Sheet Sync (Real)", bg="#2ecc71", fg="white", command=self.open_gsheet_sync_menu).pack(fill="x", padx=20, pady=5)
+        tk.Button(win, text="📥 Joriy Jadvalni Excelga Yuklash", font=("Segoe UI", 12, "bold"), bg="#1f618d", fg="white", command=self.export_excel_pro).pack(fill="x", padx=20, pady=10)
+        tk.Button(win, text="📊 Google Sheet", font=("Segoe UI", 12, "bold"), bg="#107c41", fg="white", command=self.export_to_gsheet_dummy).pack(fill="x", padx=20, pady=10)
+        tk.Button(win, text="🔄 Google Sheet Sync (Real)", font=("Segoe UI", 12, "bold"), bg="#2ecc71", fg="white", command=self.open_gsheet_sync_menu).pack(fill="x", padx=20, pady=10)
 
     def open_gsheet_sync_menu(self):
         if self.current_role != "admin": # Cheklov
@@ -1164,7 +1346,7 @@ class MahallaDasturi:
         win.geometry("350x250")
         
         ctk.CTkLabel(win, text="Google Sheets Integratsiyasi", font=("Segoe UI", 16, "bold")).pack(pady=10)
-        ddddddddddddddddddddddd                                                          
+                                                         
         # Kalit fayl holati
         key_status = "✅ Fayl mavjud" if os.path.exists("service_account.json") else "❌ Fayl yo'q"
         lbl_status = ctk.CTkLabel(win, text=f"Key File: {key_status}", text_color="green" if "mavjud" in key_status else "red")
@@ -1261,14 +1443,88 @@ class MahallaDasturi:
             
             if direction == "upload":
                 # Upload Logic
-                data_to_upload = [["Turi", "Nomi", "Rahbar", "Tel", "INN", "Izoh", "ID"]] # Header + ID
+                # headers (App bilan bir xil nomlar)
+                headers = ["Turi", "Tashkilot Nomi", "F.I.SH", "Tel", "INN", "Izoh"]
+                custom_cols = self.data_manager.settings.get("custom_columns", [])
+                headers.extend(custom_cols)
+                # headers.append("ID") # ID ni ko'rsatish shart emas, yoki oxiriga yashirin qo'shish mumkin
+                # Userizga ID kerak emas deb taxmin qilamiz, lekin update uchun kerak bo'lsa hidden saqlash kerak.
+                # Keling, ID ni oxirgi ustun qilib qo'shamiz, lekin chiroyli formatlaymiz.
+                headers.append("Tizim ID")
+                
+                data_to_upload = [headers] # Header + ID
                 for i in self.data:
-                        data_to_upload.append([
-                            i.get("s"), i.get("m"), i.get("f"), i.get("t"), str(i.get("inn")), i.get("izoh", ""), i.get("uuid", "")
-                        ])
+                        row = [
+                            i.get("s"), i.get("m"), i.get("f"), i.get("t"), str(i.get("inn")), i.get("izoh", "")
+                        ]
+                        # Custom values
+                        for cc in custom_cols:
+                            row.append(i.get(cc, ""))
+                            
+                        row.append(i.get("uuid", ""))
+                        data_to_upload.append(row)
                 
                 sheet.clear()
                 sheet.update(data_to_upload)
+                
+                # FORMATTING (Dizayn)
+                try:
+                    # App Header Color: #2c3e50 (Dark Blue)
+                    # Text Color: White, Bold
+                    fmt_body = {
+                        "requests": [
+                            {
+                                "repeatCell": {
+                                    "range": {
+                                        "sheetId": sheet.id,
+                                        "startRowIndex": 0,
+                                        "endRowIndex": 1
+                                    },
+                                    "cell": {
+                                        "userEnteredFormat": {
+                                            "backgroundColor": {"red": 44/255, "green": 62/255, "blue": 80/255},
+                                            "textFormat": {
+                                                "foregroundColor": {"red": 1, "green": 1, "blue": 1},
+                                                "bold": True,
+                                                "fontSize": 12
+                                            },
+                                            "horizontalAlignment": "CENTER"
+                                        }
+                                    },
+                                    "fields": "userEnteredFormat(backgroundColor,textFormat,horizontalAlignment)"
+                                }
+                            },
+                            {
+                                "updateDimensionProperties": {
+                                    "range": {
+                                        "sheetId": sheet.id,
+                                        "dimension": "COLUMNS",
+                                        "startIndex": 0,
+                                        "endIndex": len(headers)
+                                    },
+                                    "properties": {
+                                        "pixelSize": 150 # O'rtacha kenglik
+                                    },
+                                    "fields": "pixelSize"
+                                }
+                            }
+                        ]
+                    }
+                    spreadsheet.batch_update(fmt_body)
+                    
+                    # Ustun nomlari (Nomi -> 300px)
+                    # 1-index (Tashkilot Nomi) - index 1 (0-based)
+                    spreadsheet.batch_update({
+                        "requests": [{
+                            "updateDimensionProperties": {
+                                "range": {"sheetId": sheet.id, "dimension": "COLUMNS", "startIndex": 1, "endIndex": 2},
+                                "properties": {"pixelSize": 300}, "fields": "pixelSize"
+                            }
+                        }]
+                    })
+                except Exception as fmt_err:
+                    logging.error(f"Formatting Error: {fmt_err}")
+
                 logging.info("Upload Successful")
                 
                 if silent:
@@ -1282,11 +1538,31 @@ class MahallaDasturi:
                 raw_data = sheet.get_all_records()
                 logging.info(f"Downloaded {len(raw_data)} records")
                 new_db = []
+                
+                # Check for custom columns in sheet
+                # Gspread returns dict with keys as headers
+                # We need to preserve new custom columns if they exist? 
+                # For now assume download updates local standard + known custom
+                custom_cols = self.data_manager.settings.get("custom_columns", [])
+                
+                
                 for row in raw_data:
-                    new_db.append({
-                        "s": row.get("Turi"), "m": row.get("Nomi"), "f": row.get("Rahbar"),
-                        "t": row.get("Tel"), "inn": str(row.get("INN")), "izoh": row.get("Izoh")
-                    })
+                    # Header Mapping
+                    item = {
+                        "s": row.get("Turi", ""), 
+                        "m": row.get("Tashkilot Nomi", row.get("Nomi", "")), # Fallback to old name
+                        "f": row.get("F.I.SH", row.get("Rahbar", "")),       # Fallback to old name
+                        "t": row.get("Tel", ""), 
+                        "inn": str(row.get("INN", "")), 
+                        "izoh": row.get("Izoh", ""),
+                        "uuid": row.get("Tizim ID", str(uuid.uuid4())) # Preserve or Generate
+                    }
+                    
+                    # Custom Columns
+                    for cc in custom_cols:
+                         if cc in row: item[cc] = row.get(cc)
+                         
+                    new_db.append(item)
                 
                 self.data = new_db
                 self.data_manager.data = self.data
@@ -1330,8 +1606,9 @@ class MahallaDasturi:
         cat = self.cat_var.get()
         tp = self.f_type.get()
         
+        
         res = []
-        res = []
+
         for i in self.data:
             n = str(i.get("m", "")).lower()
             # Dynamic Filter Logic (Strict + Legacy Support)
@@ -1366,11 +1643,17 @@ class MahallaDasturi:
         
         # Respecting current sort would be ideal, but simply appending matches user expectations for "Filtered View"
         for idx, i in enumerate(d_list, 1):
-            self.tree.insert("", "end", values=(
+            values = [
                 str(idx), # Number
                 i.get("s","-"), i.get("m","-"), i.get("f","-"), 
                 i.get("t","-"), i.get("inn","-"), i.get("izoh", "")
-            ))
+            ]
+            
+            # Add custom column values dynamically
+            for cc in self.data_manager.settings.get("custom_columns", []):
+                values.append(i.get(cc, ""))
+                
+            self.tree.insert("", "end", values=values)
         
         # Update Counter
         if hasattr(self, "lbl_count"):
@@ -1392,7 +1675,13 @@ class MahallaDasturi:
         try:
             wb = openpyxl.Workbook()
             ws = wb.active; ws.title = f"Tashkilotlar - {self.cat_var.get()}" if hasattr(self, 'cat_var') else "Tashkilotlar"
-            ws.append(["Turi", "Nomi", "Rahbar", "Tel", "INN", "Izoh"])
+            
+            # Build Headers
+            headers = ["Turi", "Nomi", "Rahbar", "Tel", "INN", "Izoh"]
+            custom_cols = self.data_manager.settings.get("custom_columns", [])
+            headers.extend(custom_cols)
+            
+            ws.append(headers)
             
             for cell in ws[1]:
                 cell.font = Font(bold=True, color="FFFFFF")
@@ -1400,7 +1689,10 @@ class MahallaDasturi:
 
             # Uses self.filtered_data which contains exactly what is shown on screen (filtered by search OR category)
             for i in self.filtered_data:
-                ws.append([i.get("s"), i.get("m"), i.get("f"), i.get("t"), i.get("inn"), i.get("izoh", "")])
+                row = [i.get("s"), i.get("m"), i.get("f"), i.get("t"), i.get("inn"), i.get("izoh", "")]
+                for cc in custom_cols:
+                    row.append(i.get(cc, ""))
+                ws.append(row)
             
             for col in ws.columns:
                 max_length = 0
@@ -1465,6 +1757,49 @@ class MahallaDasturi:
         except Exception as e: messagebox.showerror("Xato", str(e))
 
     def export_to_gsheet_dummy(self):
+        # 1. Xavfsizlik Tekshiruvi
+        current_time = time.time()
+        # Agar vaqt tugagan bo'lsa yoki hali kirmagan bo'lsa
+        if (current_time - self.last_gsheet_auth_time) > self.gsheet_auth_timeout:
+            # Parol so'rash
+            dialog = ctk.CTkToplevel(self.root)
+            dialog.title("Xavfsizlik - Google Sheet")
+            dialog.geometry("340x200")
+            dialog.transient(self.root)
+            dialog.grab_set()
+            dialog.resizable(False, False)
+            
+            # Center Dialog
+            x = self.root.winfo_x() + (self.root.winfo_width()//2) - 170
+            y = self.root.winfo_y() + (self.root.winfo_height()//2) - 100
+            dialog.geometry(f"+{x}+{y}")
+            
+            ctk.CTkLabel(dialog, text="🔒 Maxsus Ruxsat", font=("Segoe UI", 16, "bold"), text_color="#e74c3c").pack(pady=(20, 10))
+            ctk.CTkLabel(dialog, text="Google Sheetga o'tish uchun parolni kiriting:", font=("Segoe UI", 12)).pack()
+            
+            entry = ctk.CTkEntry(dialog, show="*", width=220, height=35, font=("Segoe UI", 14), placeholder_text="Parol...")
+            entry.pack(pady=10)
+            entry.focus()
+            
+            self.gsheet_pwd_res = None
+            def on_confirm(event=None):
+                self.gsheet_pwd_res = entry.get()
+                dialog.destroy()
+                
+            entry.bind("<Return>", on_confirm)
+            ctk.CTkButton(dialog, text="Kirish", command=on_confirm, width=220, height=35, font=("Segoe UI", 12, "bold"), fg_color="#27ae60").pack(pady=5)
+            
+            self.root.wait_window(dialog)
+            
+            if self.gsheet_pwd_res == self.gsheet_password:
+                self.last_gsheet_auth_time = time.time()
+                self.show_toast("Ruxsat berildi! (30 daqiqa)")
+            else:
+                if self.gsheet_pwd_res is not None:
+                    messagebox.showerror("Xato", "Parol noto'g'ri!")
+                return
+
+        # 2. Asosiy Logika (Agar parol to'g'ri bo'lsa)
         # Configdan o'qish
         val = self.load_sync_config()
         
@@ -1522,7 +1857,9 @@ class MahallaDasturi:
             ("izoh", "Qo'shimcha Izoh", "entry", None),
         ]
         
-        widgets = {}
+        # Add Custom Columns Dynamically
+        for cc in self.data_manager.settings.get("custom_columns", []):
+             form_config.append((f"custom_{cc}", cc, "entry", None))
         
         widgets = {}
         
@@ -1543,7 +1880,13 @@ class MahallaDasturi:
             
             # Pre-fill
             if item:
-                val = item.get(key, "")
+                if key.startswith("custom_"):
+                    # Custom column key in data is just the name, but form key has prefix
+                    real_key = key.replace("custom_", "")
+                    val = item.get(real_key, "")
+                else:
+                    val = item.get(key, "")
+                    
                 if w_type == "combo": w.set(val)
                 else: w.insert(0, val)
         
@@ -1577,19 +1920,32 @@ class MahallaDasturi:
             # 1. Collect Data
             d = {}
             for key, _, w_type, _ in form_config:
-                d[key] = widgets[key].get()
+                 val = widgets[key].get()
+                 if key.startswith("custom_"):
+                     d[key.replace("custom_", "")] = val
+                 else:
+                     d[key] = val
             
-            # 2. Save
             if item: 
-                self.data[self.data.index(item)] = d
+                # Preserve UUID if editing
+                d["uuid"] = item.get("uuid", "")
+                # Update existing dict in list (to keep ref?) NO, replace dict
+                # But wait, self.data[idx] = d works.
+                idx = self.data.index(item)
+                self.data[idx] = d
+                
                 self.data_manager.log_activity(self.current_role, "Tahrirlash", f"{d.get('m')} yangilandi")
             else: 
+                d["uuid"] = str(uuid.uuid4()) # Generate new UUID
                 self.data.append(d)
                 self.data_manager.log_activity(self.current_role, "Qo'shish", f"{d.get('m')} yangi qo'shildi")
             
             # 3. Persist
             self.save_data() 
             self.filter_data()
+            self.sync_background() # Auto Sync Trigger
+            win.destroy()
+            self.show_toast("Saqlandi!")
             
             # 5. Close
             win.destroy()
@@ -1631,7 +1987,7 @@ class MahallaDasturi:
         if item: 
             self.tree.selection_set(item)
             # Recreate menu to include Delete
-            self.context_menu = tk.Menu(self.root, tearoff=0)
+            self.context_menu = tk.Menu(self.root, tearoff=0, font=("Segoe UI", 14))
             self.context_menu.add_command(label="📞 Tel nusxalash", command=lambda: self.copy_cell(4)) # Adjusted index
             self.context_menu.add_command(label="🆔 INN nusxalash", command=lambda: self.copy_cell(5)) # Adjusted index
             self.context_menu.add_command(label="📝 Izohni nusxalash", command=lambda: self.copy_cell(6)) # Adjusted index
