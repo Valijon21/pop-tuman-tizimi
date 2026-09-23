@@ -86,16 +86,22 @@ QFrame#content_area {
 }
 
 /* ========== KARTALAR (CARDS) ========== */
-QFrame.stat_card {
+QFrame.stat_card, QFrame.clickable_card {
     background-color: #1e293b;
     border: 1px solid #334155;
     border-radius: 8px;
     padding: 10px;
 }
 
-QFrame.stat_card:hover {
+QFrame.stat_card:hover, QFrame.clickable_card:hover {
     border: 1px solid #38bdf8;
     background-color: #243248;
+}
+
+QFrame#donut_card, QFrame#bar_card {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
 }
 
 QLabel.card_title {
@@ -555,16 +561,22 @@ QFrame#content_area {
 }
 
 /* ========== KARTALAR (CARDS) ========== */
-QFrame.stat_card {
+QFrame.stat_card, QFrame.clickable_card {
     background-color: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 10px;
 }
 
-QFrame.stat_card:hover {
+QFrame.stat_card:hover, QFrame.clickable_card:hover {
     border: 1px solid #93c5fd;
     background-color: #f0f7ff;
+}
+
+QFrame#donut_card, QFrame#bar_card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
 }
 
 QLabel.card_title {

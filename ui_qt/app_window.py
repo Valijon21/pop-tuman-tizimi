@@ -179,6 +179,8 @@ class MainWindow(QMainWindow):
         self.current_theme = theme
         qss = get_stylesheet(theme)
         self.setStyleSheet(qss)
+        if hasattr(self, "dashboard_view") and hasattr(self.dashboard_view, "set_theme"):
+            self.dashboard_view.set_theme(theme)
         if theme == "dark":
             self.btn_theme.setText("☀ Kunduzi Rejim")
         else:

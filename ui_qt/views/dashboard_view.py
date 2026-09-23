@@ -2,6 +2,7 @@
 ui_qt.views.dashboard_view: Asosiy boshqaruv paneli (Dashboard) (PyQt5).
 Senior-darajadagi zamonaviy statistika kartalari, 60 FPS vektorli interaktiv diagrammalar,
 toifalar taqsimoti, tezkor amallar va so'nggi audit jurnali.
+Kunduzgi (Light) va Tungi (Dark) rejimlarni to'liq, mukammal qo'llab-quvvatlaydi.
 """
 from typing import Any, List, Dict, Tuple
 from PyQt5.QtWidgets import (
@@ -20,9 +21,13 @@ class DashboardView(QWidget):
     def __init__(self, parent=None, app=None):
         super().__init__(parent)
         self.app = app
-        self.stat_cards: Dict[str, Tuple[QLabel, QLabel]] = {}
+        self.current_theme: str = getattr(app, "current_theme", "dark")
+        self.action_cards: List[Tuple[ClickableCard, QLabel, QLabel]] = []
+        self.kpi_items: List[Tuple[QFrame, QLabel, QLabel]] = []
         self.setup_ui()
         self.update_stats()
+        # Dastlabki mavzuni qo'llash
+        self.set_theme(self.current_theme)
 
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
@@ -41,32 +46,25 @@ class DashboardView(QWidget):
         c_layout.setSpacing(12)
 
         # 1. HEADER (Sarlavha + Xush kelibsiz banneri)
-        head_banner = QFrame()
-        head_banner.setObjectName("dashboard_hero")
-        head_banner.setStyleSheet("""
-            QFrame#dashboard_hero {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #1e3a8a, stop:0.6 #1e40af, stop:1 #2563eb);
-                border: 1px solid #3b82f6;
-                border-radius: 8px;
-            }
-        """)
-        h_layout = QHBoxLayout(head_banner)
+        self.head_banner = QFrame()
+        self.head_banner.setObjectName("dashboard_hero")
+        h_layout = QHBoxLayout(self.head_banner)
         h_layout.setContentsMargins(16, 12, 16, 12)
         h_layout.setSpacing(14)
 
         banner_text = QVBoxLayout()
         banner_text.setSpacing(3)
-        title = QLabel("🏛 Pop Tumani Tashkilotlari va INN Tizimi")
-        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #ffffff; letter-spacing: 0.3px;")
-        sub = QLabel("Raqamli boshqaruv, Mahalla 'Yettiligi' 360° Pasporti va tahliliy monitoring markazi")
-        sub.setStyleSheet("font-size: 11px; color: #bfdbfe; font-weight: 500;")
-        banner_text.addWidget(title)
-        banner_text.addWidget(sub)
+        self.title_lbl = QLabel("🏛 Pop Tumani Tashkilotlari va INN Tizimi")
+        self.title_lbl.setStyleSheet("font-size: 15px; font-weight: 800; color: #ffffff; letter-spacing: 0.3px;")
+        self.sub_lbl = QLabel("Raqamli boshqaruv, Mahalla 'Yettiligi' 360° Pasporti va tahliliy monitoring markazi")
+        self.sub_lbl.setStyleSheet("font-size: 11px; color: #bfdbfe; font-weight: 500;")
+        banner_text.addWidget(self.title_lbl)
+        banner_text.addWidget(self.sub_lbl)
         h_layout.addLayout(banner_text, 1)
 
         # Holat belgisi
-        status_pill = QLabel("🟢 SQLite WAL | Tizim Faol")
-        status_pill.setStyleSheet("""
+        self.status_pill = QLabel("🟢 SQLite WAL | Tizim Faol")
+        self.status_pill.setStyleSheet("""
             color: #ffffff;
             background: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.25);
@@ -75,7 +73,7 @@ class DashboardView(QWidget):
             font-size: 10px;
             font-weight: 700;
         """)
-        h_layout.addWidget(status_pill)
+        h_layout.addWidget(self.status_pill)
 
         # Yangi qo'shish tugmasi
         btn_new_org = QPushButton("➕ Yangi Tashkilot")
@@ -98,7 +96,7 @@ class DashboardView(QWidget):
         btn_new_org.clicked.connect(self.app.open_add_dialog)
         h_layout.addWidget(btn_new_org)
 
-        c_layout.addWidget(head_banner)
+        c_layout.addWidget(self.head_banner)
 
         # 2. STATISTIKA KARTALARI GRIDI (3x2)
         self.cards_grid = QGridLayout()
@@ -112,38 +110,29 @@ class DashboardView(QWidget):
         # 3.1. Chap Panel: Interaktiv Donut Chart + Legend
         self.donut_card = QFrame()
         self.donut_card.setObjectName("donut_card")
-        self.donut_card.setStyleSheet("""
-            QFrame#donut_card {
-                background-color: #1e293b;
-                border: 1px solid #334155;
-                border-radius: 8px;
-            }
-        """)
         d_card_layout = QVBoxLayout(self.donut_card)
         d_card_layout.setContentsMargins(12, 10, 12, 10)
         d_card_layout.setSpacing(8)
 
         d_head = QHBoxLayout()
-        d_title = QLabel("📊 Tashkilotlar Toifaviy Taqsimoti")
-        d_title.setStyleSheet("font-size: 12.5px; font-weight: 700; color: #f1f5f9;")
-        d_head.addWidget(d_title)
+        self.d_title = QLabel("📊 Tashkilotlar Toifaviy Taqsimoti")
+        d_head.addWidget(self.d_title)
         d_head.addStretch()
-        d_hint = QLabel("💡 Saralash uchun toifani bosing")
-        d_hint.setStyleSheet("font-size: 10px; color: #64748b; font-style: italic;")
-        d_head.addWidget(d_hint)
+        self.d_hint = QLabel("💡 Saralash uchun toifani bosing")
+        d_head.addWidget(self.d_hint)
         d_card_layout.addLayout(d_head)
 
         d_body = QHBoxLayout()
         d_body.setSpacing(8)
 
         # Donut Chart vidjeti
-        self.donut_chart = CategoryDonutChart()
+        self.donut_chart = CategoryDonutChart(theme=self.current_theme)
         self.donut_chart.setMinimumSize(190, 180)
         self.donut_chart.category_clicked.connect(self.on_card_click)
         d_body.addWidget(self.donut_chart, 1)
 
         # Legend vidjeti
-        self.legend = CategoryLegend()
+        self.legend = CategoryLegend(theme=self.current_theme)
         self.legend.category_selected.connect(self.on_card_click)
         d_body.addWidget(self.legend, 1)
 
@@ -153,23 +142,15 @@ class DashboardView(QWidget):
         # 3.2. O'ng Panel: Gorizontal Bar Chart + Tizim Quvvati
         self.bar_card = QFrame()
         self.bar_card.setObjectName("bar_card")
-        self.bar_card.setStyleSheet("""
-            QFrame#bar_card {
-                background-color: #1e293b;
-                border: 1px solid #334155;
-                border-radius: 8px;
-            }
-        """)
         b_card_layout = QVBoxLayout(self.bar_card)
         b_card_layout.setContentsMargins(12, 10, 12, 10)
         b_card_layout.setSpacing(8)
 
-        b_title = QLabel("📈 Sohalar Salmog'i va Qamrovi")
-        b_title.setStyleSheet("font-size: 12.5px; font-weight: 700; color: #f1f5f9;")
-        b_card_layout.addWidget(b_title)
+        self.b_title = QLabel("📈 Sohalar Salmog'i va Qamrovi")
+        b_card_layout.addWidget(self.b_title)
 
         # Gorizontal solishtirma bar chart
-        self.bar_chart = CategoryBarChart()
+        self.bar_chart = CategoryBarChart(theme=self.current_theme)
         b_card_layout.addWidget(self.bar_chart, 1)
 
         # Mini KPI ko'rsatkichlari paneli
@@ -178,7 +159,6 @@ class DashboardView(QWidget):
 
         def make_mini_kpi(txt_val, txt_sub, col):
             f = QFrame()
-            f.setStyleSheet("background-color: #172233; border: 1px solid #243248; border-radius: 6px; padding: 4px;")
             l = QVBoxLayout(f)
             l.setContentsMargins(4, 2, 4, 2)
             l.setSpacing(0)
@@ -186,19 +166,20 @@ class DashboardView(QWidget):
             v.setStyleSheet(f"font-size: 12px; font-weight: 800; color: {col};")
             v.setAlignment(Qt.AlignCenter)
             s = QLabel(txt_sub)
-            s.setStyleSheet("font-size: 9px; color: #94a3b8; font-weight: 600;")
             s.setAlignment(Qt.AlignCenter)
             l.addWidget(v)
             l.addWidget(s)
-            return f
+            return (f, v, s)
 
         self.kpi_mfy = make_mini_kpi("74 MFY", "Mahallalar", "#10b981")
         self.kpi_edu = make_mini_kpi("133 ta", "Maktab + MTT", "#f59e0b")
         self.kpi_status = make_mini_kpi("100%", "Audit Holati", "#38bdf8")
 
-        kpi_row.addWidget(self.kpi_mfy)
-        kpi_row.addWidget(self.kpi_edu)
-        kpi_row.addWidget(self.kpi_status)
+        self.kpi_items = [self.kpi_mfy, self.kpi_edu, self.kpi_status]
+
+        kpi_row.addWidget(self.kpi_mfy[0])
+        kpi_row.addWidget(self.kpi_edu[0])
+        kpi_row.addWidget(self.kpi_status[0])
         b_card_layout.addLayout(kpi_row)
 
         analytics_layout.addWidget(self.bar_card, 4)
@@ -207,15 +188,14 @@ class DashboardView(QWidget):
         # 4. TEZKOR AMALLAR PANELI (QUICK ACTIONS)
         actions_box = QVBoxLayout()
         actions_box.setSpacing(6)
-        act_title = QLabel("⚡ Tezkor Xizmatlar va Modullar")
-        act_title.setStyleSheet("font-size: 12.5px; font-weight: 700; color: #f1f5f9;")
-        actions_box.addWidget(act_title)
+        self.act_title = QLabel("⚡ Tezkor Xizmatlar va Modullar")
+        actions_box.addWidget(self.act_title)
 
         act_grid = QHBoxLayout()
         act_grid.setSpacing(10)
 
         def make_action_card(title, desc, icon, color, callback):
-            card = ClickableCard(hover_color=color, bg_color="#1e293b", border_color="#334155")
+            card = ClickableCard(hover_color=color, theme=self.current_theme)
             card.setMinimumHeight(68)
             card_layout = QVBoxLayout(card)
             card_layout.setContentsMargins(10, 8, 10, 8)
@@ -233,13 +213,12 @@ class DashboardView(QWidget):
             card_layout.addLayout(top)
 
             t_lbl = QLabel(title)
-            t_lbl.setStyleSheet("font-size: 11.5px; font-weight: 700; color: #ffffff;")
             d_lbl = QLabel(desc)
-            d_lbl.setStyleSheet("font-size: 10px; color: #94a3b8;")
             card_layout.addWidget(t_lbl)
             card_layout.addWidget(d_lbl)
 
             card.clicked.connect(callback)
+            self.action_cards.append((card, t_lbl, d_lbl))
             return card
 
         card_pasport = make_action_card(
@@ -270,9 +249,8 @@ class DashboardView(QWidget):
         recent_box = QVBoxLayout()
         recent_box.setSpacing(6)
         recent_head = QHBoxLayout()
-        r_title = QLabel("📋 So'nggi Tashkilotlar")
-        r_title.setStyleSheet("font-size: 12.5px; font-weight: 700; color: #f1f5f9;")
-        recent_head.addWidget(r_title)
+        self.r_title = QLabel("📋 So'nggi Tashkilotlar")
+        recent_head.addWidget(self.r_title)
 
         recent_head.addStretch()
         btn_all = QPushButton("Barchasini ko'rish →")
@@ -302,6 +280,85 @@ class DashboardView(QWidget):
 
         scroll.setWidget(container)
         main_layout.addWidget(scroll, 1)
+
+    def set_theme(self, theme: str):
+        """
+        Dashboard'ning barcha vidjetlarini (kartalar, diagrammalar, sarlavhalar)
+        tanlangan mavzuga (dark / light) to'liq moslashtirish.
+        """
+        self.current_theme = theme
+        is_light = (theme == "light")
+
+        # 1. Hero banner
+        if is_light:
+            self.head_banner.setStyleSheet("""
+                QFrame#dashboard_hero {
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #1d4ed8, stop:0.6 #2563eb, stop:1 #3b82f6);
+                    border: 1px solid #60a5fa;
+                    border-radius: 8px;
+                }
+            """)
+        else:
+            self.head_banner.setStyleSheet("""
+                QFrame#dashboard_hero {
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #1e3a8a, stop:0.6 #1e40af, stop:1 #2563eb);
+                    border: 1px solid #3b82f6;
+                    border-radius: 8px;
+                }
+            """)
+
+        # 2. Donut va Bar kartalarining foni va chegarasi
+        card_bg = "#ffffff" if is_light else "#1e293b"
+        card_border = "#e2e8f0" if is_light else "#334155"
+        self.donut_card.setStyleSheet(f"""
+            QFrame#donut_card {{
+                background-color: {card_bg};
+                border: 1px solid {card_border};
+                border-radius: 8px;
+            }}
+        """)
+        self.bar_card.setStyleSheet(f"""
+            QFrame#bar_card {{
+                background-color: {card_bg};
+                border: 1px solid {card_border};
+                border-radius: 8px;
+            }}
+        """)
+
+        # 3. Sarlavha yozuvlarining rangi
+        title_col = "#0f172a" if is_light else "#f1f5f9"
+        self.d_title.setStyleSheet(f"font-size: 12.5px; font-weight: 700; color: {title_col};")
+        self.b_title.setStyleSheet(f"font-size: 12.5px; font-weight: 700; color: {title_col};")
+        self.act_title.setStyleSheet(f"font-size: 12.5px; font-weight: 700; color: {title_col};")
+        self.r_title.setStyleSheet(f"font-size: 12.5px; font-weight: 700; color: {title_col};")
+        self.d_hint.setStyleSheet(f"font-size: 10px; color: {'#64748b' if is_light else '#94a3b8'}; font-style: italic;")
+
+        # 4. Ichki vidjetlar (Donut, Legend, Bar)
+        self.donut_chart.set_theme(theme)
+        self.legend.set_theme(theme)
+        self.bar_chart.set_theme(theme)
+
+        # 5. Mini KPI bloklari
+        for f, v, s in self.kpi_items:
+            if is_light:
+                f.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px;")
+                s.setStyleSheet("font-size: 9px; color: #64748b; font-weight: 600;")
+            else:
+                f.setStyleSheet("background-color: #172233; border: 1px solid #243248; border-radius: 6px; padding: 4px;")
+                s.setStyleSheet("font-size: 9px; color: #94a3b8; font-weight: 600;")
+
+        # 6. Tezkor amallar kartalari
+        for card, t_lbl, d_lbl in self.action_cards:
+            card.set_theme(theme)
+            if is_light:
+                t_lbl.setStyleSheet("font-size: 11.5px; font-weight: 700; color: #0f172a;")
+                d_lbl.setStyleSheet("font-size: 10px; color: #64748b;")
+            else:
+                t_lbl.setStyleSheet("font-size: 11.5px; font-weight: 700; color: #ffffff;")
+                d_lbl.setStyleSheet("font-size: 10px; color: #94a3b8;")
+
+        # 7. Stat kartalarini yangilash
+        self.update_stats()
 
     def update_stats(self):
         """Statistika kartalarini, diagrammalarni va jadvalni to'ldirish."""
@@ -333,7 +390,7 @@ class DashboardView(QWidget):
             else:
                 counts["Boshqa"] += 1
 
-        # 1. Kartalarni tozalash va qayta yaratish (ClickableCard yordamida - matnlar kesilmaydi!)
+        # 1. Kartalarni tozalash va qayta yaratish (ClickableCard - tanlangan mavzuda)
         while self.cards_grid.count():
             item = self.cards_grid.takeAt(0)
             if item.widget():
@@ -395,9 +452,9 @@ class DashboardView(QWidget):
     def create_stat_card(self, title: str, count: int, icon: str, color: str, cat_key: str) -> ClickableCard:
         """
         QFrame asosidagi ClickableCard vidjeti.
-        QPushButton cheklovlaridan holi, matnlar va raqamlar hech qachon siqilmaydi.
+        Joriy tanlangan mavzuga qarab o'zgaradi va matnlar hech qachon siqilmaydi.
         """
-        card = ClickableCard(hover_color=color, bg_color="#1e293b", border_color="#334155")
+        card = ClickableCard(hover_color=color, theme=self.current_theme)
         card.setMinimumHeight(76)
 
         layout = QVBoxLayout(card)
@@ -414,8 +471,9 @@ class DashboardView(QWidget):
         
         top.addStretch()
 
+        badge_col = "#94a3b8" if self.current_theme == "light" else "#64748b"
         badge = QLabel("Ko'rish →")
-        badge.setStyleSheet("font-size: 10px; font-weight: 700; color: #64748b;")
+        badge.setStyleSheet(f"font-size: 10px; font-weight: 700; color: {badge_col};")
         top.addWidget(badge)
         layout.addLayout(top)
 
@@ -425,8 +483,9 @@ class DashboardView(QWidget):
         layout.addWidget(val_lbl)
 
         # Toifa nomi
+        t_col = "#64748b" if self.current_theme == "light" else "#94a3b8"
         t_lbl = QLabel(title)
-        t_lbl.setStyleSheet("font-size: 10.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase;")
+        t_lbl.setStyleSheet(f"font-size: 10.5px; font-weight: 700; color: {t_col}; text-transform: uppercase;")
         layout.addWidget(t_lbl)
 
         card.clicked.connect(lambda: self.on_card_click(cat_key))

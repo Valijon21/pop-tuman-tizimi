@@ -275,8 +275,8 @@
     "semantic_hash": ""
   },
   "tests/test_qt_views.py": {
-    "mtime": 1790162079.3442583,
-    "ast_hash": "960e59ece25b92e265e309e9a63ab5aa",
+    "mtime": 1790162612.7324977,
+    "ast_hash": "7b2f39f366808dd0ff921126372663fb",
     "semantic_hash": ""
   },
   "ui_qt/__init__.py": {
@@ -285,8 +285,8 @@
     "semantic_hash": ""
   },
   "ui_qt/app_window.py": {
-    "mtime": 1790161204.6368663,
-    "ast_hash": "7c64c0a18125844cac7cd791192d493d",
+    "mtime": 1790162570.8153405,
+    "ast_hash": "49d72af5d6561a48475d4c506c398d5a",
     "semantic_hash": ""
   },
   "ui_qt/components/__init__.py": {
@@ -300,8 +300,8 @@
     "semantic_hash": ""
   },
   "ui_qt/styles.py": {
-    "mtime": 1790162048.3946376,
-    "ast_hash": "cb62a4cf9b52030bc16e55906ec14ec8",
+    "mtime": 1790162600.1787932,
+    "ast_hash": "69485431ef29724039926d5eba656a17",
     "semantic_hash": ""
   },
   "ui_qt/views/__init__.py": {
@@ -320,8 +320,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/dashboard_view.py": {
-    "mtime": 1790162013.4644375,
-    "ast_hash": "833806b0c4c5408485716aa262823613",
+    "mtime": 1790162557.7668505,
+    "ast_hash": "2d39d874f02671a505f8f6210d157b52",
     "semantic_hash": ""
   },
   "ui_qt/views/history_view.py": {
@@ -365,8 +365,8 @@
     "semantic_hash": ""
   },
   "ui_qt/components/widgets.py": {
-    "mtime": 1790161983.9581845,
-    "ast_hash": "108dc39eb81d3484f332a7a0a0385cf9",
+    "mtime": 1790162525.1197224,
+    "ast_hash": "c88eba3b724a0a1e58ee026a2dbe48ed",
     "semantic_hash": ""
   }
 }

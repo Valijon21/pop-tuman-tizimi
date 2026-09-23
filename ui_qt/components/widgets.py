@@ -1,9 +1,9 @@
 """
 ui_qt.components.widgets: Yuqori sifatli (Senior-Grade) maxsus Qt komponentlari.
-- ClickableCard: Matnlari siqilib qolmaydigan, to'liq boshqariladigan karta vidjeti.
+- ClickableCard: Matnlari siqilib qolmaydigan, to'liq boshqariladigan karta vidjeti (Dark va Light mavzuni qo'llaydi).
 - CategoryDonutChart: QPainter yordamida chiziladigan zamonaviy, silliq Donut (aylana) diagrammasi.
 - CategoryLegend: Interaktiv toifalar statistikasi va foiz ko'rsatkichlari.
-- MetricBarChart: Gorizontal taqsimot diagrammasi.
+- CategoryBarChart: Gorizontal taqsimot diagrammasi.
 """
 import math
 from typing import List, Tuple, Dict, Any, Optional, Callable
@@ -20,21 +20,45 @@ class ClickableCard(QFrame):
     """
     Tugma (QPushButton) cheklovlarisiz, matnlarni siqib qo'ymaydigan
     va to'liq dizayn nazoratiga ega bosiladigan karta vidjeti.
+    Kunduzgi va tungi rejimlarni to'liq qo'llab-quvvatlaydi.
     """
     clicked = pyqtSignal()
 
-    def __init__(self, parent=None, hover_color="#38bdf8", bg_color="#1e293b", border_color="#334155"):
+    def __init__(self, parent=None, hover_color="#38bdf8", bg_color=None, border_color=None, theme="dark"):
         super().__init__(parent)
         self.hover_color = hover_color
-        self.bg_color = bg_color
-        self.border_color = border_color
+        self.theme = theme
+        self.custom_bg = bg_color is not None
+        self.custom_border = border_color is not None
+        
+        if self.custom_bg:
+            self.bg_color = bg_color
+        else:
+            self.bg_color = "#1e293b" if theme == "dark" else "#ffffff"
+
+        if self.custom_border:
+            self.border_color = border_color
+        else:
+            self.border_color = "#334155" if theme == "dark" else "#e2e8f0"
+
+        self.hover_bg = "#243248" if theme == "dark" else "#f0f7ff"
+
         self.setCursor(Qt.PointingHandCursor)
         self.setProperty("class", "clickable_card")
         self.update_style(False)
 
+    def set_theme(self, theme: str):
+        self.theme = theme
+        if not self.custom_bg:
+            self.bg_color = "#1e293b" if theme == "dark" else "#ffffff"
+        if not self.custom_border:
+            self.border_color = "#334155" if theme == "dark" else "#e2e8f0"
+        self.hover_bg = "#243248" if theme == "dark" else "#f0f7ff"
+        self.update_style(False)
+
     def update_style(self, is_hover: bool):
         border = self.hover_color if is_hover else self.border_color
-        bg = "#243248" if is_hover else self.bg_color
+        bg = self.hover_bg if is_hover else self.bg_color
         self.setStyleSheet(f"""
             QFrame.clickable_card {{
                 background-color: {bg};
@@ -61,17 +85,23 @@ class CategoryDonutChart(QWidget):
     """
     PyQt5 QPainter yordamida chiziladigan professional, 60 FPS Donut diagrammasi.
     Hech qanday og'ir tashqi kutubxonalarsiz, silliq antialiasing va markaziy ma'lumotlar bilan.
+    Dark va Light rejimlarga dinamik moslashadi.
     """
     category_clicked = pyqtSignal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, theme="dark"):
         super().__init__(parent)
-        self.setMinimumSize(220, 200)
+        self.theme = theme
+        self.setMinimumSize(200, 180)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.segments: List[Tuple[str, int, QColor]] = []
         self.total: int = 0
         self.hovered_index: int = -1
         self.setMouseTracking(True)
+
+    def set_theme(self, theme: str):
+        self.theme = theme
+        self.update()
 
     def set_data(self, data: List[Tuple[str, int, str]]):
         """
@@ -101,9 +131,12 @@ class CategoryDonutChart(QWidget):
 
         rect = QRectF(cx - outer_radius, cy - outer_radius, outer_radius * 2, outer_radius * 2)
 
+        is_light = (self.theme == "light")
+
         if self.total == 0 or not self.segments:
             # Bo'sh holatdagi nozik doira
-            pen = QPen(QColor("#334155"), 8)
+            pen_color = QColor("#e2e8f0") if is_light else QColor("#334155")
+            pen = QPen(pen_color, 8)
             painter.setPen(pen)
             painter.setBrush(Qt.NoBrush)
             painter.drawEllipse(QRectF(cx - outer_radius + 4, cy - outer_radius + 4, (outer_radius - 4) * 2, (outer_radius - 4) * 2))
@@ -137,7 +170,10 @@ class CategoryDonutChart(QWidget):
             start_angle += span_angle
 
         # Markazdagi ma'lumotlar (Total Count & Label)
-        painter.setPen(QColor("#ffffff"))
+        total_text_color = QColor("#0f172a") if is_light else QColor("#ffffff")
+        sub_text_color = QColor("#64748b") if is_light else QColor("#94a3b8")
+
+        painter.setPen(total_text_color)
         font_total = QFont("Segoe UI", max(13, int(outer_radius * 0.22)), QFont.Bold)
         painter.setFont(font_total)
         painter.drawText(
@@ -145,7 +181,7 @@ class CategoryDonutChart(QWidget):
             Qt.AlignCenter, str(self.total)
         )
 
-        painter.setPen(QColor("#94a3b8"))
+        painter.setPen(sub_text_color)
         font_sub = QFont("Segoe UI", max(9, int(outer_radius * 0.11)), QFont.DemiBold)
         painter.setFont(font_sub)
         painter.drawText(
@@ -214,16 +250,25 @@ class CategoryDonutChart(QWidget):
 class CategoryLegend(QWidget):
     """
     Donut diagramma yonidagi interaktiv, foizli va rangli tushuntirish paneli (Legend).
+    Dark va Light mavzuni to'liq qo'llaydi.
     """
     category_selected = pyqtSignal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, theme="dark"):
         super().__init__(parent)
+        self.theme = theme
+        self.last_data: List[Tuple[str, int, str]] = []
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(4, 4, 4, 4)
         self.layout.setSpacing(6)
 
+    def set_theme(self, theme: str):
+        self.theme = theme
+        if self.last_data:
+            self.set_data(self.last_data)
+
     def set_data(self, data: List[Tuple[str, int, str]]):
+        self.last_data = data
         # Eski elementlarni tozalash
         while self.layout.count():
             item = self.layout.takeAt(0)
@@ -234,12 +279,18 @@ class CategoryLegend(QWidget):
         if total == 0:
             return
 
+        is_light = (self.theme == "light")
+        bg_card = "#f8fafc" if is_light else "#172233"
+        border_card = "#e2e8f0" if is_light else "#243248"
+        name_color = "#1e293b" if is_light else "#f1f5f9"
+        count_color = "#0f172a" if is_light else "#ffffff"
+
         for cat_name, count, col_hex in data:
             if count == 0:
                 continue
 
             pct = (count / total) * 100.0
-            row_card = ClickableCard(hover_color=col_hex, bg_color="#172233", border_color="#243248")
+            row_card = ClickableCard(hover_color=col_hex, bg_color=bg_card, border_color=border_card, theme=self.theme)
             row_layout = QHBoxLayout(row_card)
             row_layout.setContentsMargins(8, 4, 8, 4)
             row_layout.setSpacing(8)
@@ -252,12 +303,12 @@ class CategoryLegend(QWidget):
 
             # Toifa nomi
             lbl_name = QLabel(cat_name)
-            lbl_name.setStyleSheet("font-size: 11px; font-weight: 600; color: #f1f5f9;")
+            lbl_name.setStyleSheet(f"font-size: 11px; font-weight: 600; color: {name_color};")
             row_layout.addWidget(lbl_name, 1)
 
             # Soni
             lbl_count = QLabel(f"{count} ta")
-            lbl_count.setStyleSheet("font-size: 11px; font-weight: 700; color: #ffffff;")
+            lbl_count.setStyleSheet(f"font-size: 11px; font-weight: 700; color: {count_color};")
             row_layout.addWidget(lbl_count)
 
             # Foiz belgisi
@@ -274,14 +325,23 @@ class CategoryLegend(QWidget):
 class CategoryBarChart(QWidget):
     """
     Toifalar taqsimotini solishtirish uchun zamonaviy gorizontal progress bar diagrammasi.
+    Dark va Light mavzuni to'liq qo'llaydi.
     """
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, theme="dark"):
         super().__init__(parent)
+        self.theme = theme
+        self.last_data: List[Tuple[str, int, str]] = []
         self.layout = QVBoxLayout(self)
         self.layout.setContentsMargins(6, 6, 6, 6)
         self.layout.setSpacing(6)
 
+    def set_theme(self, theme: str):
+        self.theme = theme
+        if self.last_data:
+            self.set_data(self.last_data)
+
     def set_data(self, data: List[Tuple[str, int, str]]):
+        self.last_data = data
         while self.layout.count():
             item = self.layout.takeAt(0)
             if item.widget():
@@ -289,6 +349,10 @@ class CategoryBarChart(QWidget):
 
         if not data:
             return
+
+        is_light = (self.theme == "light")
+        lbl_name_color = "#475569" if is_light else "#94a3b8"
+        track_bg = "#e2e8f0" if is_light else "#334155"
 
         max_count = max((x[1] for x in data), default=1)
         if max_count == 0:
@@ -302,7 +366,7 @@ class CategoryBarChart(QWidget):
 
             top_row = QHBoxLayout()
             lbl_n = QLabel(cat_name)
-            lbl_n.setStyleSheet("font-size: 10.5px; color: #94a3b8; font-weight: 600;")
+            lbl_n.setStyleSheet(f"font-size: 10.5px; color: {lbl_name_color}; font-weight: 600;")
             lbl_v = QLabel(f"{count} ta")
             lbl_v.setStyleSheet(f"font-size: 10.5px; color: {col_hex}; font-weight: 700;")
             top_row.addWidget(lbl_n)
@@ -313,7 +377,7 @@ class CategoryBarChart(QWidget):
             # Bar fon va to'ldiruvchi
             bar_bg = QFrame()
             bar_bg.setFixedHeight(5)
-            bar_bg.setStyleSheet("background-color: #334155; border-radius: 2px;")
+            bar_bg.setStyleSheet(f"background-color: {track_bg}; border-radius: 2px;")
             
             bar_layout = QHBoxLayout(bar_bg)
             bar_layout.setContentsMargins(0, 0, 0, 0)

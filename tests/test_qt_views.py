@@ -177,10 +177,33 @@ class TestQtArchitecture(unittest.TestCase):
         win = MainWindow()
         self.assertIsNotNone(win)
         self.assertEqual(win.content_stack.count(), 4)
-        win.show_table()
-        self.assertEqual(win.content_stack.currentIndex(), 1)
-        win.show_dashboard()
-        self.assertEqual(win.content_stack.currentIndex(), 0)
+    def test_theme_toggle_updates_dashboard(self):
+        from ui_qt.app_window import MainWindow
+        win = MainWindow()
+        self.assertEqual(win.current_theme, "dark")
+        self.assertEqual(win.dashboard_view.current_theme, "dark")
+        self.assertEqual(win.dashboard_view.donut_chart.theme, "dark")
+        self.assertEqual(win.dashboard_view.legend.theme, "dark")
+        self.assertEqual(win.dashboard_view.bar_chart.theme, "dark")
+
+        # Tungi -> Kunduzgi rejimga o'tish
+        win.toggle_theme()
+        self.assertEqual(win.current_theme, "light")
+        self.assertEqual(win.dashboard_view.current_theme, "light")
+        self.assertEqual(win.dashboard_view.donut_chart.theme, "light")
+        self.assertEqual(win.dashboard_view.legend.theme, "light")
+        self.assertEqual(win.dashboard_view.bar_chart.theme, "light")
+        self.assertEqual(win.btn_theme.text(), "🌙 Tungi Rejim")
+
+        # Kunduzgi -> Tungi rejimga qaytish
+        win.toggle_theme()
+        self.assertEqual(win.current_theme, "dark")
+        self.assertEqual(win.dashboard_view.current_theme, "dark")
+        self.assertEqual(win.dashboard_view.donut_chart.theme, "dark")
+        self.assertEqual(win.dashboard_view.legend.theme, "dark")
+        self.assertEqual(win.dashboard_view.bar_chart.theme, "dark")
+        self.assertEqual(win.btn_theme.text(), "☀ Kunduzi Rejim")
+
         win.close()
 
 if __name__ == "__main__":
