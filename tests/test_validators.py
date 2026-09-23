@@ -57,5 +57,43 @@ class TestValidators(unittest.TestCase):
         self.assertEqual(sanitize_text("   Salom   Dunyo   "), "Salom Dunyo")
         self.assertEqual(sanitize_text("Matn\x00\x07"), "Matn")
 
+    def test_validate_jshshir(self):
+        from core.validators import validate_jshshir
+        # 14 xonali to'g'ri JSHSHIR (boshlanishi 1-6)
+        ok, res = validate_jshshir("30807995910027")
+        self.assertTrue(ok)
+        self.assertEqual(res, "30807995910027")
+
+        # Bo'sh ruxsat berilgan
+        ok, res = validate_jshshir("", allow_empty=True)
+        self.assertTrue(ok)
+
+        # Noto'g'ri uzunlik
+        ok, msg = validate_jshshir("12345")
+        self.assertFalse(ok)
+        self.assertIn("14 ta raqam", msg)
+
+        # Noto'g'ri jins/asr kodi (0 yoki 7-9)
+        ok, msg = validate_jshshir("00807995910027")
+        self.assertFalse(ok)
+        self.assertIn("1 dan 6 gacha", msg)
+
+    def test_validate_passport_series(self):
+        from core.validators import validate_passport_series
+        # To'g'ri pasport seriya (AB1234567)
+        ok, res = validate_passport_series("ab1234567")
+        self.assertTrue(ok)
+        self.assertEqual(res, "AB1234567")
+
+        ok, res = validate_passport_series("AA 9876543")
+        self.assertTrue(ok)
+        self.assertEqual(res, "AA9876543")
+
+        # Noto'g'ri seriya
+        ok, msg = validate_passport_series("12345")
+        self.assertFalse(ok)
+        self.assertIn("lotin harfi", msg)
+
 if __name__ == "__main__":
     unittest.main()
+

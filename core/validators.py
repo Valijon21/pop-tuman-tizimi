@@ -92,3 +92,39 @@ def validate_phone(phone: str, allow_empty: bool = True) -> Tuple[bool, str]:
         return True, format_phone(phone)
     
     return False, "Telefon raqami noto'g'ri. 9 ta raqam kiritilishi kerak (masalan: 90 123-45-67)."
+
+def validate_jshshir(jshr: str, allow_empty: bool = True) -> Tuple[bool, str]:
+    """
+    O'zbekiston JSHSHIR (PINFL - 14 ta raqam) ni tekshirish.
+    Birinchi raqam jins va asr indeksi (1-6) bo'lishi kerak.
+    """
+    if not jshr or not str(jshr).strip():
+        if allow_empty:
+            return True, ""
+        return False, "JSHSHIR raqami kiritilmadi."
+
+    cleaned = re.sub(r"\D", "", str(jshr))
+    if len(cleaned) != 14:
+        return False, f"JSHSHIR 14 ta raqamdan iborat bo'lishi kerak. Kiritildi: {len(cleaned)} ta."
+
+    if cleaned[0] not in "123456":
+        return False, "JSHSHIRning 1-raqami jins/asr indeksi (1 dan 6 gacha) bo'lishi kerak."
+
+    return True, cleaned
+
+def validate_passport_series(seriya: str, allow_empty: bool = True) -> Tuple[bool, str]:
+    """
+    Biometrik pasport / ID karta seriyasini tekshirish (masalan: AB1234567, AA7654321).
+    """
+    if not seriya or not str(seriya).strip():
+        if allow_empty:
+            return True, ""
+        return False, "Pasport seriyasi kiritilmadi."
+
+    cleaned = str(seriya).replace(" ", "").upper().strip()
+    match = re.match(r"^([A-Z]{2})(\d{7})$", cleaned)
+    if not match:
+        return False, "Pasport seriyasi 2 ta lotin harfi va 7 ta raqamdan iborat bo'lishi kerak (masalan: AB1234567)."
+
+    return True, cleaned
+

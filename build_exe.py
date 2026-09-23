@@ -74,6 +74,7 @@ def build():
         "oauth2client.service_account",
         "openpyxl",
         "qrcode",
+        "sqlite3",
         "core",
         "core.config",
         "core.logger",
@@ -82,11 +83,14 @@ def build():
         "database",
         "database.models",
         "database.data_manager",
+        "database.sqlite_manager",
         "services",
         "services.qr_service",
         "services.excel_service",
         "services.gsheet_service",
         "services.search_service",
+        "services.verification_service",
+        "services.telegram_bot",
         "ui",
         "ui.style",
         "ui.toast",
@@ -95,7 +99,10 @@ def build():
         "ui.views.dashboard_view",
         "ui.views.table_view",
         "ui.views.trash_view",
-        "ui.views.settings_view"
+        "ui.views.settings_view",
+        "ui.views.mahalla_passport_view",
+        "ui.views.history_view",
+        "ui.views.import_dialog"
     ]
     for h in hidden_imports:
         args.append(f"--hidden-import={h}")
@@ -111,6 +118,7 @@ def build():
         dist_dir = os.path.join(BASE_DIR, "dist", app_name)
         # Baza va sozlama fayllarini dist papkasiga nusxalash (Stand-alone to'liq ishlashi uchun)
         files_to_copy = [
+            "mahalla_tizimi.db",
             "mahalla_bazasi.json",
             "categories.json",
             "settings.json",

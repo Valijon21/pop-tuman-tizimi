@@ -13,6 +13,8 @@ class Organization:
     t: str = ""       # Telefon raqami (Phone)
     inn: str = ""     # INN (Tax ID)
     izoh: str = ""    # Qo'shimcha izoh (Comment)
+    jshr: str = ""    # JSHSHIR (14 xonali PINFL)
+    seriya: str = ""  # Pasport seriya va raqami (masalan, AB1234567)
     deleted_at: Optional[str] = None # Chiqindiga tashlangan vaqt
 
     @classmethod
@@ -27,6 +29,8 @@ class Organization:
             t=sanitize_text(data.get("t", "")),
             inn=clean_inn(data.get("inn", "")),
             izoh=sanitize_text(data.get("izoh", "")),
+            jshr=sanitize_text(data.get("jshr", "")),
+            seriya=sanitize_text(data.get("seriya", "")),
             deleted_at=data.get("deleted_at")
         )
 
@@ -41,6 +45,10 @@ class Organization:
             "inn": self.inn,
             "izoh": self.izoh
         }
+        if self.jshr:
+            d["jshr"] = self.jshr
+        if self.seriya:
+            d["seriya"] = self.seriya
         if self.deleted_at:
             d["deleted_at"] = self.deleted_at
         return d

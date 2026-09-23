@@ -9,6 +9,7 @@ else:
     # Python skripti rejimida loyiha ildiz papkasi
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_FILE = os.path.join(BASE_DIR, "mahalla_bazasi.json")
+SQLITE_DB_FILE = os.path.join(BASE_DIR, "mahalla_tizimi.db")
 TRASH_FILE = os.path.join(BASE_DIR, "trash.json")
 BACKUP_DIR = os.path.join(BASE_DIR, "backups")
 LOG_FILE = os.path.join(BASE_DIR, "activity_log.json")

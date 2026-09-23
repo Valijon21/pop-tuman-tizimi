@@ -6,14 +6,15 @@ import uuid
 from typing import List, Dict, Any, Optional
 
 from core.config import (
-    DB_FILE, TRASH_FILE, BACKUP_DIR, LOG_FILE, SETTINGS_FILE,
+    DB_FILE, SQLITE_DB_FILE, TRASH_FILE, BACKUP_DIR, LOG_FILE, SETTINGS_FILE,
     CATEGORIES_FILE, DEFAULT_CATEGORIES
 )
 from core.logger import logger
 from core.security import hash_password
+from database.sqlite_manager import SQLiteManager
 
 class DataManager:
-    """Ma'lumotlar omborini xavfsiz boshqarish (Persistence layer, Dependency-Injected)."""
+    """Ma'lumotlar omborini xavfsiz boshqarish (Persistence layer, SQLite + JSON dual-sync)."""
 
     def __init__(
         self,
@@ -22,9 +23,11 @@ class DataManager:
         categories_file: Optional[str] = None,
         log_file: Optional[str] = None,
         settings_file: Optional[str] = None,
-        backup_dir: Optional[str] = None
+        backup_dir: Optional[str] = None,
+        sqlite_file: Optional[str] = None
     ):
         self.db_file = db_file or DB_FILE
+        self.sqlite_file = sqlite_file or SQLITE_DB_FILE
         self.trash_file = trash_file or TRASH_FILE
         self.categories_file = categories_file or CATEGORIES_FILE
         self.log_file = log_file or LOG_FILE
@@ -32,6 +35,9 @@ class DataManager:
         self.backup_dir = backup_dir or BACKUP_DIR
 
         self.ensure_backup_dir()
+
+        # SQLite menejerini ishga tushirish
+        self.sqlite = SQLiteManager(self.sqlite_file)
 
         # Agar baza fayli ushbu papkada topilmasa yoki bo'sh bo'lsa (masalan, EXE ichidan ishga tushganda),
         # loyiha asosiy papkalaridan qidirib ko'ramiz
@@ -110,6 +116,16 @@ class DataManager:
         if has_new_ids:
             self.save_data()
 
+        # SQLite bazasini tekshirish va sinxronlash
+        if self.data:
+            self.sqlite.seed_from_json_if_empty(self.db_file)
+        else:
+            sqlite_data = self.sqlite.get_all_organizations()
+            if sqlite_data:
+                self.data = sqlite_data
+                self.save_json(self.db_file, self.data)
+                logger.info(f"[SQLITE TIKLASH] {len(self.data)} ta tashkilot SQLite omboridan yuklandi.")
+
     def ensure_backup_dir(self) -> None:
         """Zaxira nusxalar papkasi mavjudligini ta'minlash."""
         if not os.path.exists(self.backup_dir):
@@ -158,9 +174,17 @@ class DataManager:
 
     def save_data(self) -> None:
         self.save_json(self.db_file, self.data)
+        try:
+            self.sqlite.save_all_organizations(self.data)
+        except Exception as e:
+            logger.error(f"[SQLITE SAQLASH XATOSI] {e}")
 
     def save_trash(self) -> None:
         self.save_json(self.trash_file, self.trash)
+        try:
+            self.sqlite.save_all_trash(self.trash)
+        except Exception as e:
+            logger.error(f"[SQLITE CHIQINDI SAQLASH XATOSI] {e}")
 
     def save_categories(self) -> None:
         self.save_json(self.categories_file, self.categories)
@@ -169,7 +193,7 @@ class DataManager:
         self.save_json(self.settings_file, self.settings)
 
     def log_activity(self, user: Optional[str], action: str, details: str) -> None:
-        """Tizimdagi harakatlarni qayd etish."""
+        """Tizimdagi harakatlarni qayd etish (JSON + SQLite)."""
         try:
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
             entry = {
@@ -182,9 +206,21 @@ class DataManager:
             if len(self.activity_log) > 1000:
                 self.activity_log.pop()
             self.save_json(self.log_file, self.activity_log)
+            self.sqlite.log_activity(user or "Tizim", action, details)
             logger.info(f"[AUDIT] Foydalanuvchi: {user} | Amal: {action} | Tafsilot: {details}")
         except Exception as e:
             logger.error(f"Audit log yozishda xatolik: {e}")
+
+    def add_staff_history(
+        self, org_id: str, mahalla: str, role: str, full_name: str,
+        phone: str = "", inn: str = "", jshr: str = "", seriya: str = "", note: str = ""
+    ) -> None:
+        """Xodim rotatsiyasi/almashinuvini qayd etish."""
+        self.sqlite.add_staff_history(org_id, mahalla, role, full_name, phone, inn, jshr, seriya, note)
+
+    def get_staff_history(self, org_id: Optional[str] = None, mahalla: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Xodimlar rotatsiyasi tarixini olish."""
+        return self.sqlite.get_staff_history(org_id, mahalla)
 
     def move_to_trash(self, item: Dict[str, Any]) -> bool:
         """Yozuvni Chiqindi qutisiga ko'chirish."""
@@ -244,3 +280,9 @@ class DataManager:
                     logger.debug(f"[ZAXIRA] Eski zaxira tozalandi: {old_b}")
             except Exception as e:
                 logger.error(f"[XATO] Zaxira olishda xatolik: {e}")
+
+        # SQLite bazasini ham zaxiralash
+        try:
+            self.sqlite.backup_database(self.backup_dir)
+        except Exception as e:
+            logger.error(f"[XATO] SQLite zaxira olishda xatolik: {e}")

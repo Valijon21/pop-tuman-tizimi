@@ -123,9 +123,12 @@ class MahallaDasturi:
         ctk.CTkLabel(self.sidebar, text="ASOSIY", font=("Segoe UI", 12, "bold"), text_color="#95a5a6", anchor="w").pack(fill="x", padx=30, pady=(10, 5))
         self.create_sidebar_btn("📊 Dashboard", self.show_dashboard)
         self.create_sidebar_btn("📋 Ro'yxat", self.show_table)
+        self.create_sidebar_btn("🏘 Mahalla 'Yettiligi'", lambda: self.open_yettilik())
+        self.create_sidebar_btn("📜 Kadrlar Tarixi", lambda: self.open_history())
         self.create_sidebar_btn("⚙ Sozlamalar", self.show_settings)
 
-        ctk.CTkLabel(self.sidebar, text="TIZIM", font=("Segoe UI", 12, "bold"), text_color="#95a5a6", anchor="w").pack(fill="x", padx=30, pady=(20, 5))
+        ctk.CTkLabel(self.sidebar, text="TIZIM", font=("Segoe UI", 12, "bold"), text_color="#95a5a6", anchor="w").pack(fill="x", padx=30, pady=(15, 5))
+        self.create_sidebar_btn("📥 Excel Import", lambda: self.open_import())
         self.create_sidebar_btn("🗑 Chiqindi Qutisi", self.show_trash)
         self.create_sidebar_btn("☁ Cloud Sync", self.open_cloud_menu)
 
@@ -690,3 +693,31 @@ class MahallaDasturi:
         elif self.current_view == "table": self.show_table()
         elif self.current_view == "settings": self.show_settings()
         elif self.current_view == "trash": self.show_trash()
+
+    def open_yettilik(self, mahalla: Optional[str] = None) -> None:
+        """Mahalla 'Yettiligi' 360° Pasport oynasini ochish."""
+        try:
+            from ui.views.mahalla_passport_view import open_mahalla_passport
+            open_mahalla_passport(self, mahalla)
+        except Exception as e:
+            logger.error(f"Yettilik oynasini ochishda xatolik: {e}")
+            messagebox.showerror("Xatolik", f"Pasport oynasini ochishda xatolik: {e}")
+
+    def open_import(self) -> None:
+        """Excel/CSV ommaviy import dialogini ochish."""
+        try:
+            from ui.views.import_dialog import open_batch_import_dialog
+            open_batch_import_dialog(self)
+        except Exception as e:
+            logger.error(f"Import oynasini ochishda xatolik: {e}")
+            messagebox.showerror("Xatolik", f"Import oynasini ochishda xatolik: {e}")
+
+    def open_history(self, org_id: Optional[str] = None, mahalla: Optional[str] = None) -> None:
+        """Kadrlar almashinuvi va rotatsiya tarixi oynasini ochish."""
+        try:
+            from ui.views.history_view import open_staff_history_dialog
+            open_staff_history_dialog(self, org_id, mahalla)
+        except Exception as e:
+            logger.error(f"Tarix oynasini ochishda xatolik: {e}")
+            messagebox.showerror("Xatolik", f"Tarix oynasini ochishda xatolik: {e}")
+

@@ -233,3 +233,65 @@ def render_settings(parent: tk.Widget, app: Any) -> None:
         ctk.CTkButton(pw_win, text="Saqlash", command=save_new_pwd, fg_color="#27ae60", width=320, height=40).pack(pady=20)
 
     ctk.CTkButton(pwd_frame, text="O'zgartirish", command=open_change_pwd_dialog, font=("Segoe UI", 13), width=150).pack(side="right", padx=15)
+
+    # 3. SQLITE BAZA BOSHQARUVI VA ZAXIRA
+    sql_frame = ctk.CTkFrame(tools_frame)
+    sql_frame.pack(fill="x", pady=10)
+    ctk.CTkLabel(sql_frame, text="💾 SQLite Baza (ACID, WAL & Backup)", font=("Segoe UI", 14, "bold")).pack(side="left", padx=15, pady=15)
+
+    def do_sqlite_backup():
+        try:
+            b_path = app.data_manager.sqlite_manager.backup_database() if hasattr(app.data_manager, "sqlite_manager") and app.data_manager.sqlite_manager else app.data_manager.backup_data()
+            app.show_toast("SQLite zaxira nusxasi yaratildi!", "success")
+            messagebox.showinfo("Zaxira Nusxa", f"Muvaffaqiyatli zaxira olindi:\n{b_path}")
+        except Exception as e:
+            messagebox.showerror("Xato", f"Zaxira olishda xatolik: {e}")
+
+    ctk.CTkButton(sql_frame, text="Zaxira Olish", command=do_sqlite_backup, font=("Segoe UI", 13), width=150, fg_color="#0284c7").pack(side="right", padx=15)
+
+    # 4. TELEGRAM BOT BOSHQARUVI
+    bot_frame = ctk.CTkFrame(tools_frame)
+    bot_frame.pack(fill="x", pady=10)
+    ctk.CTkLabel(bot_frame, text="🤖 Telegram Qidiruv Boti (Smart Helper)", font=("Segoe UI", 14, "bold")).pack(side="left", padx=15, pady=15)
+
+    def open_bot_dialog():
+        b_win = ctk.CTkToplevel(app.root)
+        b_win.title("Telegram Bot Sozlamalari")
+        b_win.geometry("450x300")
+        b_win.transient(app.root)
+        b_win.grab_set()
+
+        ctk.CTkLabel(b_win, text="🤖 Telegram Bot Integratsiyasi", font=("Segoe UI", 16, "bold")).pack(pady=15)
+        ctk.CTkLabel(b_win, text="Bot Tokenini kiriting (BotFather orqali olingan):", font=("Segoe UI", 12)).pack(anchor="w", padx=30)
+
+        saved_token = app.data_manager.settings.get("telegram_bot_token", "")
+        token_entry = ctk.CTkEntry(b_win, width=380, placeholder_text="123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ...")
+        token_entry.pack(pady=10)
+        if saved_token: token_entry.insert(0, saved_token)
+
+        def save_and_start_bot():
+            new_tok = token_entry.get().strip()
+            app.data_manager.settings["telegram_bot_token"] = new_tok
+            app.data_manager.save_settings()
+
+            if not new_tok:
+                messagebox.showwarning("Ogohlantirish", "Token bo'sh bo'lgani sababli bot to'xtatildi.")
+                b_win.destroy()
+                return
+
+            try:
+                import threading
+                from services.telegram_bot import TelegramBotService
+                bot_service = TelegramBotService(new_tok, app.data_manager)
+                t = threading.Thread(target=bot_service.start_polling, daemon=True)
+                t.start()
+                app.show_toast("Telegram bot muvaffaqiyatli ishga tushirildi!", "success")
+                messagebox.showinfo("Bot Ishga Tushdi", "Telegram Bot fon rejimida muvaffaqiyatli ishga tushdi!\n\nBuyruqlar:\n/start\n/inn 123456789\n/mahalla Nomi\n/verif INN")
+                b_win.destroy()
+            except Exception as e:
+                messagebox.showerror("Bot Xatosi", f"Botni ishga tushirishda xatolik: {e}")
+
+        ctk.CTkButton(b_win, text="Saqlash va Botni Yoqish", command=save_and_start_bot, fg_color="#0088cc", width=380, height=40).pack(pady=20)
+
+    ctk.CTkButton(bot_frame, text="Bot Sozlamalari", command=open_bot_dialog, font=("Segoe UI", 13), width=150, fg_color="#0088cc").pack(side="right", padx=15)
+

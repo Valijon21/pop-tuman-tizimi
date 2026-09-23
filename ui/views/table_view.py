@@ -8,7 +8,7 @@ import webbrowser
 from typing import Any, Optional, Dict
 
 from services.qr_service import clean_phone_number, generate_phone_qr_image
-from core.validators import validate_inn, validate_phone, clean_inn
+from core.validators import validate_inn, validate_phone, clean_inn, validate_jshshir, validate_passport_series
 
 def render_table(parent: tk.Widget, app: Any) -> None:
     """Asosiy jadval (Table View) sahifasini ko'rsatish."""
@@ -27,7 +27,7 @@ def render_table(parent: tk.Widget, app: Any) -> None:
     app.s_var = tk.StringVar()
     app.s_var.trace_add("write", lambda *args: app.filter_data())
 
-    search_entry = ctk.CTkEntry(search_frame, textvariable=app.s_var, width=300, height=40, font=("Segoe UI", 14), placeholder_text="Qidiruv...")
+    search_entry = ctk.CTkEntry(search_frame, textvariable=app.s_var, width=280, height=40, font=("Segoe UI", 14), placeholder_text="Qidiruv...")
     search_entry.pack(side="left", padx=5)
 
     ctk.CTkButton(search_frame, text="✖", width=40, height=40, fg_color="#e74c3c", command=lambda: app.s_var.set("")).pack(side="left", padx=5)
@@ -36,18 +36,21 @@ def render_table(parent: tk.Widget, app: Any) -> None:
     btn_frame = ctk.CTkFrame(ctrl, fg_color="transparent")
     btn_frame.pack(side="right")
 
-    def add_btn(txt, cmd, col):
-        ctk.CTkButton(btn_frame, text=txt, command=cmd, fg_color=col, height=40, font=("Segoe UI", int(app.font_size * 0.8), "bold"), width=105).pack(side="right", padx=3)
+    def add_btn(txt, cmd, col, w=96):
+        ctk.CTkButton(btn_frame, text=txt, command=cmd, fg_color=col, height=40, font=("Segoe UI", int(app.font_size * 0.78), "bold"), width=w).pack(side="right", padx=2)
 
-    add_btn("🛡 Verifikatsiya", lambda: open_verification_dialog(app), "#0284c7")
-    add_btn("📝 Izoh", app.manual_edit_comment, "#8e44ad")
-    add_btn("📱 QR", lambda: show_qr_dialog(app), "#e67e22")
-    add_btn("✈ Telegram", lambda: send_telegram_card(app), "#0088cc")
-    add_btn("📊 Excel", app.open_export_menu, "#107c41")
-    add_btn("✏ Tahrir", lambda: open_record_dialog(app, title="Tahrirlash"), "#f39c12")
+    add_btn("🛡 Verifikatsiya", lambda: open_verification_dialog(app), "#0284c7", 108)
+    add_btn("🏘 Yettilik", lambda: app.open_yettilik(), "#16a34a", 85)
+    add_btn("📜 Tarix", lambda: app.open_history(), "#7c3aed", 75)
+    add_btn("📥 Import", lambda: app.open_import(), "#0d9488", 80)
+    add_btn("📝 Izoh", app.manual_edit_comment, "#8e44ad", 75)
+    add_btn("📱 QR", lambda: show_qr_dialog(app), "#e67e22", 65)
+    add_btn("✈ Telegram", lambda: send_telegram_card(app), "#0088cc", 95)
+    add_btn("📊 Excel", app.open_export_menu, "#107c41", 75)
+    add_btn("✏ Tahrir", lambda: open_record_dialog(app, title="Tahrirlash"), "#f39c12", 75)
 
     # + Qo'shish
-    ctk.CTkButton(btn_frame, text="+ Qo'shish", command=lambda: open_record_dialog(app, title="Yangi qo'shish"), fg_color="#27ae60", height=40, font=("Segoe UI", int(app.font_size * 0.9), "bold"), width=120).pack(side="right", padx=10)
+    ctk.CTkButton(btn_frame, text="+ Qo'shish", command=lambda: open_record_dialog(app, title="Yangi qo'shish"), fg_color="#27ae60", height=40, font=("Segoe UI", int(app.font_size * 0.85), "bold"), width=100).pack(side="right", padx=(2, 6))
 
     # KATEGORIYA TABLARI
     cat_scroll = ctk.CTkScrollableFrame(parent, orientation="horizontal", height=50, fg_color="transparent")
@@ -175,8 +178,16 @@ def show_context_menu(app: Any, event: Any) -> None:
     app.tree.selection_set(item)
     menu = tk.Menu(app.root, tearoff=0)
 
+    # Tanlangan qatordagi mahalla nomini aniqlash
+    v = app.tree.item(item)["values"]
+    selected_mahalla = str(v[2]) if v and len(v) > 2 else None
+
     menu.add_command(label="🛡 Verifikatsiya so'rovi (Dialog)", command=lambda: open_verification_dialog(app))
     menu.add_command(label="⚡ Tezkor Verifikatsiya nusxalash", command=lambda: copy_verification_quick(app))
+    menu.add_separator()
+    menu.add_command(label="🏘 Mahalla 'Yettiligi' (360° Pasport)", command=lambda: app.open_yettilik(selected_mahalla))
+    menu.add_command(label="📜 Kadrlar almashinuvi tarixi", command=lambda: app.open_history(mahalla=selected_mahalla))
+    menu.add_command(label="📥 Excel / CSV Ommaviy Import", command=app.open_import)
     menu.add_separator()
     menu.add_command(label="📞 Tel nusxalash", command=lambda: app.copy_cell(4))
     menu.add_command(label="🆔 INN nusxalash", command=lambda: app.copy_cell(5))
@@ -208,16 +219,16 @@ def open_record_dialog(app: Any, title: str = "Tahrirlash") -> None:
 
     win = ctk.CTkToplevel(app.root)
     win.title(title)
-    win.geometry("450x620")
+    win.geometry("480x700")
     win.transient(app.root)
     win.grab_set()
 
-    x = app.root.winfo_x() + (app.root.winfo_width() // 2) - 225
-    y = app.root.winfo_y() + (app.root.winfo_height() // 2) - 310
+    x = app.root.winfo_x() + (app.root.winfo_width() // 2) - 240
+    y = app.root.winfo_y() + (app.root.winfo_height() // 2) - 350
     win.geometry(f"+{x}+{y}")
 
-    ctk.CTkLabel(win, text=title, font=("Segoe UI", 22, "bold"), text_color=("#2c3e50", "#ecf0f1")).pack(pady=(25, 5))
-    ctk.CTkLabel(win, text="Ma'lumotlarni to'ldiring", font=("Segoe UI", 12), text_color="gray").pack(pady=(0, 15))
+    ctk.CTkLabel(win, text=title, font=("Segoe UI", 22, "bold"), text_color=("#2c3e50", "#ecf0f1")).pack(pady=(20, 5))
+    ctk.CTkLabel(win, text="Ma'lumotlarni to'ldiring", font=("Segoe UI", 12), text_color="gray").pack(pady=(0, 10))
 
     cat_opts = app.data_manager.categories
     form_config = [
@@ -226,6 +237,8 @@ def open_record_dialog(app: Any, title: str = "Tahrirlash") -> None:
         ("f", "Rahbar (F.I.SH)", "entry", None),
         ("t", "Telefon Raqam", "entry", None),
         ("inn", "INN (Soliq to'lovchi)", "entry", None),
+        ("jshr", "JSHSHIR (PINFL - 14 ta raqam)", "entry", None),
+        ("seriya", "Pasport Seriya (AB1234567)", "entry", None),
         ("izoh", "Qo'shimcha Izoh", "entry", None),
     ]
 
@@ -254,6 +267,8 @@ def open_record_dialog(app: Any, title: str = "Tahrirlash") -> None:
         val_inn = widgets["inn"].get().strip()
         val_name = widgets["m"].get().strip()
         val_phone = widgets["t"].get().strip()
+        val_jshr = widgets["jshr"].get().strip()
+        val_seriya = widgets["seriya"].get().strip()
 
         if not val_name:
             app.show_toast("Xatolik: Tashkilot nomi kiritilmadi!", "warning")
@@ -271,6 +286,18 @@ def open_record_dialog(app: Any, title: str = "Tahrirlash") -> None:
                 app.show_toast(phone_msg, "warning")
                 return
 
+        if val_jshr:
+            is_valid_jshr, jshr_msg = validate_jshshir(val_jshr, allow_empty=True)
+            if not is_valid_jshr:
+                app.show_toast(jshr_msg, "warning")
+                return
+
+        if val_seriya:
+            is_valid_ser, ser_msg = validate_passport_series(val_seriya, allow_empty=True)
+            if not is_valid_ser:
+                app.show_toast(ser_msg, "warning")
+                return
+
         if val_inn:
             target_id = item.get("id") if item else None
             exists = next((x for x in app.data if x.get("inn") == val_inn and (not target_id or x.get("id") != target_id)), None)
@@ -285,7 +312,27 @@ def open_record_dialog(app: Any, title: str = "Tahrirlash") -> None:
 
         d["id"] = item.get("id") if (item and item.get("id")) else str(uuid.uuid4())
 
+        # Xodim o'zgargan bo'lsa, avtomatik staff_history ga yozish
         if item:
+            old_fio = str(item.get("f", "")).strip()
+            new_fio = str(d.get("f", "")).strip()
+            if old_fio and new_fio and old_fio != new_fio:
+                try:
+                    app.data_manager.add_staff_history(
+                        org_id=d.get("id"),
+                        org_name=d.get("m"),
+                        mahalla=d.get("mahalla") or d.get("m"),
+                        role=d.get("lavozim") or d.get("s") or "Rahbar",
+                        old_fio=old_fio,
+                        new_fio=new_fio,
+                        old_phone=str(item.get("t", "")),
+                        new_phone=str(d.get("t", "")),
+                        changed_by=app.current_role or "admin",
+                        reason="Tahrirlash oynasi orqali xodim yangilandi"
+                    )
+                except Exception as ex:
+                    print(f"Staff history recording warning: {ex}")
+
             target_id = d["id"]
             idx = -1
             for cand_idx, cand in enumerate(app.data):

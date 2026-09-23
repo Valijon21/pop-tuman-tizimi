@@ -1,8 +1,8 @@
 {
   "build_exe.py": {
-    "mtime": 1790145684.0627756,
-    "ast_hash": "e4452e3e9334f83c081c2f4658a8f6e0",
-    "semantic_hash": "e4452e3e9334f83c081c2f4658a8f6e0"
+    "mtime": 1790158372.9833057,
+    "ast_hash": "86294f5043ae35a4703160e8f2fa74d2",
+    "semantic_hash": ""
   },
   "categories.json": {
     "mtime": 1790146643.8736062,
@@ -15,9 +15,9 @@
     "semantic_hash": "299698c538ed7b0e630365ede1766c6d"
   },
   "core/config.py": {
-    "mtime": 1790140620.0372863,
-    "ast_hash": "bcafab13d1623f271d7a3576be319380",
-    "semantic_hash": "bcafab13d1623f271d7a3576be319380"
+    "mtime": 1790157891.5122352,
+    "ast_hash": "8f8538f42aad965b90930c780655ff3b",
+    "semantic_hash": ""
   },
   "core/logger.py": {
     "mtime": 1790139653.3771439,
@@ -30,9 +30,9 @@
     "semantic_hash": "a5758007186079e5cf6ac48bfef3228c"
   },
   "core/validators.py": {
-    "mtime": 1790139071.8220668,
-    "ast_hash": "ded6145dc88232a2a7be2a054775e0fb",
-    "semantic_hash": "ded6145dc88232a2a7be2a054775e0fb"
+    "mtime": 1790157993.2074547,
+    "ast_hash": "18b7c0921e83463d7bbefa8f8dcd5dd1",
+    "semantic_hash": ""
   },
   "database/__init__.py": {
     "mtime": 1790139071.8220668,
@@ -40,14 +40,14 @@
     "semantic_hash": "46685c5dbe606afff4a1d8e8cd2a1956"
   },
   "database/data_manager.py": {
-    "mtime": 1790146682.8796322,
-    "ast_hash": "e6691f95f7d87103b8805f264df1610d",
+    "mtime": 1790157973.2978876,
+    "ast_hash": "b810627149e04232c9bd206870983df3",
     "semantic_hash": ""
   },
   "database/models.py": {
-    "mtime": 1790139071.8225994,
-    "ast_hash": "b0895828d91a60ccb1bbf37479f0ae41",
-    "semantic_hash": "b0895828d91a60ccb1bbf37479f0ae41"
+    "mtime": 1790158006.6660762,
+    "ast_hash": "c426cffdaec9df51e9e17bd2319e1470",
+    "semantic_hash": ""
   },
   "mahalla_bazasi.json": {
     "mtime": 1790140601.208443,
@@ -75,9 +75,9 @@
     "semantic_hash": ""
   },
   "services/excel_service.py": {
-    "mtime": 1790139071.8237321,
-    "ast_hash": "7f5473249db240da97e52a0e33fbcbdf",
-    "semantic_hash": "7f5473249db240da97e52a0e33fbcbdf"
+    "mtime": 1790158343.071017,
+    "ast_hash": "bacde8dfde5c964b343cc2a1213e2031",
+    "semantic_hash": ""
   },
   "services/gsheet_service.py": {
     "mtime": 1790139071.8237321,
@@ -130,9 +130,9 @@
     "semantic_hash": ""
   },
   "tests/test_validators.py": {
-    "mtime": 1790139071.8237321,
-    "ast_hash": "872fc60bba25646d64b9ce1b0f79d883",
-    "semantic_hash": "872fc60bba25646d64b9ce1b0f79d883"
+    "mtime": 1790158349.7123885,
+    "ast_hash": "bb6c2c4ed20e834dbb50d7b61796005a",
+    "semantic_hash": ""
   },
   "tests/test_views.py": {
     "mtime": 1790139639.2906032,
@@ -145,8 +145,8 @@
     "semantic_hash": "f0f608577786a5a8c50b225e49f3059c"
   },
   "ui/app.py": {
-    "mtime": 1790147335.4173913,
-    "ast_hash": "fc8a7530d5edd27563ad39ac3bfbb91d",
+    "mtime": 1790158144.5286016,
+    "ast_hash": "cd9279f3635d30505fef56ef53d23419",
     "semantic_hash": ""
   },
   "ui/style.py": {
@@ -170,13 +170,13 @@
     "semantic_hash": ""
   },
   "ui/views/settings_view.py": {
-    "mtime": 1790139071.8272524,
-    "ast_hash": "7d392a2954d550f6df7f251d4d43133e",
-    "semantic_hash": "7d392a2954d550f6df7f251d4d43133e"
+    "mtime": 1790158249.3381703,
+    "ast_hash": "8ea9414d7547f265539cae9e597ea5c1",
+    "semantic_hash": ""
   },
   "ui/views/table_view.py": {
-    "mtime": 1790147321.1622467,
-    "ast_hash": "c18b6fc7230e901d19b341026315e401",
+    "mtime": 1790158230.1919181,
+    "ast_hash": "0b0809b104336179ad9db704b1e1fafb",
     "semantic_hash": ""
   },
   "ui/views/trash_view.py": {
@@ -212,6 +212,41 @@
   "services/verification_service.py": {
     "mtime": 1790147237.3708582,
     "ast_hash": "b92c26ab0b406db961de766d5c1bb798",
+    "semantic_hash": ""
+  },
+  "database/sqlite_manager.py": {
+    "mtime": 1790158330.5660992,
+    "ast_hash": "1573fc5aa631472cf7cc4ac28ffc8af1",
+    "semantic_hash": ""
+  },
+  "services/telegram_bot.py": {
+    "mtime": 1790158070.1028602,
+    "ast_hash": "08fc44f07294c0b7204b08a37a0fc146",
+    "semantic_hash": ""
+  },
+  "tests/test_import.py": {
+    "mtime": 1790158357.727928,
+    "ast_hash": "f88ccc4458cb458623d3c5dc626ad243",
+    "semantic_hash": ""
+  },
+  "tests/test_sqlite.py": {
+    "mtime": 1790158278.3475225,
+    "ast_hash": "07109f87ea16616725b32f14d39fb77b",
+    "semantic_hash": ""
+  },
+  "ui/views/history_view.py": {
+    "mtime": 1790158035.4785116,
+    "ast_hash": "62bef4d97ae5291234529ef61d29aae7",
+    "semantic_hash": ""
+  },
+  "ui/views/import_dialog.py": {
+    "mtime": 1790158060.0282252,
+    "ast_hash": "84697270c45420836e1308eda5a98a07",
+    "semantic_hash": ""
+  },
+  "ui/views/mahalla_passport_view.py": {
+    "mtime": 1790158026.3301058,
+    "ast_hash": "8b359cff31fbcc25d36ba6fdcf0e8011",
     "semantic_hash": ""
   }
 }
