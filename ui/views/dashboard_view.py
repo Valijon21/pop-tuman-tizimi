@@ -45,6 +45,17 @@ def render_dashboard(parent: tk.Widget, app: Any) -> None:
     # 1. Jami tashkilotlar
     create_modern_card(left_side, "Jami Tashkilotlar", len(app.data), "#2c3e50", "🏢", app, pady=10)
 
+    # To'g'ridan-to'g'ri jadvalni ochish tugmasi
+    ctk.CTkButton(
+        left_side,
+        text=f"📋 Barcha Tashkilotlar Ro'yxatini Ochish ({len(app.data)} ta)",
+        command=lambda: (app.cat_var.set("Barchasi"), app.show_table()),
+        fg_color="#2563eb",
+        hover_color="#1d4ed8",
+        height=38,
+        font=("Segoe UI", 12, "bold")
+    ).pack(fill="x", pady=(0, 10))
+
     # Grid Container
     grid_frame = ctk.CTkFrame(left_side, fg_color="transparent")
     grid_frame.pack(fill="both", expand=True, pady=10)
@@ -141,8 +152,20 @@ def create_modern_card(parent: tk.Widget, title: str, value: int, color: str, ic
 
     info = tk.Frame(content, bg=t["card_bg"])
     info.pack(side="left", padx=(15, 0))
-    tk.Label(info, text=title, font=("Segoe UI", int(app.font_size * 0.6), "bold"), fg="#64748b", bg=t["card_bg"]).pack(anchor="w")
-    tk.Label(info, text=str(value), font=("Segoe UI", int(app.font_size * 1.2), "bold"), fg=t["text"], bg=t["card_bg"]).pack(anchor="w")
+    lbl_title = tk.Label(info, text=title, font=("Segoe UI", int(app.font_size * 0.6), "bold"), fg="#64748b", bg=t["card_bg"])
+    lbl_title.pack(anchor="w")
+    lbl_val = tk.Label(info, text=str(value), font=("Segoe UI", int(app.font_size * 1.2), "bold"), fg=t["text"], bg=t["card_bg"])
+    lbl_val.pack(anchor="w")
+
+    def on_click(e):
+        app.cat_var.set("Barchasi")
+        app.show_table()
+        app.filter_data()
+
+    for w in [card, content, icon_lbl, info, lbl_title, lbl_val]:
+        w.bind("<Button-1>", on_click)
+        try: w.configure(cursor="hand2")
+        except Exception: pass
 
 def create_grid_card(parent: tk.Widget, title: str, value: int, color: str, icon: str, row: int, col: int, app: Any) -> ctk.CTkFrame:
     t = THEMES[app.current_theme]

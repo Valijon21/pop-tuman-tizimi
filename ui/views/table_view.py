@@ -109,7 +109,7 @@ def render_table(parent: tk.Widget, app: Any) -> None:
     app.lbl_count = ctk.CTkLabel(footer, text="Jami: 0", font=("Segoe UI", int(app.font_size * 0.9), "bold"), text_color="gray")
     app.lbl_count.pack(side="right")
 
-    app.update_table(app.filtered_data)
+    app.filter_data()
 
 def edit_comment_inline(app: Any, event: Any = None) -> None:
     """Jadval ichida (inline) izohni tezkor tahrirlash."""
