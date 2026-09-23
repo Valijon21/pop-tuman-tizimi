@@ -109,6 +109,22 @@ def build():
 
     if result.returncode == 0:
         dist_dir = os.path.join(BASE_DIR, "dist", app_name)
+        # Baza va sozlama fayllarini dist papkasiga nusxalash (Stand-alone to'liq ishlashi uchun)
+        files_to_copy = [
+            "mahalla_bazasi.json",
+            "categories.json",
+            "settings.json",
+            "popdata.png",
+            "sync_config.json",
+            "service_account.json"
+        ]
+        for fname in files_to_copy:
+            src = os.path.join(BASE_DIR, fname)
+            if os.path.exists(src):
+                dst = os.path.join(dist_dir, fname)
+                shutil.copy2(src, dst)
+                print(f"[NUSXALANDI] {fname} -> dist/{app_name}/")
+
         print("\n" + "=" * 60)
         print(f"✅ MUVAFFAQIYATLI YIG'ILDI!")
         print(f"📁 Dastur joylashgan papka: {dist_dir}")

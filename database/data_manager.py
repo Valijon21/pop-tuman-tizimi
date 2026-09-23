@@ -32,6 +32,25 @@ class DataManager:
         self.backup_dir = backup_dir or BACKUP_DIR
 
         self.ensure_backup_dir()
+
+        # Agar baza fayli ushbu papkada topilmasa (masalan, EXE ichidan ishga tushganda),
+        # loyiha asosiy papkalaridan qidirib ko'ramiz
+        if not os.path.exists(self.db_file):
+            candidate_dirs = [
+                os.path.dirname(self.db_file),
+                os.path.join(os.path.dirname(self.db_file), ".."),
+                os.path.join(os.path.dirname(self.db_file), "..", "..")
+            ]
+            for c_dir in candidate_dirs:
+                c_db = os.path.abspath(os.path.join(c_dir, "mahalla_bazasi.json"))
+                if os.path.exists(c_db) and os.path.getsize(c_db) > 10:
+                    try:
+                        shutil.copy2(c_db, self.db_file)
+                        logger.info(f"[TIKLASH] Asosiy baza topildi va nusxalandi: {c_db} -> {self.db_file}")
+                        break
+                    except Exception as e:
+                        logger.warning(f"Baza nusxalashda xatolik: {e}")
+
         self.data: List[Dict[str, Any]] = self.load_json(self.db_file)
         self.trash: List[Dict[str, Any]] = self.load_json(self.trash_file)
         self.categories: List[str] = self.load_json(self.categories_file)

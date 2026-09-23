@@ -1,7 +1,13 @@
 import os
+import sys
 
-# Papka va fayl yo'llari
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Papka va fayl yo'llari (PyInstaller EXE yoki Python skriptiga moslashuvchan)
+if getattr(sys, "frozen", False):
+    # Standalone EXE rejimida .exe fayli joylashgan asosiy papka
+    BASE_DIR = os.path.dirname(os.path.abspath(sys.executable))
+else:
+    # Python skripti rejimida loyiha ildiz papkasi
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_FILE = os.path.join(BASE_DIR, "mahalla_bazasi.json")
 TRASH_FILE = os.path.join(BASE_DIR, "trash.json")
 BACKUP_DIR = os.path.join(BASE_DIR, "backups")
