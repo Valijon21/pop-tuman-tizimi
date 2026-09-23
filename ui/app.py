@@ -45,7 +45,8 @@ class MahallaDasturi:
         self.is_syncing = False
 
         # Mavzu va autentifikatsiya
-        self.current_theme = "light"
+        mode = ctk.get_appearance_mode()
+        self.current_theme = "dark" if mode == "Dark" else "light"
         self.current_role: Optional[str] = None
         self.last_auth_time = 0.0
         self.auth_timeout = AUTH_TIMEOUT
@@ -103,7 +104,7 @@ class MahallaDasturi:
         self.main_container.pack(fill="both", expand=True)
 
         # SIDEBAR
-        self.sidebar = tk.Frame(self.main_container, bg=THEMES["light"]["sidebar"], width=260)
+        self.sidebar = tk.Frame(self.main_container, bg=THEMES[self.current_theme]["sidebar"], width=260)
         self.sidebar.pack(side="left", fill="y")
         self.sidebar.pack_propagate(False)
 
@@ -111,12 +112,12 @@ class MahallaDasturi:
         try:
             pil_img = Image.open(ICON_PATH).resize((150, 150))
             logo_photo = ImageTk.PhotoImage(pil_img)
-            self.logo_lbl = tk.Label(self.sidebar, image=logo_photo, bg=THEMES["light"]["sidebar"], pady=10)
+            self.logo_lbl = tk.Label(self.sidebar, image=logo_photo, bg=THEMES[self.current_theme]["sidebar"], pady=10)
             self.logo_lbl.image = logo_photo
             self.logo_lbl.pack(pady=(20, 10))
-            tk.Label(self.sidebar, text="POP TUMANI\nSMART TIZIM", fg="white", bg=THEMES["light"]["sidebar"], font=("Segoe UI", 16, "bold")).pack(fill="x")
+            tk.Label(self.sidebar, text="POP TUMANI\nSMART TIZIM", fg="white", bg=THEMES[self.current_theme]["sidebar"], font=("Segoe UI", 16, "bold")).pack(fill="x")
         except Exception:
-            tk.Label(self.sidebar, text="POP TUMANI\nSMART TIZIM", fg="white", bg=THEMES["light"]["sidebar"], font=("Segoe UI", 16, "bold"), pady=30).pack(fill="x")
+            tk.Label(self.sidebar, text="POP TUMANI\nSMART TIZIM", fg="white", bg=THEMES[self.current_theme]["sidebar"], font=("Segoe UI", 16, "bold"), pady=30).pack(fill="x")
 
         # NAVIGATSIYA
         ctk.CTkLabel(self.sidebar, text="ASOSIY", font=("Segoe UI", 12, "bold"), text_color="#95a5a6", anchor="w").pack(fill="x", padx=30, pady=(10, 5))
@@ -129,7 +130,8 @@ class MahallaDasturi:
         self.create_sidebar_btn("☁ Cloud Sync", self.open_cloud_menu)
 
         # Pastki boshqaruv tugmalari
-        self.btn_theme = self.create_sidebar_btn("🌙 Tungi Rejim", self.toggle_theme)
+        theme_txt = "☀ Kunduzi Rejim" if self.current_theme == "dark" else "🌙 Tungi Rejim"
+        self.btn_theme = self.create_sidebar_btn(theme_txt, self.toggle_theme)
         ctk.CTkFrame(self.sidebar, height=2, fg_color="#34495e").pack(fill="x", padx=20, pady=10)
 
         self.lbl_sync = ctk.CTkLabel(self.sidebar, text="☁ Integratsiya", text_color="gray", font=("Segoe UI", 11))
@@ -138,7 +140,7 @@ class MahallaDasturi:
         self.create_sidebar_btn("🚪 Chiqish", self.on_close, text_color="#ef4444")
 
         # KONTENT MAYDONI
-        self.content_area = tk.Frame(self.main_container, bg=THEMES["light"]["content_bg"])
+        self.content_area = tk.Frame(self.main_container, bg=THEMES[self.current_theme]["content_bg"])
         self.content_area.pack(side="right", fill="both", expand=True)
 
         self.current_view = None

@@ -33,13 +33,14 @@ class DataManager:
 
         self.ensure_backup_dir()
 
-        # Agar baza fayli ushbu papkada topilmasa (masalan, EXE ichidan ishga tushganda),
+        # Agar baza fayli ushbu papkada topilmasa yoki bo'sh bo'lsa (masalan, EXE ichidan ishga tushganda),
         # loyiha asosiy papkalaridan qidirib ko'ramiz
-        if not os.path.exists(self.db_file):
+        if not os.path.exists(self.db_file) or os.path.getsize(self.db_file) < 10:
             candidate_dirs = [
                 os.path.dirname(self.db_file),
                 os.path.join(os.path.dirname(self.db_file), ".."),
-                os.path.join(os.path.dirname(self.db_file), "..", "..")
+                os.path.join(os.path.dirname(self.db_file), "..", ".."),
+                os.getcwd()
             ]
             for c_dir in candidate_dirs:
                 c_db = os.path.abspath(os.path.join(c_dir, "mahalla_bazasi.json"))
@@ -52,6 +53,24 @@ class DataManager:
                         logger.warning(f"Baza nusxalashda xatolik: {e}")
 
         self.data: List[Dict[str, Any]] = self.load_json(self.db_file)
+
+        # Agar hali ham bo'sh bo'lsa, zaxiradan yoki kandidatlardan tekshirib tiklash
+        if not self.data:
+            candidate_dirs = [
+                os.path.dirname(self.db_file),
+                os.path.join(os.path.dirname(self.db_file), ".."),
+                os.path.join(os.path.dirname(self.db_file), "..", ".."),
+                os.getcwd()
+            ]
+            for c_dir in candidate_dirs:
+                c_db = os.path.abspath(os.path.join(c_dir, "mahalla_bazasi.json"))
+                if os.path.exists(c_db) and os.path.getsize(c_db) > 10:
+                    cand_data = self.load_json(c_db)
+                    if cand_data:
+                        self.data = cand_data
+                        self.save_data()
+                        logger.info(f"[TIKLASH] Baza {c_db} dan {len(self.data)} ta yozuv bilan qayta yuklandi.")
+                        break
         self.trash: List[Dict[str, Any]] = self.load_json(self.trash_file)
         self.categories: List[str] = self.load_json(self.categories_file)
         self.activity_log: List[Dict[str, Any]] = self.load_json(self.log_file)

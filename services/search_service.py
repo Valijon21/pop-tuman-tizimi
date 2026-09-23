@@ -31,6 +31,15 @@ class SearchService:
             return True
         if filter_cat == "Bog'cha (MTT)" and item_cat in ["MTT", "Bog'cha"]:
             return True
+        if filter_cat == "Boshqa":
+            known = [
+                "Mahalla (MFY)", "Mahalla", "MFY",
+                "Maktab", "Maktablar",
+                "Bog'cha (MTT)", "MTT", "Bog'cha",
+                "Hokim yordamchisi", "Yoshlar yetakchisi",
+                "Ijtimoiy xodim", "Xotin qizlar"
+            ]
+            return (item_cat not in known) or (item_cat == "Boshqa")
         return False
 
     @staticmethod

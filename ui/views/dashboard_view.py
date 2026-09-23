@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 from typing import Any
 import customtkinter as ctk
 from PIL import Image, ImageTk
@@ -104,6 +105,53 @@ def render_dashboard(parent: tk.Widget, app: Any) -> None:
 
     draw_donut_chart(right_side, chart_data, app)
 
+    # TASHKILOTLAR BAZASI TEZKOR KO'RINISHI (PREVIEW TABLE)
+    data_header = tk.Frame(scroll_dash, bg=t["content_bg"])
+    data_header.pack(fill="x", padx=40, pady=(35, 10))
+
+    tk.Label(
+        data_header,
+        text=f"🏢 Tashkilotlar Bazasi ({len(app.data)} ta)",
+        font=("Segoe UI", int(app.font_size * 1.2), "bold"),
+        bg=t["content_bg"],
+        fg=t["text"]
+    ).pack(side="left")
+
+    ctk.CTkButton(
+        data_header,
+        text=f"To'liq Ro'yxatni Ochish ({len(app.data)} ta) ➔",
+        command=lambda: (app.cat_var.set("Barchasi"), app.show_table()),
+        fg_color="#2563eb",
+        hover_color="#1d4ed8",
+        height=32,
+        font=("Segoe UI", 11, "bold")
+    ).pack(side="right")
+
+    prev_frame = tk.Frame(scroll_dash, bg=t["card_bg"], highlightbackground="#e2e8f0" if app.current_theme == "light" else "#334155", highlightthickness=1)
+    prev_frame.pack(fill="x", padx=40, pady=(0, 25))
+
+    prev_cols = ("num", "s", "m", "f", "t", "inn")
+    prev_tree = ttk.Treeview(prev_frame, columns=prev_cols, show="headings", height=6)
+    prev_headers = [
+        ("num", "№", 40), ("s", "Turi", 90), ("m", "Tashkilot Nomi", 300),
+        ("f", "F.I.SH", 220), ("t", "Telefon", 120), ("inn", "INN (STIR)", 110)
+    ]
+    for col, name, width in prev_headers:
+        prev_tree.heading(col, text=name)
+        prev_tree.column(col, width=width, anchor="center" if col not in ["m", "f"] else "w")
+
+    for idx, item in enumerate(app.data[:8], 1):
+        prev_tree.insert("", "end", values=(
+            str(idx),
+            item.get("s", "-") or "-",
+            item.get("m", "-") or "-",
+            item.get("f", "-") or "-",
+            item.get("t", "-") or "-",
+            item.get("inn", "-") or "-"
+        ))
+    prev_tree.pack(fill="x", expand=True, padx=5, pady=5)
+    prev_tree.bind("<Double-1>", lambda e: (app.cat_var.set("Barchasi"), app.show_table()))
+
     # SO'NGGI FAOLIYAT
     tk.Label(
         scroll_dash,
@@ -111,7 +159,7 @@ def render_dashboard(parent: tk.Widget, app: Any) -> None:
         font=("Segoe UI", int(app.font_size * 1.2), "bold"),
         bg=t["content_bg"],
         fg=t["text"]
-    ).pack(anchor="w", padx=40, pady=(40, 15))
+    ).pack(anchor="w", padx=40, pady=(15, 15))
 
     log_frame = tk.Frame(scroll_dash, bg=t["card_bg"], highlightbackground="#e2e8f0", highlightthickness=1)
     log_frame.pack(fill="both", expand=True, padx=40, pady=(0, 40))
