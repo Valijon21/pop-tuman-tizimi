@@ -152,6 +152,25 @@ def render_dashboard(parent: tk.Widget, app: Any) -> None:
     prev_tree.pack(fill="x", expand=True, padx=5, pady=5)
     prev_tree.bind("<Double-1>", lambda e: (app.cat_var.set("Barchasi"), app.show_table()))
 
+    def on_prev_right_click(event):
+        item_id = prev_tree.identify_row(event.y)
+        if not item_id: return
+        prev_tree.selection_set(item_id)
+        v = prev_tree.item(item_id)["values"]
+        menu = tk.Menu(app.root, tearoff=0)
+        from services.verification_service import build_verification_text
+        def quick_copy():
+            data_item = {"m": v[2], "s": v[1], "f": v[3], "t": v[4], "inn": v[5]}
+            text = build_verification_text(data_item)
+            import pyperclip
+            pyperclip.copy(text)
+            app.show_toast("✅ Verifikatsiya shablon matni nusxalandi!", "success")
+        menu.add_command(label="⚡ Tezkor Verifikatsiya nusxalash", command=quick_copy)
+        menu.add_command(label="📋 Jadvalda ochish", command=lambda: (app.cat_var.set("Barchasi"), app.show_table()))
+        menu.post(event.x_root, event.y_root)
+
+    prev_tree.bind("<Button-3>", on_prev_right_click)
+
     # SO'NGGI FAOLIYAT
     tk.Label(
         scroll_dash,

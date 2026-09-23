@@ -564,6 +564,16 @@ class MahallaDasturi:
             messagebox.showinfo("OK", "Nusxalandi!")
         except Exception: pass
 
+    def open_verification_dialog(self) -> None:
+        """Verifikatsiya so'rovi dialogini ochish."""
+        from ui.views.table_view import open_verification_dialog
+        open_verification_dialog(self)
+
+    def copy_verification_quick(self) -> None:
+        """Tezkor verifikatsiya matnini clipboardga nusxalash."""
+        from ui.views.table_view import copy_verification_quick
+        copy_verification_quick(self)
+
     def clear_comments(self) -> None:
         sel = self.tree.selection()
         if not sel: return

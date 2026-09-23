@@ -72,5 +72,36 @@ class TestServices(unittest.TestCase):
             if os.path.exists(tmp_path):
                 os.remove(tmp_path)
 
+    def test_verification_text_builder(self):
+        from services.verification_service import build_verification_text, extract_identifiers_from_text, format_role
+        
+        sample = {
+            "m": "Chorkesar MFY",
+            "inn": "203599806",
+            "f": "Yondashev Xojiakbar Rustamali o‘g‘li",
+            "s": "Hokim yordamchisi",
+            "izoh": "JSHR: 30807995910027, Pasport: AB4561091"
+        }
+        
+        # Test identifier extraction from comment
+        jshr, seriya = extract_identifiers_from_text(sample["izoh"])
+        self.assertEqual(jshr, "30807995910027")
+        self.assertEqual(seriya, "AB4561091")
+        
+        # Test role formatting
+        role = format_role(sample["s"], sample["m"])
+        self.assertEqual(role, "Chorkesar MFY hokim yordamchisi")
+        
+        # Test full template generation
+        text = build_verification_text(sample)
+        self.assertIn("Tashkilot nomi: Chorkesar MFY", text)
+        self.assertIn("-INN:   203599806", text)
+        self.assertIn("F.I.O:  Yondashev Xojiakbar Rustamali o‘g‘li", text)
+        self.assertIn("JSHR : 30807995910027", text)
+        self.assertIn("Seriya : AB4561091", text)
+        self.assertIn("Lavozimi: Chorkesar MFY hokim yordamchisi", text)
+        self.assertIn("verfikatsiya bervoring.", text)
+
 if __name__ == "__main__":
     unittest.main()
+

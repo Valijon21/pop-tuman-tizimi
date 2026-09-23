@@ -4,6 +4,7 @@ import customtkinter as ctk
 from PIL import Image, ImageTk
 import pyperclip
 import uuid
+import webbrowser
 from typing import Any, Optional, Dict
 
 from services.qr_service import clean_phone_number, generate_phone_qr_image
@@ -36,8 +37,9 @@ def render_table(parent: tk.Widget, app: Any) -> None:
     btn_frame.pack(side="right")
 
     def add_btn(txt, cmd, col):
-        ctk.CTkButton(btn_frame, text=txt, command=cmd, fg_color=col, height=40, font=("Segoe UI", int(app.font_size * 0.8), "bold"), width=100).pack(side="right", padx=3)
+        ctk.CTkButton(btn_frame, text=txt, command=cmd, fg_color=col, height=40, font=("Segoe UI", int(app.font_size * 0.8), "bold"), width=105).pack(side="right", padx=3)
 
+    add_btn("🛡 Verifikatsiya", lambda: open_verification_dialog(app), "#0284c7")
     add_btn("📝 Izoh", app.manual_edit_comment, "#8e44ad")
     add_btn("📱 QR", lambda: show_qr_dialog(app), "#e67e22")
     add_btn("✈ Telegram", lambda: send_telegram_card(app), "#0088cc")
@@ -173,6 +175,9 @@ def show_context_menu(app: Any, event: Any) -> None:
     app.tree.selection_set(item)
     menu = tk.Menu(app.root, tearoff=0)
 
+    menu.add_command(label="🛡 Verifikatsiya so'rovi (Dialog)", command=lambda: open_verification_dialog(app))
+    menu.add_command(label="⚡ Tezkor Verifikatsiya nusxalash", command=lambda: copy_verification_quick(app))
+    menu.add_separator()
     menu.add_command(label="📞 Tel nusxalash", command=lambda: app.copy_cell(4))
     menu.add_command(label="🆔 INN nusxalash", command=lambda: app.copy_cell(5))
     menu.add_command(label="📝 Izohni nusxalash", command=lambda: app.copy_cell(6))
@@ -348,3 +353,154 @@ def send_telegram_card(app: Any) -> None:
     text = f"🏢 {v[1]} {v[2]}\n👤 {v[3]}\n📞 {v[4]}\n🆔 {v[5]}{izoh}"
     pyperclip.copy(text)
     app.show_toast("Telegram kartasi nusxalandi!", "success")
+
+def get_selected_organization_item(app: Any) -> Optional[Dict[str, Any]]:
+    """Jadvaldan tanlangan tashkilot yozuvini aniqlash."""
+    if not hasattr(app, "tree"): return None
+    sel = app.tree.focus()
+    if not sel and app.tree.selection():
+        sel = app.tree.selection()[0]
+    if not sel: return None
+    
+    item = next((i for i in app.data if str(i.get("id")) == sel or str(i.get("uuid")) == sel), None)
+    if not item:
+        v = app.tree.item(sel)["values"]
+        if v and len(v) > 5:
+            inn = str(v[5])
+            item = next((i for i in app.data if str(i.get("inn")) == inn), None)
+    if not item:
+        v = app.tree.item(sel)["values"]
+        if v and len(v) >= 7:
+            item = {
+                "s": v[1],
+                "m": v[2],
+                "f": v[3],
+                "t": v[4],
+                "inn": v[5],
+                "izoh": v[6]
+            }
+    return item
+
+def copy_verification_quick(app: Any) -> None:
+    """Tanlangan tashkilot/xodim uchun darhol verifikatsiya matnini clipboardga nusxalash."""
+    item = get_selected_organization_item(app)
+    if not item:
+        app.show_toast("Iltimos, avval ro'yxatdan xodim yoki tashkilotni tanlang!", "warning")
+        return
+        
+    from services.verification_service import build_verification_text
+    text = build_verification_text(item)
+    pyperclip.copy(text)
+    app.show_toast("✅ Verifikatsiya shablon matni nusxalandi!", "success")
+
+def open_verification_dialog(app: Any) -> None:
+    """Professional Verifikatsiya dialog oynasi."""
+    item = get_selected_organization_item(app)
+    if not item:
+        app.show_toast("Iltimos, avval ro'yxatdan xodim yoki tashkilotni tanlang!", "warning")
+        return
+
+    from services.verification_service import build_verification_text, extract_identifiers_from_text, format_role
+    
+    win = ctk.CTkToplevel(app.root)
+    win.title("Verifikatsiya So'rovi")
+    win.geometry("520x680")
+    win.transient(app.root)
+    win.grab_set()
+
+    x = app.root.winfo_x() + (app.root.winfo_width() // 2) - 260
+    y = app.root.winfo_y() + (app.root.winfo_height() // 2) - 340
+    win.geometry(f"+{x}+{y}")
+
+    # Sarlavha
+    ctk.CTkLabel(win, text="🛡 Verifikatsiya So'rovi", font=("Segoe UI", 20, "bold"), text_color=("#1e3a8a", "#60a5fa")).pack(pady=(20, 5))
+    ctk.CTkLabel(win, text="Rasmiy tasdiqlash uchun ma'lumotlar shabloni", font=("Segoe UI", 12), text_color="gray").pack(pady=(0, 15))
+
+    container = ctk.CTkScrollableFrame(win, fg_color="transparent")
+    container.pack(fill="both", expand=True, padx=25, pady=(0, 15))
+
+    auto_jshr, auto_seriya = extract_identifiers_from_text(item.get("izoh", ""))
+    init_jshr = item.get("jshr") or auto_jshr or ""
+    init_seriya = item.get("seriya") or auto_seriya or ""
+    init_role = format_role(item.get("s", ""), item.get("m", ""))
+
+    fields = [
+        ("m", "Tashkilot nomi", item.get("m", "")),
+        ("inn", "-INN", item.get("inn", "")),
+        ("f", "F.I.O", item.get("f", "")),
+        ("jshr", "JSHR (14 xonali)", init_jshr),
+        ("seriya", "Pasport Seriya", init_seriya),
+        ("role", "Lavozimi", init_role),
+    ]
+
+    entries = {}
+    for key, label_txt, default_val in fields:
+        row = ctk.CTkFrame(container, fg_color="transparent")
+        row.pack(fill="x", pady=4)
+        ctk.CTkLabel(row, text=label_txt, font=("Segoe UI", 12, "bold"), anchor="w", width=140).pack(side="left")
+        e = ctk.CTkEntry(row, font=("Segoe UI", 13), height=34)
+        e.pack(side="right", fill="x", expand=True)
+        e.insert(0, str(default_val or ""))
+        entries[key] = e
+
+    # Live Preview Box
+    ctk.CTkLabel(container, text="📄 Shablon ko'rinishi (Jonli):", font=("Segoe UI", 12, "bold"), anchor="w").pack(fill="x", pady=(15, 5))
+    
+    txt_preview = tk.Text(container, height=8, font=("Consolas", 11), bg="#1e293b", fg="#f8fafc", bd=0, padx=10, pady=8)
+    txt_preview.pack(fill="x", pady=(0, 10))
+
+    def update_preview(*args):
+        m_val = entries["m"].get().strip()
+        inn_val = entries["inn"].get().strip()
+        f_val = entries["f"].get().strip()
+        jshr_val = entries["jshr"].get().strip()
+        seriya_val = entries["seriya"].get().strip()
+        role_val = entries["role"].get().strip()
+        
+        simulated = {"m": m_val, "inn": inn_val, "f": f_val}
+        generated = build_verification_text(simulated, jshr=jshr_val, seriya=seriya_val, role=role_val)
+        txt_preview.config(state="normal")
+        txt_preview.delete("1.0", tk.END)
+        txt_preview.insert("1.0", generated)
+        txt_preview.config(state="disabled")
+
+    for e in entries.values():
+        e.bind("<KeyRelease>", update_preview)
+
+    update_preview()
+
+    # Tugmalar
+    btn_frame = ctk.CTkFrame(win, fg_color="transparent")
+    btn_frame.pack(fill="x", padx=25, pady=(0, 20))
+
+    def do_copy():
+        txt_preview.config(state="normal")
+        content = txt_preview.get("1.0", tk.END).strip()
+        txt_preview.config(state="disabled")
+        pyperclip.copy(content)
+        
+        # JSHR va Seriyani bazaga saqlab qo'yish
+        jshr_val = entries["jshr"].get().strip()
+        seriya_val = entries["seriya"].get().strip()
+        if (jshr_val or seriya_val) and hasattr(app, "data_manager"):
+            real_item = next((i for i in app.data if str(i.get("id")) == str(item.get("id")) or str(i.get("inn")) == str(item.get("inn"))), None)
+            if real_item:
+                if jshr_val: real_item["jshr"] = jshr_val
+                if seriya_val: real_item["seriya"] = seriya_val
+                app.data_manager.save_data()
+        
+        app.show_toast("✅ Verifikatsiya matni nusxalandi!", "success")
+        win.destroy()
+
+    def do_send_telegram():
+        import urllib.parse
+        txt_preview.config(state="normal")
+        content = txt_preview.get("1.0", tk.END).strip()
+        txt_preview.config(state="disabled")
+        encoded = urllib.parse.quote(content)
+        webbrowser.open(f"https://t.me/share/url?url={encoded}")
+
+    ctk.CTkButton(btn_frame, text="📋 Nusxalash (Clipboard)", command=do_copy, fg_color="#2563eb", hover_color="#1d4ed8", font=("Segoe UI", 13, "bold"), height=38).pack(side="left", fill="x", expand=True, padx=(0, 5))
+    ctk.CTkButton(btn_frame, text="✈ Telegram", command=do_send_telegram, fg_color="#0088cc", hover_color="#006699", font=("Segoe UI", 13, "bold"), height=38, width=110).pack(side="left", padx=5)
+    ctk.CTkButton(btn_frame, text="Yopish", command=win.destroy, fg_color="#64748b", hover_color="#475569", font=("Segoe UI", 12), height=38, width=80).pack(side="right", padx=(5, 0))
+
