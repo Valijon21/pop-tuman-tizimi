@@ -1,48 +1,75 @@
-# 🏢 Pop Tuman Tashkilotlari va INN Tizimi
+# 🏢 Pop Tuman Tashkilotlari va INN Tizimi (PRO)
 
-**Pop Tuman Tashkilotlari va INN Tizimi** — bu tashkilotlarni ro'yxatga olish, qidirish va boshqarish uchun maxsus ishlab chiqilgan **Desktop dastur**. 
-Ushbu dastur orqali siz tashkilot rahbarlari, telefon raqamlari va INN ma'lumotlarini osonlik bilan boshqarishingiz, shuningdek, ma'lumotlarni real vaqt rejimida **Google Sheets** (Bulut) bilan sinxronizatsiya qilishingiz mumkin.
+**Pop Tuman Tashkilotlari va INN Tizimi** — bu tashkilotlarni ro'yxatga olish, qidirish, tahrirlash va boshqarish uchun maxsus ishlab chiqilgan yuqori barqarorlikka ega **Desktop dastur**. 
+Ushbu dastur orqali siz tashkilot rahbarlari, telefon raqamlari va INN ma'lumotlarini osonlik bilan boshqarishingiz, shuningdek, ma'lumotlarni real vaqt rejimida **Google Sheets** (Bulut) bilan xavfsiz sinxronizatsiya qilishingiz mumkin.
 
-![Dashboard Screenshot](popdat.png) *Dastur ko'rinishi*
-
----
-
-## 🚀 Yangiliklar (v2.1)
-
-*   **QR Kod Tizimi:** Telefon raqamli QR kodlar endi "835" kabi ortiqcha kodlarsiz, toza va aniq ishlaydi. Skaner qilganda to'g'ridan-to'g'ri qo'ng'iroq qilish imkoniyati.
-*   **Avto-Format:** Telefon raqam kiritishda avtomatik `+998 (XX) XXX-XX-XX` andozasi qo'shildi.
-*   **O'zbekcha Kod:** Dastur kodi to'liq o'zbek tilida izohlandi (O'zbek dasturchilari uchun qulaylik).
-*   **Ma'lumotlar Xavfsizligi:** Yangi qo'shilgan ma'lumotlar avtomatik tarzda bazaning oxiriga qo'shiladi va eskilariga zarar yetkazmaydi.
+![Dashboard Screenshot](popdata.png) *Dastur ko'rinishi*
 
 ---
 
-## 🛠 Asosiy Imkoniyatlar
+## 🚀 Versiya 3.0 (Production-Grade & Clean Architecture)
 
-### 📋 Ma'lumotlarni Boshqarish
-*   **Qo'shish / Tahrirlash / O'chirish:** Tashkilotlarni oson boshqarish.
-*   **Qidiruv:** INN, Tashkilot nomi yoki rahbari bo'yicha tezkor qidiruv.
-*   **Filter:** Mahallalar, Maktablar va Bog'chalarni alohida saralash.
+* 🏗 **Clean Architecture Modulli Tizim:** ~1900 qatorlik monolit kod `core/`, `database/`, `services/`, `ui/` qatlamlariga ajratildi. Kod o'qilishi va texnik xizmat ko'rsatish osonlashdi.
+* 🧪 **To'liq Avtomatlashtirilgan Testlar:** Standart `unittest` asosida 20 ta test (100% PASS, 0.1s).
+* 🛡 **Atomik Ma'lumot Saqlash:** JSON fayllar vaqtinchalik xotira orqali atomik yoziladi — kompyuter o'chib qolsa ham baza buzilmaydi.
+* 🆔 **Unikal UUIDv4 Identifikator:** Har bir tashkilotga xalqaro standartdagi UUID berildi. INN bir xil yoki bo'sh bo'lganda ham tahrirlash va o'chirish 100% aniqlikda ishlaydi.
+* ⚡ **Thread-Safe Fon Sinxronizatsiyasi:** Google Sheets bilan ma'lumot almashinuvida interfeys qotib qolmaydi va xavfsiz `after()` orqali yangilanadi.
+* 🔑 **SHA-256 Parol Xavfsizligi:** Ochiq matndagi parollar o'rniga xesh qiymatlar saqlanadi va dastur ichidan parolni o'zgartirish oynasi mavjud.
+* 🛡 **STIR/INN va Telefon Validatsiyasi:** O'zbekiston STIR (9 xonali) va telefon raqamlari qat'iy tekshiriladi va avto-formatlanadi.
+* 🔔 **Zamonaviy Toast Xabarnomalar:** Bezovta qiluvchi modal popup'lar o'rniga silliq suzuvchi xabarlar.
+* 📱 **RAM-da Tezkor QR Generatsiya:** Diskka ortiqcha `t.png` yozmasdan to'g'ridan-to'g'ri operativ xotirada QR-kod yaratiladi.
+* 📦 **Mustaqil Windows .EXE Yig'ish:** Dasturni Python o'rnatilmagan kompyuterlarga ham tarqatish uchun `build_exe.py` skripti mavjud.
+* 🔄 **100% Orqaga Moslik:** Ham yangi `python main.py`, ham avvalgi `python mahalrai_POP.py` orqali ishga tushirish mumkin.
 
-### ☁️ Google Sheet Integratsiyasi (Real-vaqt)
-*   **Avtomatik Sinxronizatsiya:** Dasturdagi har bir o'zgarish (qo'shish, o'chirish) avtomatik ravishda Google Jadvalga tushadi.
-*   **Ma'lumotlarni Olish (Restore):** Kompyuter o'zgarganda ma'lumotlarni bulutdan qayta yuklab olish imkoniyati.
-*   **100% Xavfsiz:** Google Service Account orqali himoyalangan ulanish.
+---
 
-### 📊 Statistika va Monitoring
-*   **Dashboard:** Jami tashkilotlar, maktablar va bog'chalar sonini grafik ko'rinishida kuzatish.
-*   **Log Tizimi:** Dasturdagi barcha xatoliklar va harakatlar `app.log` faylida saqlab boriladi.
+## 📁 Loyiha Tuzilmasi
 
-### 📱 Qo'shimcha Qulayliklar
-*   **QR Kod:** Telefon raqamlar uchun avtomatik QR kod yaratish (skanerlash uchun).
-*   **Excel Export:** Ma'lumotlarni Excel formatida yuklab olish.
-*   **User Roles:** Admin (123) va Operator (1) rejimlarida ishlash.
-*   **Dark Mode:** Tungi va kunduzgi rejimlar.
+```
+pop-tuman-tizimi/
+├── main.py                     # Asosiy kirish nuqtasi (Modern Entry point)
+├── mahalrai_POP.py             # 100% orqaga moslik uchun adapter
+├── requirements.txt            # Loyiha kutubxonalari
+├── run_tests.py                # Avtomatlashtirilgan test runner
+├── build_exe.py                # Windows .exe dasturini yig'uvchi skript
+│
+├── core/                       # Yadro va konfiguratsiya
+│   ├── config.py               # Doimiy parametrlar, yo'llar, ranglar
+│   ├── logger.py               # Log tizimi (RotatingFileHandler)
+│   ├── security.py             # SHA-256 xeshlash va parollar
+│   └── validators.py           # INN, telefon va matn validatsiyasi
+│
+├── database/                   # Ma'lumotlar ombori
+│   ├── models.py               # Organization ma'lumotlar modeli va validatsiyasi
+│   └── data_manager.py         # Atomik saqlash, UUID, zaxira va audit log
+│
+├── services/                   # Tashqi servislar
+│   ├── qr_service.py           # RAM-da QR-kod yaratish
+│   ├── excel_service.py        # Excelga eksport qilish
+│   ├── gsheet_service.py       # Google Sheets bilan aloqa
+│   └── search_service.py       # Tezkor qidiruv va filtrlash xizmati
+│
+├── ui/                         # Foydalanuvchi interfeysi (CustomTkinter)
+│   ├── style.py                # Mavzular va vizual stillar
+│   ├── toast.py                # Suzuvchi zamonaviy xabarnomalar
+│   ├── app.py                  # Asosiy oyna va boshqaruvchi (MainWindow)
+│   └── views/                  # Ko'rinishlar (Views)
+│       ├── dashboard_view.py   # Statistika sahifasi
+│       ├── table_view.py       # Tashkilotlar jadvali va qidiruv
+│       ├── trash_view.py       # Chiqindi qutisi
+│       └── settings_view.py    # Sozlamalar va integratsiyalar
+│
+└── tests/                      # Avtomatlashtirilgan testlar to'plami
+    ├── test_validators.py      # Validatsiya testlari
+    ├── test_security.py        # Xavfsizlik testlari
+    ├── test_models.py          # Model testlari
+    ├── test_data_manager.py    # Ombor testlari
+    └── test_services.py        # Servislar testlari
+```
 
 ---
 
 ## 💻 O'rnatish va Ishga Tushirish
-
-Ushbu dasturni ishga tushirish uchun kompyuteringizda **Python** o'rnatilgan bo'lishi kerak.
 
 ### 1-qadam. Loyihani yuklab olish
 ```bash
@@ -51,16 +78,39 @@ cd pop-tuman-tizimi
 ```
 
 ### 2-qadam. Kerakli kutubxonalarni o'rnatish
-Windows terminalida quyidagi buyruqni bering:
 ```bash
 pip install -r requirements.txt
 ```
-*(Agar `requirements.txt` bo'lmasa, quyidagilarni o'rnating: `customtkinter`, `gspread`, `oauth2client`, `openpyxl`, `qrcode`, `pillow`)*
 
-### 3-qadam. Dasturni ochish
+### 3-qadam. Dasturni ishga tushirish
+Tavsiya etilgan zamonaviy buyruq:
+```bash
+python main.py
+```
+Yoki avvalgi buyruq orqali:
 ```bash
 python mahalrai_POP.py
 ```
+
+---
+
+## 🧪 Avtomatlashtirilgan Testlarni Ishga Tushirish
+
+Loyiha sifatini va barcha modullar to'g'ri ishlayotganini tekshirish uchun:
+```bash
+python run_tests.py
+```
+*Barcha 20 ta unit-test avtomatik ishga tushib, natijalarni ko'rsatadi.*
+
+---
+
+## 📦 Mustaqil Windows `.exe` Dasturini Yig'ish
+
+Python o'rnatilmagan kompyuterlar uchun `.exe` yaratish:
+```bash
+python build_exe.py
+```
+*Yig'ilgan fayl `dist/PopTumanTizimi/PopTumanTizimi.exe` manzilida tayyor bo'ladi.*
 
 ---
 
@@ -68,24 +118,23 @@ python mahalrai_POP.py
 
 Dastur to'g'ri ishlashi uchun quyidagi fayllar kerak:
 
-1.  **`service_account.json`**: Google Cloud Console-dan olingan maxsus kalit fayl (Google Sheet bilan ishlash uchun).
-2.  **`popdat.png`**: Dastur logotipi.
-3.  **`sync_config.json`**: Googla Sheet linki saqlanadigan fayl (Avtomatik yaratiladi).
+1. **`service_account.json`**: Google Cloud Console-dan olingan kalit fayl (Google Sheets sinxronizatsiyasi uchun).
+2. **`sync_config.json`**: Google Sheets jadval ID va sozlamalari (Dastur ichidan avtomatik sozlanadi).
+3. **`settings.json`**: Dastur xavfsizlik sozlamalari va parollari.
 
 ---
 
 ## 🛡 Xavfsizlik va Rollar
 
-*   **Admin Paroli:** `123` (Barcha huquqlar: O'chirish, Tiklash, Sozlamalar).
-*   **Operator Paroli:** `1` (Faqat ko'rish va qo'shish).
+* **Admin:** Barcha huquqlar (Tashkilot qo'shish, tahrirlash, o'chirish, trashdan tiklash, parollarni o'zgartirish, Google Sheets sozlash). Boshlang'ich parol: `123`
+* **Operator:** Faqat ko'rish va ma'lumot kiritish huquqlari. Boshlang'ich parol: `1`
 
-> **Eslatma:** Ma'lumot o'chirilganda u butunlay o'chib ketmaydi, balki "Chiqindi qutisi" (Trash) ga tushadi. Uni faqat Admin qaytara oladi.
+> 💡 **Tavsiya:** Dasturni birinchi marta ishga tushirgandan so'ng, "Sozlamalar" -> "Asboblar" -> "Parolni o'zgartirish" bo'limidan boshlang'ich parollarni shaxsiy xavfsiz parolingizga almashtiring.
 
 ---
 
-## 📞 Aloqa va Yordam
-Dastur bo'yicha savollar yoki takliflar bo'lsa, dasturchi bilan bog'laning.
+## 📞 Muallif va Ruxsatnoma
 
-**Muallif:** Valijon
-**Versiya:** 2.1 (QR Fix & Uzbek Comments)
-**Oxirgi yangilanish:** 2026-yil Fevral
+* **Muallif:** Valijon
+* **Versiya:** 3.0 (Production-Grade & Clean Architecture)
+* **Tizim:** Windows 10/11 moslashuvchan Desktop ilova

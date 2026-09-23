@@ -1,38 +1,47 @@
-# --- 1. VIRTUAL MUHIT (Eng muhimi) ---
-# Kutubxonalar papkasi GitHubga yuklanmasligi kerak (juda og'ir)
+# --- 1. VIRTUAL MUHIT ---
 .venv/
 venv/
 env/
+ENV/
 
-# --- 2. PYTHON KESH FAYLLARI ---
-# Python ishlaganda hosil bo'ladigan vaqtinchalik fayllar
+# --- 2. PYTHON KESH VA TEST FAYLLARI ---
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
 
 # --- 3. MA'LUMOTLAR BAZASI VA SOZLAMALAR ---
-# Haqiqiy odamlarning ma'lumotlari bor faylni yuklamagan ma'qul
-
 trash.json
-
 backups/
+*.tmp
+activity_log.json
 
-# SIRLI KALITLAR (ENG MUHIMI)
+# --- 4. SIRLI KALITLAR VA SOZLAMALAR (MAXFIY) ---
 service_account.json
 norse-botany-*.json
 sync_config.json
 gist_config.txt
 
-# --- 4. LOGLAR VA VAQTINCHALIK FAYLLAR ---
-app.log
+# --- 5. LOGLAR ---
+*.log
+app.log*
 Thumbs.db
 
-# --- 5. RASMLAR ---
-# Barcha rasmlarni ignor qilish (chunki QR kodlar ko'payib ketadi)
+# --- 6. PYINSTALLER / BUILD CHIQISHLARI ---
+build/
+dist/
+*.spec
+
+# --- 7. RASMLAR VA STATIKA ---
 *.png
 *.jpg
-# LEKIN LOGO KERAK:
+*.jpeg
 !popdata.png
 
-# --- 6. TIZIM VA MUHARRIR FAYLLARI ---
+# --- 8. IDE VA MUHARRIR FAYLLARI ---
 .vscode/
 .idea/
+*.swp
+*.swo

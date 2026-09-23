@@ -1,0 +1,197 @@
+import json
+import os
+import shutil
+import time
+import uuid
+from typing import List, Dict, Any, Optional
+
+from core.config import (
+    DB_FILE, TRASH_FILE, BACKUP_DIR, LOG_FILE, SETTINGS_FILE,
+    CATEGORIES_FILE, DEFAULT_CATEGORIES
+)
+from core.logger import logger
+from core.security import hash_password
+
+class DataManager:
+    """Ma'lumotlar omborini xavfsiz boshqarish (Persistence layer, Dependency-Injected)."""
+
+    def __init__(
+        self,
+        db_file: Optional[str] = None,
+        trash_file: Optional[str] = None,
+        categories_file: Optional[str] = None,
+        log_file: Optional[str] = None,
+        settings_file: Optional[str] = None,
+        backup_dir: Optional[str] = None
+    ):
+        self.db_file = db_file or DB_FILE
+        self.trash_file = trash_file or TRASH_FILE
+        self.categories_file = categories_file or CATEGORIES_FILE
+        self.log_file = log_file or LOG_FILE
+        self.settings_file = settings_file or SETTINGS_FILE
+        self.backup_dir = backup_dir or BACKUP_DIR
+
+        self.ensure_backup_dir()
+        self.data: List[Dict[str, Any]] = self.load_json(self.db_file)
+        self.trash: List[Dict[str, Any]] = self.load_json(self.trash_file)
+        self.categories: List[str] = self.load_json(self.categories_file)
+        self.activity_log: List[Dict[str, Any]] = self.load_json(self.log_file)
+        self.settings: Dict[str, Any] = self.load_json(self.settings_file)
+
+        # Standart sozlamalar
+        if not isinstance(self.settings, dict):
+            self.settings = {}
+
+        if "font_size" not in self.settings:
+            self.settings["font_size"] = 15
+
+        # Standart parollar (Admin: 123, Operator: 1)
+        if "passwords" not in self.settings:
+            self.settings["passwords"] = {
+                "admin": hash_password("123"),
+                "operator": hash_password("1")
+            }
+            self.save_settings()
+
+        # Standart toifalar
+        if not self.categories:
+            self.categories = list(DEFAULT_CATEGORIES)
+            self.save_categories()
+
+        # Har bir yozuvda unikal UUID bo'lishini kafolatlash
+        has_new_ids = False
+        for item in self.data:
+            if not item.get("id"):
+                item["id"] = item.get("uuid") or str(uuid.uuid4())
+                has_new_ids = True
+
+        for item in self.trash:
+            if not item.get("id"):
+                item["id"] = item.get("uuid") or str(uuid.uuid4())
+
+        if has_new_ids:
+            self.save_data()
+
+    def ensure_backup_dir(self) -> None:
+        """Zaxira nusxalar papkasi mavjudligini ta'minlash."""
+        if not os.path.exists(self.backup_dir):
+            try:
+                os.makedirs(self.backup_dir, exist_ok=True)
+            except Exception as e:
+                logger.error(f"Zaxira papkasini yaratishda xatolik: {e}")
+
+    def load_json(self, filepath: str) -> Any:
+        """Fayldan xavfsiz o'qish (buzilgan taqdirda zaxiradan tiklash)."""
+        if os.path.exists(filepath):
+            try:
+                with open(filepath, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception as e:
+                logger.error(f"Fayl o'qishda xatolik ({filepath}): {e}")
+                # Asosiy baza buzilgan bo'lsa, zaxiradan tiklashga urinish
+                if filepath == self.db_file and os.path.exists(self.backup_dir):
+                    backups = sorted([os.path.join(self.backup_dir, f) for f in os.listdir(self.backup_dir) if f.endswith(".json")])
+                    if backups:
+                        try:
+                            latest_b = backups[-1]
+                            logger.warning(f"Zaxira nusxadan tiklanmoqda: {latest_b}")
+                            with open(latest_b, "r", encoding="utf-8") as bf:
+                                return json.load(bf)
+                        except Exception as be:
+                            logger.error(f"Zaxiradan tiklash amalga oshmadi: {be}")
+                return [] if filepath != self.settings_file else {}
+        return [] if filepath != self.settings_file else {}
+
+    def save_json(self, filepath: str, data: Any) -> None:
+        """Atomik saqlash: ma'lumot avval .tmp ga to'liq yozilib, keyin xavfsiz almashtiriladi."""
+        temp_file = f"{filepath}.tmp"
+        try:
+            with open(temp_file, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4, ensure_ascii=False)
+            os.replace(temp_file, filepath)
+        except Exception as e:
+            logger.error(f"Faylni atomik saqlashda xatolik ({filepath}): {e}")
+            if os.path.exists(temp_file):
+                try:
+                    os.remove(temp_file)
+                except Exception:
+                    pass
+
+    def save_data(self) -> None:
+        self.save_json(self.db_file, self.data)
+
+    def save_trash(self) -> None:
+        self.save_json(self.trash_file, self.trash)
+
+    def save_categories(self) -> None:
+        self.save_json(self.categories_file, self.categories)
+
+    def save_settings(self) -> None:
+        self.save_json(self.settings_file, self.settings)
+
+    def log_activity(self, user: Optional[str], action: str, details: str) -> None:
+        """Tizimdagi harakatlarni qayd etish."""
+        try:
+            timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+            entry = {
+                "time": timestamp,
+                "user": user or "Tizim",
+                "action": action,
+                "details": details
+            }
+            self.activity_log.insert(0, entry)
+            if len(self.activity_log) > 1000:
+                self.activity_log.pop()
+            self.save_json(self.log_file, self.activity_log)
+        except Exception as e:
+            logger.error(f"Log yozishda xatolik: {e}")
+
+    def move_to_trash(self, item: Dict[str, Any]) -> bool:
+        """Yozuvni Chiqindi qutisiga ko'chirish."""
+        target_id = item.get("id")
+        target = next((x for x in self.data if x.get("id") and x.get("id") == target_id), None) if target_id else (item if item in self.data else None)
+        if target:
+            self.data.remove(target)
+            target["deleted_at"] = time.strftime("%Y-%m-%d %H:%M:%S")
+            self.trash.append(target)
+            self.save_data()
+            self.save_trash()
+            return True
+        return False
+
+    def restore_from_trash(self, item: Dict[str, Any]) -> bool:
+        """Chiqindi qutisidan asosiy bazaga tiklash."""
+        target_id = item.get("id")
+        target = next((x for x in self.trash if x.get("id") and x.get("id") == target_id), None) if target_id else (item if item in self.trash else None)
+        if target:
+            self.trash.remove(target)
+            if "deleted_at" in target:
+                del target["deleted_at"]
+            self.data.append(target)
+            self.save_data()
+            self.save_trash()
+            return True
+        return False
+
+    def permanent_delete(self, item: Dict[str, Any]) -> bool:
+        """Chiqindi qutisidan butunlay o'chirish."""
+        target_id = item.get("id")
+        target = next((x for x in self.trash if x.get("id") and x.get("id") == target_id), None) if target_id else (item if item in self.trash else None)
+        if target:
+            self.trash.remove(target)
+            self.save_trash()
+            return True
+        return False
+
+    def backup_data(self) -> None:
+        """Ma'lumotlar bazasining zaxira nusxasini yaratish (oxirgi 10 ta nusxa)."""
+        if os.path.exists(self.db_file):
+            timestamp = time.strftime("%Y%m%d_%H%M%S")
+            backup_path = os.path.join(self.backup_dir, f"backup_{timestamp}.json")
+            try:
+                shutil.copy2(self.db_file, backup_path)
+                backups = sorted([os.path.join(self.backup_dir, f) for f in os.listdir(self.backup_dir) if f.endswith(".json")])
+                while len(backups) > 10:
+                    os.remove(backups.pop(0))
+            except Exception as e:
+                logger.error(f"Zaxira olishda xatolik: {e}")
