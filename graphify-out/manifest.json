@@ -275,8 +275,8 @@
     "semantic_hash": ""
   },
   "tests/test_qt_views.py": {
-    "mtime": 1790160755.7797015,
-    "ast_hash": "ff25e57bf53aa24e761895ba04b095f7",
+    "mtime": 1790162079.3442583,
+    "ast_hash": "960e59ece25b92e265e309e9a63ab5aa",
     "semantic_hash": ""
   },
   "ui_qt/__init__.py": {
@@ -300,8 +300,8 @@
     "semantic_hash": ""
   },
   "ui_qt/styles.py": {
-    "mtime": 1790161184.8492537,
-    "ast_hash": "2df401a6e5756b172406cc478e9a581f",
+    "mtime": 1790162048.3946376,
+    "ast_hash": "cb62a4cf9b52030bc16e55906ec14ec8",
     "semantic_hash": ""
   },
   "ui_qt/views/__init__.py": {
@@ -320,8 +320,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/dashboard_view.py": {
-    "mtime": 1790161265.225595,
-    "ast_hash": "110151a2a826ea0d1064f263e8bc0f71",
+    "mtime": 1790162013.4644375,
+    "ast_hash": "833806b0c4c5408485716aa262823613",
     "semantic_hash": ""
   },
   "ui_qt/views/history_view.py": {
@@ -340,8 +340,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/org_edit_dialog.py": {
-    "mtime": 1790161298.7652209,
-    "ast_hash": "c5b84e481ee87e3c4f71e8fe70127d4e",
+    "mtime": 1790161891.2768471,
+    "ast_hash": "a3a4e9dbb8cfcbc19ffee75ccb79cd66",
     "semantic_hash": ""
   },
   "ui_qt/views/settings_view.py": {
@@ -362,6 +362,11 @@
   "ui_qt/views/verification_dialog.py": {
     "mtime": 1790161322.809234,
     "ast_hash": "ed8bf9dc79dfe12fcad6ac31fa701410",
+    "semantic_hash": ""
+  },
+  "ui_qt/components/widgets.py": {
+    "mtime": 1790161983.9581845,
+    "ast_hash": "108dc39eb81d3484f332a7a0a0385cf9",
     "semantic_hash": ""
   }
 }

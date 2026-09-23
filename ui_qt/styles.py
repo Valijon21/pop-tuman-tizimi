@@ -25,8 +25,8 @@ QWidget {
 QFrame#sidebar {
     background-color: #0b1120;
     border-right: 1px solid #1e293b;
-    min-width: 195px;
-    max-width: 205px;
+    min-width: 222px;
+    max-width: 232px;
 }
 
 QLabel#sidebar_title {
@@ -57,14 +57,14 @@ QLabel#sidebar_section {
 /* Sidebar Tugmalari */
 QPushButton.sidebar_btn {
     text-align: left;
-    padding: 6px 12px;
+    padding: 6px 10px;
     border: none;
     border-radius: 6px;
     background-color: transparent;
     color: #94a3b8;
     font-size: 11.5px;
     font-weight: 600;
-    margin: 1px 6px;
+    margin: 1px 4px;
     min-height: 18px;
 }
 
@@ -494,8 +494,8 @@ QWidget {
 QFrame#sidebar {
     background-color: #ffffff;
     border-right: 1px solid #e2e8f0;
-    min-width: 195px;
-    max-width: 205px;
+    min-width: 222px;
+    max-width: 232px;
 }
 
 QLabel#sidebar_title {
@@ -526,14 +526,14 @@ QLabel#sidebar_section {
 /* Sidebar Tugmalari */
 QPushButton.sidebar_btn {
     text-align: left;
-    padding: 6px 12px;
+    padding: 6px 10px;
     border: none;
     border-radius: 6px;
     background-color: transparent;
     color: #475569;
     font-size: 11.5px;
     font-weight: 600;
-    margin: 1px 6px;
+    margin: 1px 4px;
     min-height: 18px;
 }
 

@@ -113,6 +113,65 @@ class TestQtArchitecture(unittest.TestCase):
         self.assertIn("verfikatsiya bervoring", copied)
         self.assertIn("30807995910027", copied)
 
+    def test_dashboard_charts_and_cards(self):
+        from ui_qt.components.widgets import (
+            ClickableCard, CategoryDonutChart, CategoryLegend, CategoryBarChart
+        )
+        # 1. ClickableCard
+        card = ClickableCard()
+        clicked_flag = []
+        card.clicked.connect(lambda: clicked_flag.append(True))
+        card.clicked.emit()
+        self.assertTrue(clicked_flag)
+
+        # 2. CategoryDonutChart
+        donut = CategoryDonutChart()
+        test_data = [
+            ("Mahalla (MFY)", 74, "#10b981"),
+            ("Maktablar", 76, "#f59e0b"),
+            ("Bog'chalar (MTT)", 57, "#8b5cf6"),
+        ]
+        donut.set_data(test_data)
+        self.assertEqual(donut.total, 207)
+        self.assertEqual(len(donut.segments), 3)
+
+        # 3. CategoryLegend
+        legend = CategoryLegend()
+        selected_cat = []
+        legend.category_selected.connect(lambda c: selected_cat.append(c))
+        legend.set_data(test_data)
+        self.assertTrue(legend.layout.count() > 0)
+
+        # 4. CategoryBarChart
+        bars = CategoryBarChart()
+        bars.set_data(test_data)
+        self.assertTrue(bars.layout.count() > 0)
+
+    def test_org_edit_dialog_instantiation(self):
+        from ui_qt.views.org_edit_dialog import OrgEditDialog
+        # Test add new dialog
+        dlg_add = OrgEditDialog()
+        self.assertIsNotNone(dlg_add)
+        self.assertFalse(dlg_add.is_edit)
+
+        # Test edit existing dialog
+        sample_org = {
+            "s": "Maktab",
+            "m": "22-sonli Maktab",
+            "f": "Dehqanova Azimaxon",
+            "t": "+998901234567",
+            "inn": "206907205",
+            "jshr": "30807995910027",
+            "seriya": "AB4561091",
+            "lavozim": "Direktor",
+            "izoh": "Test maktab"
+        }
+        dlg_edit = OrgEditDialog(item=sample_org)
+        self.assertIsNotNone(dlg_edit)
+        self.assertTrue(dlg_edit.is_edit)
+        self.assertEqual(dlg_edit.edit_inn.text(), "206907205")
+        self.assertEqual(dlg_edit.edit_name.text(), "22-sonli Maktab")
+
     def test_main_window_instantiation(self):
         from ui_qt.app_window import MainWindow
         win = MainWindow()

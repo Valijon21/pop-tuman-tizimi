@@ -6,7 +6,8 @@ import uuid
 from typing import Optional, Dict, Any
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
-    QLineEdit, QComboBox, QTextEdit, QPushButton, QMessageBox, QFrame
+    QLineEdit, QComboBox, QTextEdit, QPushButton, QMessageBox, QFrame,
+    QScrollArea, QWidget
 )
 from PyQt5.QtCore import Qt
 from core.validators import (
