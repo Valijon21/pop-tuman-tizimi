@@ -23,7 +23,7 @@ class OrgEditDialog(QDialog):
         super().__init__(parent)
         self.app = app
         self.item = item or {}
-        self.is_edit = bool(item)
+        self.is_edit = bool(item and not item.get("_is_new"))
         self.current_theme = getattr(app, "current_theme", "dark")
 
         self.setWindowTitle("Tashkilotni Tahrirlash" if self.is_edit else "Yangi Tashkilot Qo'shish")
@@ -35,7 +35,7 @@ class OrgEditDialog(QDialog):
         self.setStyleSheet(get_stylesheet(self.current_theme))
 
         self.setup_ui()
-        if self.is_edit:
+        if self.item:
             self.load_data()
 
     def setup_ui(self):
@@ -187,16 +187,31 @@ class OrgEditDialog(QDialog):
             return
 
         inn = self.edit_inn.text().strip()
-        if inn and not validate_inn(inn):
-            QMessageBox.warning(self, "Ogohlantirish", f"INN formati noto'g'ri (9 ta raqam bo'lishi lozim): {inn}")
+        if inn:
+            is_valid, msg_or_cleaned = validate_inn(inn)
+            if not is_valid:
+                QMessageBox.warning(self, "Ogohlantirish", f"INN formati noto'g'ri: {msg_or_cleaned}")
+                self.edit_inn.setFocus()
+                return
+            inn = msg_or_cleaned
 
         jshr = self.edit_jshr.text().strip()
-        if jshr and not validate_jshshir(jshr):
-            QMessageBox.warning(self, "Ogohlantirish", f"JSHSHIR 14 ta raqam bo'lishi lozim: {jshr}")
+        if jshr:
+            is_valid, msg_or_cleaned = validate_jshshir(jshr)
+            if not is_valid:
+                QMessageBox.warning(self, "Ogohlantirish", f"JSHSHIR noto'g'ri: {msg_or_cleaned}")
+                self.edit_jshr.setFocus()
+                return
+            jshr = msg_or_cleaned
 
         seriya = self.edit_seriya.text().strip().upper()
-        if seriya and not validate_passport_series(seriya):
-            QMessageBox.warning(self, "Ogohlantirish", f"Pasport seriya formati noto'g'ri (masalan: AB1234567): {seriya}")
+        if seriya:
+            is_valid, msg_or_cleaned = validate_passport_series(seriya)
+            if not is_valid:
+                QMessageBox.warning(self, "Ogohlantirish", f"Pasport seriya formati noto'g'ri: {msg_or_cleaned}")
+                self.edit_seriya.setFocus()
+                return
+            seriya = msg_or_cleaned
 
         phone = self.edit_phone.text().strip()
         bux_tel = self.edit_bux_tel.text().strip()

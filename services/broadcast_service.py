@@ -4,6 +4,7 @@ Ommaviy Xabarnoma va Bildirishnoma Xizmati (Broadcast Notification Service)
 Favqulodda yig'ilishlar, sayyor qabullar va topshiriqlarni SMS / Telegram orqali tarqatish dvigateli.
 """
 from typing import List, Dict, Any, Optional
+from core.logger import logger
 
 DEFAULT_TEMPLATES = {
     "emergency": (
@@ -131,16 +132,31 @@ class BroadcastService:
         return calculate_sms_segments(text)
 
     @staticmethod
-    def send_broadcast(recipients: List[Dict[str, Any]], template: str, channels: Optional[Dict[str, bool]] = None) -> Dict[str, Any]:
+    def send_broadcast(recipients: List[Dict[str, Any]], template: str, channels: Optional[Dict[str, bool]] = None, data_manager: Any = None) -> Dict[str, Any]:
         channels = channels or {"telegram": True, "sms": True}
-        sent = len(recipients)
+        tg_sent = 0
+        tg_total = 0
         if channels.get("telegram"):
             try:
                 from services.telegram_bot import get_telegram_bot_service
-                bot = get_telegram_bot_service()
+                bot = get_telegram_bot_service(data_manager=data_manager)
                 if bot.is_configured():
-                    bot.broadcast_message(f"📢 Ommaviy Xabarnoma:\n\n{template}")
-            except Exception:
-                pass
-        return {"sent": sent, "status": "ok"}
+                    res = bot.broadcast_message(f"📢 <b>Ommaviy Xabarnoma:</b>\n\n{template}")
+                    tg_sent = res.get("sent", 0)
+                    tg_total = res.get("total", 0)
+                    logger.info(f"[BROADCAST] Telegram orqali {tg_sent}/{tg_total} ta obunachiga yuborildi.")
+                else:
+                    logger.warning("[BROADCAST] Telegram bot tokeni sozlanmagan.")
+            except Exception as e:
+                logger.error(f"[BROADCAST] Telegram yuborishda xatolik: {e}")
+
+        clean_phones = extract_clean_phone_list(recipients)
+        return {
+            "status": "ok",
+            "recipients_count": len(recipients),
+            "clean_phones_count": len(clean_phones),
+            "telegram_sent": tg_sent,
+            "telegram_subscribers": tg_total
+        }
+
 

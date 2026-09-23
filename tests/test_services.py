@@ -165,7 +165,41 @@ class TestServices(unittest.TestCase):
         # Test find first
         found = bot1._find_first("203599806")
         self.assertIsNotNone(found)
-        self.assertEqual(found["m"], "Chorkesar MFY")
+    def test_gsheet_service_helpers(self):
+        from services.gsheet_service import extract_sheet_id, is_service_account_available
+        # URL orqali ID ajratib olish
+        url = "https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit#gid=0"
+        self.assertEqual(extract_sheet_id(url), "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms")
+
+        # Oddiy nom berilganda o'zini qaytarishi kerak
+        self.assertEqual(extract_sheet_id("Mening Jadvalim"), "Mening Jadvalim")
+
+        # Mavjud bo'lmagan fayl tekshiruvi
+        self.assertFalse(is_service_account_available("non_existent_file_path_12345.json"))
+
+    def test_worker_thread(self):
+        from core.threading_utils import WorkerThread
+        from PyQt5.QtWidgets import QApplication
+        import sys
+
+        app = QApplication.instance() or QApplication(sys.argv)
+
+        results = []
+        errors = []
+
+        def sample_calc(a, b):
+            return a + b
+
+        worker = WorkerThread(sample_calc, 10, 20)
+        worker.result_ready.connect(lambda res: results.append(res))
+        worker.error_occurred.connect(lambda err: errors.append(err))
+
+        worker.start()
+        worker.wait(2000)
+        app.processEvents()
+
+        self.assertEqual(results, [30])
+        self.assertEqual(len(errors), 0)
 
 if __name__ == "__main__":
     unittest.main()

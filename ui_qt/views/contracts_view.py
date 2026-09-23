@@ -10,9 +10,10 @@ import openpyxl
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
-    QMenu, QMessageBox, QFileDialog, QFrame, QScrollArea
+    QMenu, QMessageBox, QFileDialog, QFrame, QScrollArea, QShortcut
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer, QEvent
+from PyQt5.QtGui import QKeySequence
 from ui_qt.views.cabinet_dialog import open_cabinet_dialog
 from core.logger import logger
 
@@ -26,6 +27,11 @@ class ContractsView(QWidget):
         self.current_category: str = "Barchasi"
         self.contracts_data: List[Dict[str, Any]] = []
         self.filtered_data: List[Dict[str, Any]] = []
+
+        # 250ms Debounce taymeri
+        self.search_timer = QTimer(self)
+        self.search_timer.setSingleShot(True)
+        self.search_timer.timeout.connect(self.filter_data)
 
         self.setup_ui()
         self.load_data()
@@ -84,8 +90,9 @@ class ContractsView(QWidget):
         toolbar.setSpacing(6)
 
         self.edit_search = QLineEdit()
-        self.edit_search.setPlaceholderText("🔍 Qidiruv (Nomi, INN, Buxgalter yoki Rahbar telefoni)...")
-        self.edit_search.textChanged.connect(self.filter_data)
+        self.edit_search.setPlaceholderText("🔍 Qidiruv (Nomi, INN, Buxgalter yoki Rahbar telefoni, Ctrl+F)...")
+        self.edit_search.textChanged.connect(self.on_search_changed)
+        self.edit_search.returnPressed.connect(self.filter_data)
         toolbar.addWidget(self.edit_search, 1)
 
         self.btn_clear = QPushButton("✖")
@@ -143,7 +150,13 @@ class ContractsView(QWidget):
         self.table.setSelectionMode(QTableWidget.SingleSelection)
         self.table.setContextMenuPolicy(Qt.CustomContextMenu)
         self.table.customContextMenuRequested.connect(self.show_context_menu)
+        self.table.doubleClicked.connect(self.on_table_double_clicked)
         self.table.verticalHeader().setVisible(False)
+        self.table.installEventFilter(self)
+
+        # Klaviaturadan qidiruvga o'tish (Ctrl+F)
+        self.shortcut_search = QShortcut(QKeySequence("Ctrl+F"), self)
+        self.shortcut_search.activated.connect(self.focus_search)
 
         main_layout.addWidget(self.table, 1)
 
@@ -236,6 +249,26 @@ class ContractsView(QWidget):
                 else:
                     btn.setStyleSheet("background-color: #1e293b; color: #94a3b8; font-weight: 600; border: 1px solid #334155; border-radius: 14px; padding: 5px 14px;")
 
+    def focus_search(self):
+        """Ctrl+F bosilganda qidiruv maydoniga o'tish."""
+        self.edit_search.setFocus()
+        self.edit_search.selectAll()
+
+    def on_search_changed(self):
+        """250ms Debounce bilan qidiruv."""
+        if hasattr(self, "search_timer"):
+            self.search_timer.start(250)
+        else:
+            self.filter_data()
+
+    def eventFilter(self, source, event):
+        """Jadvalda klaviatura hodisalari: Enter (tahrir)."""
+        if source == self.table and event.type() == QEvent.KeyPress:
+            if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+                self.on_table_double_clicked()
+                return True
+        return super().eventFilter(source, event)
+
     def on_category_clicked(self, cat: str):
         self.update_pill_selection(cat)
         self.filter_data()
@@ -288,6 +321,7 @@ class ContractsView(QWidget):
             inn_val = str(it.get("inn", "")).lower()
             bux_val = str(it.get("bux_tel", "")).lower()
             raxbar_val = str(it.get("t", "")).lower()
+            f_val = str(it.get("f", "")).lower()
 
             # Toifa filtri
             if cat != "Barchasi":
@@ -302,12 +336,26 @@ class ContractsView(QWidget):
 
             # Qidiruv filtri
             if query:
-                if query not in m_val and query not in inn_val and query not in bux_val and query not in raxbar_val:
+                if (query not in m_val and query not in inn_val and 
+                    query not in bux_val and query not in raxbar_val and 
+                    query not in f_val):
                     continue
 
             self.filtered_data.append(it)
 
         self.render_table_rows()
+
+    def on_table_double_clicked(self):
+        """Jadvalda 2 marta bosilganda tahrirlash oynasini ochish."""
+        row = self.table.currentRow()
+        if 0 <= row < len(self.filtered_data):
+            item = self.filtered_data[row]
+            from ui_qt.views.org_edit_dialog import OrgEditDialog
+            dlg = OrgEditDialog(parent=self, app=self.app, item=item)
+            if dlg.exec_() == OrgEditDialog.Accepted:
+                if hasattr(self.app, "refresh_all_views"):
+                    self.app.refresh_all_views()
+                self.load_data()
 
     def render_table_rows(self):
         """Jadval qatorlarini chizish."""

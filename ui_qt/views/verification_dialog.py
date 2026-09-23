@@ -162,7 +162,8 @@ class VerificationDialog(QDialog):
             if self.app and hasattr(self.app, "data_manager"):
                 token = self.app.data_manager.settings.get("telegram_bot_token", "")
             if token:
-                bot = TelegramBotService(token)
+                dm = getattr(self.app, "data_manager", None)
+                bot = TelegramBotService(dm, token)
                 res = bot.broadcast_message(text)
                 sent = res.get("sent", 0)
                 if sent > 0:

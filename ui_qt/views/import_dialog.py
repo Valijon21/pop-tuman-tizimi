@@ -13,6 +13,7 @@ from PyQt5.QtCore import Qt
 from services.excel_service import import_organizations_from_file
 from ui_qt.styles import get_stylesheet
 from core.logger import logger
+from core.threading_utils import WorkerThread
 
 class ImportDialog(QDialog):
     """Excel / CSV ommaviy import dialog oynasi."""
@@ -113,28 +114,44 @@ class ImportDialog(QDialog):
             return
 
         self.lbl_file.setText(os.path.basename(file_path))
+        self.lbl_count.setText("⏳ Fayl o'qilmoqda...")
+        self.btn_choose.setEnabled(False)
+        self.btn_import.setEnabled(False)
+
+        def _read_file():
+            return import_organizations_from_file(file_path)
+
+        self._read_worker = WorkerThread(_read_file, parent=self)
+        self._read_worker.result_ready.connect(self._on_file_loaded)
+        self._read_worker.error_occurred.connect(self._on_file_read_error)
+        self._read_worker.start()
+
+    def _on_file_loaded(self, res):
+        self.btn_choose.setEnabled(True)
+        items, warnings = res
+        self.imported_items = items
+        self.lbl_count.setText(f"Topilgan yozuvlar: {len(items)} ta")
+        self.btn_import.setEnabled(bool(items))
+
+        # Jadvalni to'ldirish
+        self.table_preview.setUpdatesEnabled(False)
         try:
-            items, warnings = import_organizations_from_file(file_path)
-            self.imported_items = items
-            self.lbl_count.setText(f"Topilgan yozuvlar: {len(items)} ta")
-            self.btn_import.setEnabled(bool(items))
+            self.table_preview.setRowCount(len(items))
+            for idx, it in enumerate(items):
+                self.table_preview.setItem(idx, 0, QTableWidgetItem(str(idx + 1)))
+                self.table_preview.setItem(idx, 1, QTableWidgetItem(str(it.get("s", "-"))))
+                self.table_preview.setItem(idx, 2, QTableWidgetItem(str(it.get("m", "-"))))
+                self.table_preview.setItem(idx, 3, QTableWidgetItem(str(it.get("f", "-"))))
+                self.table_preview.setItem(idx, 4, QTableWidgetItem(str(it.get("t", "-"))))
+                self.table_preview.setItem(idx, 5, QTableWidgetItem(str(it.get("inn", "-"))))
+        finally:
+            self.table_preview.setUpdatesEnabled(True)
 
-            # Jadvalni to'ldirish
-            self.table_preview.setUpdatesEnabled(False)
-            try:
-                self.table_preview.setRowCount(len(items))
-                for idx, it in enumerate(items):
-                    self.table_preview.setItem(idx, 0, QTableWidgetItem(str(idx + 1)))
-                    self.table_preview.setItem(idx, 1, QTableWidgetItem(str(it.get("s", "-"))))
-                    self.table_preview.setItem(idx, 2, QTableWidgetItem(str(it.get("m", "-"))))
-                    self.table_preview.setItem(idx, 3, QTableWidgetItem(str(it.get("f", "-"))))
-                    self.table_preview.setItem(idx, 4, QTableWidgetItem(str(it.get("t", "-"))))
-                    self.table_preview.setItem(idx, 5, QTableWidgetItem(str(it.get("inn", "-"))))
-            finally:
-                self.table_preview.setUpdatesEnabled(True)
-
-        except Exception as e:
-            QMessageBox.critical(self, "Xatolik", f"Faylni o'qishda xatolik yuz berdi:\n{e}")
+    def _on_file_read_error(self, err_msg: str):
+        self.btn_choose.setEnabled(True)
+        self.btn_import.setEnabled(False)
+        self.lbl_count.setText("❌ Faylni o'qishda xatolik yuz berdi")
+        QMessageBox.critical(self, "Xatolik", f"Faylni o'qishda xatolik yuz berdi:\n{err_msg}")
 
     def commit_import(self):
         if not self.imported_items:
@@ -159,7 +176,9 @@ class ImportDialog(QDialog):
                 added += 1
 
             self.app.data_manager.save_data()
-            if hasattr(self.app, "filter_data"):
+            if hasattr(self.app, "refresh_all_views"):
+                self.app.refresh_all_views()
+            elif hasattr(self.app, "filter_data"):
                 self.app.filter_data()
             if hasattr(self.app, "show_toast"):
                 self.app.show_toast(f"📥 {added} ta yangi tashkilot import qilindi!", "success")

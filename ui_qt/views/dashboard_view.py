@@ -423,6 +423,18 @@ class DashboardView(QWidget):
         self.legend.set_data(chart_data)
         self.bar_chart.set_data(chart_data)
 
+        # Mini KPI ko'rsatkichlarini dinamik yangilash
+        if hasattr(self, "kpi_mfy") and self.kpi_mfy:
+            mfy_cnt = counts.get("Mahalla (MFY)", 0)
+            edu_cnt = counts.get("Maktab", 0) + counts.get("Bog'cha (MTT)", 0)
+            with_inn_cnt = sum(1 for it in data if str(it.get("inn", "")).strip())
+            inn_pct = int((with_inn_cnt / total_count * 100)) if total_count > 0 else 0
+
+            self.kpi_mfy[1].setText(f"{mfy_cnt} MFY")
+            self.kpi_edu[1].setText(f"{edu_cnt} ta")
+            self.kpi_status[1].setText(f"{inn_pct}%")
+            self.kpi_status[2].setText("INN Qamrovi")
+
         # 3. So'nggi tashkilotlar jadvalini to'ldirish (oxirgi 8 ta)
         recent_items = data[-8:] if len(data) > 8 else data[:]
         recent_items.reverse()

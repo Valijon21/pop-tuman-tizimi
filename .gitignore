@@ -23,6 +23,10 @@ service_account.json
 norse-botany-*.json
 sync_config.json
 gist_config.txt
+settings.json
+.env
+.env.*
+!.env.example
 
 # --- 5. LOGLAR ---
 *.log

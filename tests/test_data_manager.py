@@ -76,5 +76,69 @@ class TestDataManager(unittest.TestCase):
         self.assertTrue(perm_ok)
         self.assertEqual(len(dm.trash), 0)
 
+    def test_add_and_update_organization(self):
+        dm = self.get_test_dm()
+        initial_len = len(dm.data)
+
+        # 1. Yangi tashkilot qo'shish
+        new_org = {
+            "m": "Yangi Test MFY",
+            "s": "Mahalla (MFY)",
+            "inn": "305123987",
+            "f": "Alimov Jamshid",
+            "t": "+998901234567"
+        }
+        added = dm.add_organization(new_org)
+        self.assertIn("id", added)
+        self.assertEqual(len(dm.data), initial_len + 1)
+        self.assertIn("updated_at", added)
+
+        # 2. Mavjud tashkilotni tahrirlash
+        added["f"] = "Alimov Jamshid Yangilangan"
+        added["bux_tel"] = "94 592 60 04"
+        success = dm.update_organization(added)
+        self.assertTrue(success)
+
+        # Qayta o'qish (load_data)
+        reloaded = dm.load_data()
+        updated_item = next((i for i in reloaded if i.get("id") == added["id"]), None)
+        self.assertIsNotNone(updated_item)
+        self.assertEqual(updated_item["f"], "Alimov Jamshid Yangilangan")
+        self.assertEqual(updated_item["bux_tel"], "94 592 60 04")
+
+    def test_add_and_update_organization_model(self):
+        from database.models import Organization
+        dm = self.get_test_dm()
+        org = Organization(
+            m="Model Maktab",
+            s="Maktab",
+            inn="309876543",
+            f="Qodirov Botir",
+            lavozim="Direktor",
+            bux_tel="+998901234567",
+            aparat_soni=20,
+            ulangan_soni=15
+        )
+        added = dm.add_organization(org)
+        self.assertEqual(added["m"], "Model Maktab")
+        self.assertEqual(added["lavozim"], "Direktor")
+
+        # get_organization_model orqali qayta olish
+        model = dm.get_organization_model(org.id)
+        self.assertIsNotNone(model)
+        self.assertEqual(model.m, "Model Maktab")
+        self.assertEqual(model.lavozim, "Direktor")
+        self.assertEqual(model.aparat_soni, 20)
+
+        # Modelni yangilash
+        model.lavozim = "Bosh Direktor"
+        model.aparat_soni = 25
+        upd_ok = dm.update_organization(model)
+        self.assertTrue(upd_ok)
+
+        reloaded_model = dm.get_organization_model(org.id)
+        self.assertEqual(reloaded_model.lavozim, "Bosh Direktor")
+        self.assertEqual(reloaded_model.aparat_soni, 25)
+
 if __name__ == "__main__":
     unittest.main()

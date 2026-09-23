@@ -64,6 +64,10 @@ class TestSQLiteManager(unittest.TestCase):
             "s": "Bog'cha",
             "m": "5-MTT",
             "f": "Aliyeva Nargiza",
+            "lavozim": "Mudira",
+            "bux_tel": "+998901234567",
+            "aparat_soni": 12,
+            "ulangan_soni": 8,
             "t": "+998933334455",
             "inn": "301999888"
         }
@@ -71,16 +75,41 @@ class TestSQLiteManager(unittest.TestCase):
         res = self.manager.get_organization_by_id("org-single")
         self.assertIsNotNone(res)
         self.assertEqual(res["m"], "5-MTT")
+        self.assertEqual(res["lavozim"], "Mudira")
+        self.assertEqual(res["bux_tel"], "+998901234567")
+        self.assertEqual(res["aparat_soni"], 12)
+        self.assertEqual(res["ulangan_soni"], 8)
 
         # Yangilash
         item["m"] = "5-sonli Davlat Maktabgacha Ta'lim Tashkiloti"
+        item["lavozim"] = "Bosh Mudira"
         self.manager.upsert_organization(item)
         res2 = self.manager.get_organization_by_id("org-single")
         self.assertEqual(res2["m"], "5-sonli Davlat Maktabgacha Ta'lim Tashkiloti")
+        self.assertEqual(res2["lavozim"], "Bosh Mudira")
 
         # O'chirish
         self.manager.delete_organization("org-single")
         self.assertIsNone(self.manager.get_organization_by_id("org-single"))
+
+    def test_trash_full_schema(self):
+        """Chiqindi qutisida barcha yangi ustunlar saqlanishini tekshirish."""
+        trash_items = [{
+            "id": "trash-1",
+            "m": "O'chirilgan Tashkilot",
+            "lavozim": "Boshliq",
+            "bux_tel": "+998905556677",
+            "aparat_soni": 5,
+            "ulangan_soni": 3,
+            "deleted_at": "2026-09-24 03:00:00"
+        }]
+        self.manager.save_all_trash(trash_items)
+        retrieved = self.manager.get_all_trash()
+        self.assertEqual(len(retrieved), 1)
+        self.assertEqual(retrieved[0]["lavozim"], "Boshliq")
+        self.assertEqual(retrieved[0]["bux_tel"], "+998905556677")
+        self.assertEqual(retrieved[0]["aparat_soni"], 5)
+        self.assertEqual(retrieved[0]["ulangan_soni"], 3)
 
     def test_staff_history(self):
         """Kadrlar rotatsiyasi tarixi audit yozuvini tekshirish."""

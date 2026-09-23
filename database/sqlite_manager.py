@@ -46,6 +46,7 @@ class SQLiteManager:
                     izoh TEXT,
                     jshr TEXT,
                     seriya TEXT,
+                    lavozim TEXT,
                     bux_tel TEXT,
                     aparat_soni INTEGER,
                     ulangan_soni INTEGER,
@@ -58,11 +59,15 @@ class SQLiteManager:
                 cursor.execute("CREATE INDEX IF NOT EXISTS idx_org_f ON organizations(f);")
 
                 # Schema migratsiyalari (Mavjud bazaga yangi ustunlarni xavfsiz qo'shish)
-                for col_name, col_type in [("bux_tel", "TEXT"), ("aparat_soni", "INTEGER"), ("ulangan_soni", "INTEGER")]:
+                for col_name, col_type in [("bux_tel", "TEXT"), ("aparat_soni", "INTEGER"), ("ulangan_soni", "INTEGER"), ("lavozim", "TEXT")]:
                     try:
                         cursor.execute(f"ALTER TABLE organizations ADD COLUMN {col_name} {col_type};")
                     except sqlite3.OperationalError:
                         pass # Ustun allaqachon mavjud
+                    try:
+                        cursor.execute(f"ALTER TABLE trash ADD COLUMN {col_name} {col_type};")
+                    except sqlite3.OperationalError:
+                        pass
 
                 # 2. Chiqindi qutisi (Trash) jadvali
                 cursor.execute("""
@@ -76,6 +81,10 @@ class SQLiteManager:
                     izoh TEXT,
                     jshr TEXT,
                     seriya TEXT,
+                    lavozim TEXT,
+                    bux_tel TEXT,
+                    aparat_soni INTEGER,
+                    ulangan_soni INTEGER,
                     deleted_at TEXT
                 );
                 """)
@@ -145,34 +154,42 @@ class SQLiteManager:
             return []
 
     def save_all_organizations(self, orgs: List[Dict[str, Any]]) -> None:
-        """Barcha tashkilotlarni atomik tranzaksiya bilan to'liq saqlash/yangilash."""
+        """Barcha tashkilotlarni atomik tranzaksiya bilan xavfsiz saqlash/yangilash (buzilmasdan)."""
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        current_ids = [str(o.get("id") or o.get("uuid") or "") for o in orgs if (o.get("id") or o.get("uuid"))]
         try:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
-                cursor.execute("DELETE FROM organizations;")
-                cursor.executemany("""
-                INSERT INTO organizations (id, s, m, f, t, inn, izoh, jshr, seriya, bux_tel, aparat_soni, ulangan_soni, updated_at)
-                VALUES (:id, :s, :m, :f, :t, :inn, :izoh, :jshr, :seriya, :bux_tel, :aparat_soni, :ulangan_soni, :updated_at);
-                """, [
-                    {
-                        "id": str(o.get("id") or o.get("uuid") or ""),
-                        "s": str(o.get("s") or ""),
-                        "m": str(o.get("m") or ""),
-                        "f": str(o.get("f") or ""),
-                        "t": str(o.get("t") or ""),
-                        "inn": str(o.get("inn") or ""),
-                        "izoh": str(o.get("izoh") or ""),
-                        "jshr": str(o.get("jshr") or ""),
-                        "seriya": str(o.get("seriya") or ""),
-                        "bux_tel": str(o.get("bux_tel") or ""),
-                        "aparat_soni": int(o.get("aparat_soni")) if o.get("aparat_soni") not in (None, "") else None,
-                        "ulangan_soni": int(o.get("ulangan_soni")) if o.get("ulangan_soni") not in (None, "") else None,
-                        "updated_at": o.get("updated_at") or now
-                    } for o in orgs
-                ])
+                if orgs:
+                    cursor.executemany("""
+                    INSERT OR REPLACE INTO organizations (id, s, m, f, t, inn, izoh, jshr, seriya, lavozim, bux_tel, aparat_soni, ulangan_soni, updated_at)
+                    VALUES (:id, :s, :m, :f, :t, :inn, :izoh, :jshr, :seriya, :lavozim, :bux_tel, :aparat_soni, :ulangan_soni, :updated_at);
+                    """, [
+                        {
+                            "id": str(o.get("id") or o.get("uuid") or ""),
+                            "s": str(o.get("s") or ""),
+                            "m": str(o.get("m") or ""),
+                            "f": str(o.get("f") or ""),
+                            "t": str(o.get("t") or ""),
+                            "inn": str(o.get("inn") or ""),
+                            "izoh": str(o.get("izoh") or ""),
+                            "jshr": str(o.get("jshr") or ""),
+                            "seriya": str(o.get("seriya") or ""),
+                            "lavozim": str(o.get("lavozim") or ""),
+                            "bux_tel": str(o.get("bux_tel") or ""),
+                            "aparat_soni": int(o.get("aparat_soni")) if o.get("aparat_soni") not in (None, "") else None,
+                            "ulangan_soni": int(o.get("ulangan_soni")) if o.get("ulangan_soni") not in (None, "") else None,
+                            "updated_at": o.get("updated_at") or now
+                        } for o in orgs
+                    ])
+                    # Faqat ro'yxatdan olib tashlangan yozuvlarni o'chirish (agar kerak bo'lsa)
+                    if len(current_ids) < 900:  # SQLite query parameter limit protection
+                        placeholders = ",".join("?" for _ in current_ids)
+                        cursor.execute(f"DELETE FROM organizations WHERE id NOT IN ({placeholders});", current_ids)
+                else:
+                    cursor.execute("DELETE FROM organizations;")
                 conn.commit()
-                logger.debug(f"[SQLITE] {len(orgs)} ta tashkilot saqlandi.")
+                logger.debug(f"[SQLITE] {len(orgs)} ta tashkilot xavfsiz saqlandi.")
         except Exception as e:
             logger.error(f"[SQLITE] Tashkilotlarni saqlashda xatolik: {e}")
 
@@ -183,8 +200,8 @@ class SQLiteManager:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute("""
-                INSERT OR REPLACE INTO organizations (id, s, m, f, t, inn, izoh, jshr, seriya, bux_tel, aparat_soni, ulangan_soni, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                INSERT OR REPLACE INTO organizations (id, s, m, f, t, inn, izoh, jshr, seriya, lavozim, bux_tel, aparat_soni, ulangan_soni, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                 """, (
                     str(o.get("id") or o.get("uuid") or ""),
                     str(o.get("s") or ""),
@@ -195,6 +212,7 @@ class SQLiteManager:
                     str(o.get("izoh") or ""),
                     str(o.get("jshr") or ""),
                     str(o.get("seriya") or ""),
+                    str(o.get("lavozim") or ""),
                     str(o.get("bux_tel") or ""),
                     int(o.get("aparat_soni")) if o.get("aparat_soni") not in (None, "") else None,
                     int(o.get("ulangan_soni")) if o.get("ulangan_soni") not in (None, "") else None,
@@ -266,8 +284,8 @@ class SQLiteManager:
                 cursor = conn.cursor()
                 cursor.execute("DELETE FROM trash;")
                 cursor.executemany("""
-                INSERT INTO trash (id, s, m, f, t, inn, izoh, jshr, seriya, deleted_at)
-                VALUES (:id, :s, :m, :f, :t, :inn, :izoh, :jshr, :seriya, :deleted_at);
+                INSERT INTO trash (id, s, m, f, t, inn, izoh, jshr, seriya, lavozim, bux_tel, aparat_soni, ulangan_soni, deleted_at)
+                VALUES (:id, :s, :m, :f, :t, :inn, :izoh, :jshr, :seriya, :lavozim, :bux_tel, :aparat_soni, :ulangan_soni, :deleted_at);
                 """, [
                     {
                         "id": str(o.get("id") or o.get("uuid") or ""),
@@ -279,6 +297,10 @@ class SQLiteManager:
                         "izoh": str(o.get("izoh") or ""),
                         "jshr": str(o.get("jshr") or ""),
                         "seriya": str(o.get("seriya") or ""),
+                        "lavozim": str(o.get("lavozim") or ""),
+                        "bux_tel": str(o.get("bux_tel") or ""),
+                        "aparat_soni": int(o.get("aparat_soni")) if o.get("aparat_soni") not in (None, "") else None,
+                        "ulangan_soni": int(o.get("ulangan_soni")) if o.get("ulangan_soni") not in (None, "") else None,
                         "deleted_at": str(o.get("deleted_at") or "")
                     } for o in trash_items
                 ])

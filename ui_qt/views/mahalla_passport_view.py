@@ -177,8 +177,22 @@ class MahallaPassportView(QDialog):
                         role_item = it
                         break
 
-                if not role_item and idx == 0:
-                    role_item = main_item
+                if not role_item:
+                    if idx == 0:
+                        role_item = main_item
+                    else:
+                        role_item = {
+                            "m": mahalla_name,
+                            "s": role_title,
+                            "lavozim": role_title,
+                            "inn": main_item.get("inn", ""),
+                            "f": "",
+                            "t": "",
+                            "jshr": "",
+                            "seriya": "",
+                            "izoh": f"{mahalla_name} - {role_title}",
+                            "_is_new": True
+                        }
 
                 fio = role_item.get("f", "") if role_item else ""
                 phone = role_item.get("t", "") if role_item else ""
@@ -200,7 +214,7 @@ class MahallaPassportView(QDialog):
                     inn=inn,
                     jshr=jshr,
                     seriya=seriya,
-                    item=role_item or main_item
+                    item=role_item
                 )
 
                 row = idx // 2
@@ -347,6 +361,8 @@ class MahallaPassportView(QDialog):
         from ui_qt.views.org_edit_dialog import OrgEditDialog
         dlg = OrgEditDialog(parent=self, app=self.app, item=item)
         if dlg.exec_() == QDialog.Accepted:
+            if hasattr(self.app, "refresh_all_views"):
+                self.app.refresh_all_views()
             self.load_passport(self.combo_mahalla.currentText())
 
 def open_mahalla_passport(app: Any, mahalla: Optional[str] = None) -> None:

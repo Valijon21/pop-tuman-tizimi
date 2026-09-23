@@ -21,14 +21,12 @@ def build():
     print("📦 POP TUMAN TIZIMI: WINDOWS STANDALONE .EXE YIG'ISH BOSHLANDI")
     print("=" * 60)
 
-    # 1. CustomTkinter papkasini aniqlash
+    # 1. PyQt5 mavjudligini tekshirish
     try:
-        import customtkinter
-        ctk_dir = os.path.dirname(customtkinter.__file__)
-        print(f"[OK] CustomTkinter topildi: {ctk_dir}")
+        import PyQt5
+        print("[OK] Asosiy GUI dvigateli: PyQt5 topildi")
     except ImportError:
-        print("[XATO] customtkinter kutubxonasi o'rnatilmagan! (pip install -r requirements.txt)")
-        sys.exit(1)
+        print("[OGOHLANTIRISH] PyQt5 topilmadi! (pip install PyQt5)")
 
     # 2. PyInstaller mavjudligini tekshirish
     try:
@@ -40,7 +38,7 @@ def build():
 
     # 3. Yig'ish parametrlari
     app_name = "PopTumanTizimi"
-    main_script = os.path.join(BASE_DIR, "main.py")
+    main_script = os.path.join(BASE_DIR, "main_qt.py")
     icon_file = os.path.join(BASE_DIR, "popdata.png")
 
     # Eski kesh va yig'ilgan fayllarni tozalash (Clean build)
@@ -60,7 +58,6 @@ def build():
         "--onedir",                # Tez ishga tushishi va barqarorlik uchun papka ko'rinishida
         "--windowed",              # Orqada qora terminal oynasi ochilmaydi
         f"--name={app_name}",
-        f"--add-data={ctk_dir};customtkinter",
     ]
 
     if os.path.exists(icon_file):
@@ -68,11 +65,11 @@ def build():
 
     # Yashirin kutubxonalar (Hidden imports)
     hidden_imports = [
-        "PIL._tkinter_finder",
         "gspread",
         "oauth2client",
         "oauth2client.service_account",
         "openpyxl",
+        "xlrd",
         "qrcode",
         "sqlite3",
         "core",
@@ -80,6 +77,7 @@ def build():
         "core.logger",
         "core.security",
         "core.validators",
+        "core.threading_utils",
         "database",
         "database.models",
         "database.data_manager",
@@ -93,20 +91,6 @@ def build():
         "services.cabinet_service",
         "services.broadcast_service",
         "services.telegram_bot",
-        "ui",
-        "ui.style",
-        "ui.toast",
-        "ui.app",
-        "ui.views",
-        "ui.views.dashboard_view",
-        "ui.views.table_view",
-        "ui.views.trash_view",
-        "ui.views.settings_view",
-        "ui.views.mahalla_passport_view",
-        "ui.views.history_view",
-        "ui.views.import_dialog",
-        "ui.views.cabinet_dialog",
-        "ui.views.broadcast_view",
         "PyQt5",
         "PyQt5.QtCore",
         "PyQt5.QtWidgets",
@@ -119,6 +103,7 @@ def build():
         "ui_qt.views",
         "ui_qt.views.dashboard_view",
         "ui_qt.views.table_view",
+        "ui_qt.views.contracts_view",
         "ui_qt.views.trash_view",
         "ui_qt.views.settings_view",
         "ui_qt.views.mahalla_passport_view",

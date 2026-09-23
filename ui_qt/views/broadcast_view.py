@@ -13,6 +13,7 @@ from PyQt5.QtCore import Qt
 from services.broadcast_service import BroadcastService, SMS_TEMPLATES
 from ui_qt.styles import get_stylesheet
 from core.logger import logger
+from core.threading_utils import WorkerThread
 
 class BroadcastView(QDialog):
     """Ommaviy xabarnoma dialog oynasi."""
@@ -207,27 +208,55 @@ class BroadcastView(QDialog):
         if reply != QMessageBox.Yes:
             return
 
-        # Yuborish xizmatini chaqirish
+        # Yuborish xizmatini asinxron fonda chaqirish
         use_tg = self.chk_telegram.isChecked()
         use_sms = self.chk_sms.isChecked()
+        dm = getattr(self.app, "data_manager", None)
 
-        result = BroadcastService.send_broadcast(
-            recipients=self.current_recipients,
-            template=msg_template,
-            channels={"telegram": use_tg, "sms": use_sms}
-        )
+        self.btn_send.setEnabled(False)
+        self.btn_send.setText("⏳ Yuborilmoqda...")
 
-        sent_count = result.get("sent", len(self.current_recipients))
+        def _task():
+            return BroadcastService.send_broadcast(
+                recipients=self.current_recipients,
+                template=msg_template,
+                channels={"telegram": use_tg, "sms": use_sms},
+                data_manager=dm
+            )
+
+        self._worker = WorkerThread(_task, parent=self)
+        self._worker.result_ready.connect(lambda res: self._on_broadcast_done(res, use_tg, use_sms))
+        self._worker.error_occurred.connect(self._on_broadcast_err)
+        self._worker.start()
+
+    def _on_broadcast_done(self, result: Dict[str, Any], use_tg: bool, use_sms: bool):
+        self.btn_send.setEnabled(True)
+        self.btn_send.setText("🚀 Xabarnomani Yuborish")
+
+        tg_sent = result.get("telegram_sent", 0)
+        clean_phones = result.get("clean_phones_count", 0)
+        total_rec = result.get("recipients_count", len(self.current_recipients))
+
+        info_lines = [f"Auditoriya: {total_rec} ta mas'ul"]
+        if use_tg:
+            info_lines.append(f"Telegram Bot: {tg_sent} ta faol obunachiga yetkazildi")
+        if use_sms:
+            info_lines.append(f"SMS: {clean_phones} ta toza telefon raqami shakllantirildi")
+
         if hasattr(self.app, "show_toast"):
-            self.app.show_toast(f"📢 Xabarnoma {sent_count} ta manzilga yuborildi!", "success")
+            self.app.show_toast("📢 Xabarnoma jarayoni yakunlandi!", "success")
 
         QMessageBox.information(
-            self, "Yuborildi",
-            f"Ommaviy xabarnoma muvaffaqiyatli tarqatildi!\n"
-            f"Jami yuborildi: {sent_count} ta\n"
-            f"Kanal: {'Telegram ' if use_tg else ''}{'SMS' if use_sms else ''}"
+            self, "Xabarnoma Holati",
+            "Ommaviy xabarnoma amali bajarildi:\n\n" + "\n".join(f"• {l}" for l in info_lines)
         )
         self.accept()
+
+    def _on_broadcast_err(self, err: str):
+        self.btn_send.setEnabled(True)
+        self.btn_send.setText("🚀 Xabarnomani Yuborish")
+        logger.error(f"[BROADCAST] Xatolik: {err}")
+        QMessageBox.critical(self, "Xatolik", f"Xabarnoma yuborishda xatolik yuz berdi:\n{err}")
 
 def open_broadcast_dialog(app: Any) -> None:
     dlg = BroadcastView(parent=app, app=app)

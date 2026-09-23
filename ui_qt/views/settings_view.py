@@ -12,6 +12,11 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from core.security import hash_password
 from core.logger import logger
+from core.threading_utils import WorkerThread
+from services.gsheet_service import (
+    get_gspread_client, upload_data_to_sheet, download_data_from_sheet,
+    is_service_account_available
+)
 
 class SettingsView(QWidget):
     """Tizim sozlamalari ekrani."""
@@ -80,7 +85,40 @@ class SettingsView(QWidget):
         db_layout.addLayout(db_btns)
         c_layout.addWidget(grp_db)
 
-        # 2. TELEGRAM BOT INTEGRATSIYASI
+        # 2. GOOGLE SHEETS BULUTLI SINXRONIZATSIYA
+        grp_gsheet = QGroupBox("☁ Google Sheets Bulutli Sinxronizatsiya")
+        grp_gsheet.setStyleSheet("QGroupBox { font-size: 14px; font-weight: 700; color: #10b981; }")
+        gsheet_layout = QVBoxLayout(grp_gsheet)
+        gsheet_layout.setSpacing(10)
+
+        gsheet_grid = QGridLayout()
+        gsheet_grid.addWidget(QLabel("Google Sheet Nomi / URL:"), 0, 0)
+        self.edit_sheet_id = QLineEdit()
+        self.edit_sheet_id.setPlaceholderText("Jadval nomi yoki to'liq URL (masalan: Tashkilotlar Bazasi)...")
+        gsheet_grid.addWidget(self.edit_sheet_id, 0, 1)
+
+        gsheet_layout.addLayout(gsheet_grid)
+
+        gsheet_btns = QHBoxLayout()
+        self.btn_gsheet_upload = QPushButton("☁ Bulutga Yuklash (Upload)")
+        self.btn_gsheet_upload.setStyleSheet("background: #10b981; color: white; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
+        self.btn_gsheet_upload.clicked.connect(self.upload_to_google_sheet)
+        gsheet_btns.addWidget(self.btn_gsheet_upload)
+
+        self.btn_gsheet_download = QPushButton("📥 Bulutdan Yuklab Olish (Download)")
+        self.btn_gsheet_download.setStyleSheet("background: #0284c7; color: white; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
+        self.btn_gsheet_download.clicked.connect(self.download_from_google_sheet)
+        gsheet_btns.addWidget(self.btn_gsheet_download)
+
+        self.lbl_gsheet_status = QLabel("Holat: Tekshirilmoqda...")
+        self.lbl_gsheet_status.setStyleSheet("color: #94a3b8; font-size: 12px; font-weight: 600;")
+        gsheet_btns.addWidget(self.lbl_gsheet_status)
+        gsheet_btns.addStretch()
+
+        gsheet_layout.addLayout(gsheet_btns)
+        c_layout.addWidget(grp_gsheet)
+
+        # 3. TELEGRAM BOT INTEGRATSIYASI
         grp_tg = QGroupBox("✈ Telegram Bot Integratsiyasi")
         grp_tg.setStyleSheet("QGroupBox { font-size: 14px; font-weight: 700; color: #0284c7; }")
         tg_layout = QVBoxLayout(grp_tg)
@@ -182,6 +220,18 @@ class SettingsView(QWidget):
             self.lbl_bot_status.setText("Holat: Token sozlangan 🟢")
             self.lbl_bot_status.setStyleSheet("color: #10b981; font-weight: 700;")
 
+        # Google Sheets sozlamalari
+        sheet_name = settings.get("google_sheet_name", "")
+        if hasattr(self, "edit_sheet_id"):
+            self.edit_sheet_id.setText(sheet_name)
+        if hasattr(self, "lbl_gsheet_status"):
+            if is_service_account_available():
+                self.lbl_gsheet_status.setText("Kalit: Mavjud 🟢" if not sheet_name else f"Ulangan: '{sheet_name}' 🟢")
+                self.lbl_gsheet_status.setStyleSheet("color: #10b981; font-weight: 600;")
+            else:
+                self.lbl_gsheet_status.setText("Kalit fayl yo'q (service_account.json) ⚪")
+                self.lbl_gsheet_status.setStyleSheet("color: #94a3b8; font-weight: 600;")
+
         # Shrift
         font_size = settings.get("font_size", 13)
         self.spin_font.setValue(font_size)
@@ -221,7 +271,9 @@ class SettingsView(QWidget):
             db_path = self.app.data_manager.sqlite.db_path
             shutil.copy2(file_path, db_path)
             self.app.data_manager.load_data()
-            if hasattr(self.app, "filter_data"):
+            if hasattr(self.app, "refresh_all_views"):
+                self.app.refresh_all_views()
+            elif hasattr(self.app, "filter_data"):
                 self.app.filter_data()
             QMessageBox.information(self, "Muvaffaqiyatli", "Baza zaxiradan muvaffaqiyatli tiklandi!")
         except Exception as e:
@@ -257,6 +309,130 @@ class SettingsView(QWidget):
         if self.app and hasattr(self.app, "data_manager"):
             self.app.data_manager.settings["font_size"] = val
             self.app.data_manager.save_settings()
+
+    def upload_to_google_sheet(self):
+        sheet_name = self.edit_sheet_id.text().strip()
+        if not sheet_name:
+            QMessageBox.warning(self, "Xatolik", "Google Sheet nomi yoki URL sini kiriting!")
+            return
+
+        from core.config import SERVICE_ACCOUNT_FILE
+        if not is_service_account_available():
+            QMessageBox.warning(
+                self, "Kalit Topilmadi",
+                f"Google Cloud service account kalit fayli ({SERVICE_ACCOUNT_FILE}) topilmadi.\n"
+                "Iltimos, service_account.json faylini loyiha papkasiga joylashtiring yoki GOOGLE_APPLICATION_CREDENTIALS muhit o'zgaruvchisini o'rnating."
+            )
+            return
+
+        self.btn_gsheet_upload.setEnabled(False)
+        self.btn_gsheet_download.setEnabled(False)
+        self.lbl_gsheet_status.setText("☁ Bulutga yuklanmoqda...")
+        self.lbl_gsheet_status.setStyleSheet("color: #f59e0b; font-weight: 700;")
+
+        # Sozlamaga saqlab qo'yish
+        if self.app and hasattr(self.app, "data_manager"):
+            self.app.data_manager.settings["google_sheet_name"] = sheet_name
+            self.app.data_manager.save_settings()
+
+        snapshot = list(self.app.data) if hasattr(self.app, "data") else []
+
+        def _task():
+            client = get_gspread_client(SERVICE_ACCOUNT_FILE)
+            sheet_id = upload_data_to_sheet(client, sheet_name, snapshot)
+            return sheet_id
+
+        self._gsheet_worker = WorkerThread(_task, parent=self)
+        self._gsheet_worker.result_ready.connect(self._on_gsheet_upload_done)
+        self._gsheet_worker.error_occurred.connect(self._on_gsheet_error)
+        self._gsheet_worker.start()
+
+    def _on_gsheet_upload_done(self, sheet_id: str):
+        self.btn_gsheet_upload.setEnabled(True)
+        self.btn_gsheet_download.setEnabled(True)
+        self.lbl_gsheet_status.setText("Holat: Bulutga yuklandi ✅")
+        self.lbl_gsheet_status.setStyleSheet("color: #10b981; font-weight: 700;")
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast("☁ Ma'lumotlar Google Sheetga yuklandi!", "success")
+        reply = QMessageBox.information(
+            self, "Muvaffaqiyatli",
+            f"Barcha tashkilotlar Google Sheetga muvaffaqiyatli yuklandi!\n\nJadvalni brauzerda ochishni xohlaysizmi?",
+            QMessageBox.Yes | QMessageBox.No
+        )
+        if reply == QMessageBox.Yes:
+            try:
+                import webbrowser
+                webbrowser.open(f"https://docs.google.com/spreadsheets/d/{sheet_id}")
+            except Exception:
+                pass
+
+    def download_from_google_sheet(self):
+        sheet_name = self.edit_sheet_id.text().strip()
+        if not sheet_name:
+            QMessageBox.warning(self, "Xatolik", "Google Sheet nomi yoki URL sini kiriting!")
+            return
+
+        from core.config import SERVICE_ACCOUNT_FILE
+        if not is_service_account_available():
+            QMessageBox.warning(
+                self, "Kalit Topilmadi",
+                f"Google Cloud service account kalit fayli ({SERVICE_ACCOUNT_FILE}) topilmadi."
+            )
+            return
+
+        reply = QMessageBox.question(
+            self, "Tasdiqlash",
+            "Google Sheetdan yuklab olish mahalliy ma'lumotlar bazasini yangilaydi. Davom etasizmi?",
+            QMessageBox.Yes | QMessageBox.No
+        )
+        if reply != QMessageBox.Yes:
+            return
+
+        self.btn_gsheet_upload.setEnabled(False)
+        self.btn_gsheet_download.setEnabled(False)
+        self.lbl_gsheet_status.setText("📥 Bulutdan yuklab olinmoqda...")
+        self.lbl_gsheet_status.setStyleSheet("color: #f59e0b; font-weight: 700;")
+
+        def _task():
+            client = get_gspread_client(SERVICE_ACCOUNT_FILE)
+            new_data = download_data_from_sheet(client, sheet_name)
+            return new_data
+
+        self._gsheet_worker = WorkerThread(_task, parent=self)
+        self._gsheet_worker.result_ready.connect(self._on_gsheet_download_done)
+        self._gsheet_worker.error_occurred.connect(self._on_gsheet_error)
+        self._gsheet_worker.start()
+
+    def _on_gsheet_download_done(self, new_data):
+        self.btn_gsheet_upload.setEnabled(True)
+        self.btn_gsheet_download.setEnabled(True)
+        self.lbl_gsheet_status.setText(f"Holat: {len(new_data)} ta yozuv olindi ✅")
+        self.lbl_gsheet_status.setStyleSheet("color: #10b981; font-weight: 700;")
+
+        if new_data:
+            if hasattr(self.app, "data"):
+                self.app.data = new_data
+            if hasattr(self.app, "data_manager"):
+                self.app.data_manager.data = new_data
+                self.app.data_manager.save_data()
+            if hasattr(self.app, "refresh_all_views"):
+                self.app.refresh_all_views()
+            elif hasattr(self.app, "filter_data"):
+                self.app.filter_data()
+
+            if hasattr(self.app, "show_toast"):
+                self.app.show_toast(f"📥 {len(new_data)} ta tashkilot bulutdan yuklandi!", "success")
+            QMessageBox.information(self, "Muvaffaqiyatli", f"{len(new_data)} ta tashkilot Google Sheetdan muvaffaqiyatli yuklandi!")
+        else:
+            QMessageBox.warning(self, "Bo'sh", "Google Sheetda ma'lumot topilmadi.")
+
+    def _on_gsheet_error(self, err_msg: str):
+        self.btn_gsheet_upload.setEnabled(True)
+        self.btn_gsheet_download.setEnabled(True)
+        self.lbl_gsheet_status.setText("Holat: Xatolik yuz berdi ❌")
+        self.lbl_gsheet_status.setStyleSheet("color: #ef4444; font-weight: 700;")
+        logger.error(f"[GOOGLE SHEETS] Xatolik: {err_msg}")
+        QMessageBox.critical(self, "Google Sheets Xatoligi", f"Google Sheets bilan aloqada xatolik yuz berdi:\n\n{err_msg}")
 
 def render_settings(parent: Any, app: Any):
     view = SettingsView(parent=parent, app=app)

@@ -172,6 +172,70 @@ class DataManager:
                 except Exception:
                     pass
 
+    def load_data(self) -> List[Dict[str, Any]]:
+        """Baza ma'lumotlarini (SQLite yoki JSON) qayta yuklash."""
+        sqlite_data = self.sqlite.get_all_organizations()
+        if sqlite_data:
+            self.data = sqlite_data
+        else:
+            self.data = self.load_json(self.db_file)
+        return self.data
+
+    def add_organization(self, item: Any, user: Optional[str] = "ADMIN") -> Dict[str, Any]:
+        """Yangi tashkilot qo'shish (dict yoki Organization modeli qabul qiladi)."""
+        if hasattr(item, "to_dict"):
+            item = item.to_dict()
+        else:
+            item = dict(item)
+
+        if not item.get("id"):
+            item["id"] = str(uuid.uuid4())
+        now = time.strftime("%Y-%m-%d %H:%M:%S")
+        if not item.get("updated_at"):
+            item["updated_at"] = now
+
+        self.data.append(item)
+        self.save_data()
+        self.log_activity(user, "Qo'shish", f"Yangi tashkilot: '{item.get('m')}' (INN: {item.get('inn', '-')})")
+        logger.info(f"[QO'SHISH] Yangi tashkilot qo'shildi: {item.get('m')} (ID={item.get('id')})")
+        return item
+
+    def update_organization(self, item: Any, user: Optional[str] = "ADMIN") -> bool:
+        """Mavjud tashkilot ma'lumotlarini yangilash (dict yoki Organization modeli qabul qiladi)."""
+        if hasattr(item, "to_dict"):
+            item = item.to_dict()
+        else:
+            item = dict(item)
+
+        target_id = str(item.get("id") or "")
+        now = time.strftime("%Y-%m-%d %H:%M:%S")
+        item["updated_at"] = now
+
+        found_idx = -1
+        if target_id:
+            for idx, existing in enumerate(self.data):
+                if str(existing.get("id")) == target_id:
+                    found_idx = idx
+                    break
+
+        if found_idx >= 0:
+            self.data[found_idx].update(item)
+            self.save_data()
+            self.log_activity(user, "Tahrirlash", f"Tashkilot yangilandi: '{item.get('m')}' (INN: {item.get('inn', '-')})")
+            logger.info(f"[TAHRIRLASH] Tashkilot yangilandi: {item.get('m')} (ID={target_id})")
+            return True
+        else:
+            self.add_organization(item, user=user)
+            return True
+
+    def get_organization_model(self, org_id: str) -> Optional[Any]:
+        """Tashkilotni Organization dataclass modeli sifatida olish."""
+        from database.models import Organization
+        for item in self.data:
+            if str(item.get("id")) == str(org_id):
+                return Organization.from_dict(item)
+        return None
+
     def save_data(self) -> None:
         self.save_json(self.db_file, self.data)
         try:

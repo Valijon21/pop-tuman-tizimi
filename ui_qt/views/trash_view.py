@@ -128,8 +128,8 @@ class TrashView(QWidget):
                 restored += 1
 
         self.load_trash()
-        if hasattr(self.app, "filter_data"):
-            self.app.filter_data()
+        if hasattr(self.app, "refresh_all_views"):
+            self.app.refresh_all_views()
         if hasattr(self.app, "show_toast"):
             self.app.show_toast(f"♻ {restored} ta tashkilot bazaga tiklandi!", "success")
 
@@ -154,6 +154,8 @@ class TrashView(QWidget):
                 self.app.data_manager.permanent_delete(item)
 
         self.load_trash()
+        if hasattr(self.app, "refresh_all_views"):
+            self.app.refresh_all_views()
         if hasattr(self.app, "show_toast"):
             self.app.show_toast("Yozuv butunlay o'chirildi.", "warning")
 
@@ -174,6 +176,8 @@ class TrashView(QWidget):
             self.app.data_manager.permanent_delete(trash[0])
 
         self.load_trash()
+        if hasattr(self.app, "refresh_all_views"):
+            self.app.refresh_all_views()
         if hasattr(self.app, "show_toast"):
             self.app.show_toast("Chiqindi qutisi to'liq tozalandi.", "warning")
 

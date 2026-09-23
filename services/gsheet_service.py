@@ -16,10 +16,16 @@ def extract_sheet_id(val: str) -> str:
         return val
     return val
 
+def is_service_account_available(service_account_path: str = "") -> bool:
+    """Service account kalit fayli mavjud va to'g'ri ekanligini tekshirish."""
+    from core.config import SERVICE_ACCOUNT_FILE
+    path = service_account_path or SERVICE_ACCOUNT_FILE
+    return bool(path and os.path.isfile(path) and os.path.getsize(path) > 50)
+
 def get_gspread_client(service_account_path: str) -> gspread.Client:
     """Google Sheets klientini yaratish (zamonaviy google-auth yoki oauth2client orqali)."""
     if not os.path.exists(service_account_path):
-        raise FileNotFoundError(f"Kalit fayl topilmadi: {service_account_path}")
+        raise FileNotFoundError(f"Google Cloud service account kalit fayli topilmadi:\n{service_account_path}")
 
     scope = [
         "https://spreadsheets.google.com/feeds",
@@ -50,11 +56,16 @@ def open_spreadsheet(client: gspread.Client, sheet_identifier: str) -> gspread.S
         return client.open(val)
 
 def upload_data_to_sheet(client: gspread.Client, sheet_identifier: str, data: List[Dict[str, Any]]) -> str:
-    """Ma'lumotlar ro'yxatini Google Sheetga yuklash."""
+    """Ma'lumotlar ro'yxatini Google Sheetga yuklash (to'liq 13 ta ustun bilan)."""
     spreadsheet = open_spreadsheet(client, sheet_identifier)
     sheet = spreadsheet.sheet1
 
-    data_to_upload = [["Turi", "Nomi", "Rahbar", "Tel", "INN", "Izoh", "ID"]]
+    headers = [
+        "Turi", "Nomi", "Rahbar", "Tel", "INN",
+        "Buxgalter Tel", "Apparat Soni", "Ulangan Soni",
+        "JSHSHIR", "Pasport Seriya", "Lavozim", "Izoh", "ID"
+    ]
+    data_to_upload = [headers]
     for i in data:
         data_to_upload.append([
             i.get("s", ""),
@@ -62,6 +73,12 @@ def upload_data_to_sheet(client: gspread.Client, sheet_identifier: str, data: Li
             i.get("f", ""),
             i.get("t", ""),
             str(i.get("inn", "")),
+            str(i.get("bux_tel", "")),
+            str(i.get("aparat_soni", "")),
+            str(i.get("ulangan_soni", "")),
+            str(i.get("jshr", "")),
+            str(i.get("seriya", "")),
+            str(i.get("lavozim", "")),
             i.get("izoh", ""),
             i.get("id") or i.get("uuid", "")
         ])
@@ -71,7 +88,7 @@ def upload_data_to_sheet(client: gspread.Client, sheet_identifier: str, data: Li
     return spreadsheet.id
 
 def download_data_from_sheet(client: gspread.Client, sheet_identifier: str) -> List[Dict[str, Any]]:
-    """Google Sheetdan ma'lumotlarni o'qib olish."""
+    """Google Sheetdan ma'lumotlarni o'qib olish (to'liq 13 ta ustunni qo'llab-quvvatlaydi)."""
     spreadsheet = open_spreadsheet(client, sheet_identifier)
     sheet = spreadsheet.sheet1
     raw_data = sheet.get_all_records()
@@ -86,6 +103,12 @@ def download_data_from_sheet(client: gspread.Client, sheet_identifier: str) -> L
             "f": str(row.get("Rahbar", "")),
             "t": str(row.get("Tel", "")),
             "inn": str(row.get("INN", "")),
+            "bux_tel": str(row.get("Buxgalter Tel", "") or row.get("bux_tel", "")),
+            "aparat_soni": str(row.get("Apparat Soni", "") or row.get("aparat_soni", "")),
+            "ulangan_soni": str(row.get("Ulangan Soni", "") or row.get("ulangan_soni", "")),
+            "jshr": str(row.get("JSHSHIR", "") or row.get("jshr", "")),
+            "seriya": str(row.get("Pasport Seriya", "") or row.get("seriya", "")),
+            "lavozim": str(row.get("Lavozim", "") or row.get("lavozim", "")),
             "izoh": str(row.get("Izoh", ""))
         })
     return new_db

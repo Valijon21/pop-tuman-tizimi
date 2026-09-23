@@ -75,6 +75,23 @@ def import_organizations_from_file(filepath: str) -> tuple[List[Dict[str, Any]],
                     rows.append([str(c or "").strip() for c in row])
         except Exception as e:
             return [], [f"Excel faylini o'qishda xatolik: {e}"]
+    elif ext == ".xls":
+        try:
+            import xlrd
+            book = xlrd.open_workbook(filepath)
+            sheet = book.sheet_by_index(0)
+            for r in range(sheet.nrows):
+                row_vals = sheet.row_values(r)
+                if any(row_vals):
+                    clean_row = []
+                    for c in row_vals:
+                        if isinstance(c, float) and c.is_integer():
+                            clean_row.append(str(int(c)))
+                        else:
+                            clean_row.append(str(c or "").strip())
+                    rows.append(clean_row)
+        except Exception as e:
+            return [], [f"Excel (.xls) faylini o'qishda xatolik: {e}"]
     elif ext == ".csv":
         try:
             with open(filepath, "r", encoding="utf-8", errors="replace") as f:
@@ -85,7 +102,7 @@ def import_organizations_from_file(filepath: str) -> tuple[List[Dict[str, Any]],
         except Exception as e:
             return [], [f"CSV faylini o'qishda xatolik: {e}"]
     else:
-        return [], ["Faqat Excel (.xlsx) yoki CSV (.csv) formatlari qo'llab-quvvatlanadi."]
+        return [], ["Faqat Excel (.xlsx, .xls) yoki CSV (.csv) formatlari qo'llab-quvvatlanadi."]
 
     if not rows:
         return [], ["Fayl bo'sh."]

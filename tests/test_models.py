@@ -19,7 +19,12 @@ class TestModels(unittest.TestCase):
             "f": "Alimov Alisher",
             "t": "+998 (90) 123-45-67",
             "inn": "301 234 567",
-            "izoh": "Ta'mirda"
+            "izoh": "Ta'mirda",
+            "lavozim": "Direktor",
+            "bux_tel": "+998931112233",
+            "aparat_soni": 15,
+            "ulangan_soni": 10,
+            "updated_at": "2026-09-24 03:00:00"
         }
         org = Organization.from_dict(data)
         self.assertEqual(org.id, "test-uuid-1234")
@@ -28,10 +33,19 @@ class TestModels(unittest.TestCase):
         self.assertEqual(org.m, "1-sonli umumiy o'rta ta'lim maktabi")
         # INN tozalangan
         self.assertEqual(org.inn, "301234567")
+        self.assertEqual(org.lavozim, "Direktor")
+        self.assertEqual(org.bux_tel, "+998931112233")
+        self.assertEqual(org.aparat_soni, 15)
+        self.assertEqual(org.ulangan_soni, 10)
 
         d = org.to_dict()
         self.assertEqual(d["id"], "test-uuid-1234")
         self.assertEqual(d["inn"], "301234567")
+        self.assertEqual(d["lavozim"], "Direktor")
+        self.assertEqual(d["bux_tel"], "+998931112233")
+        self.assertEqual(d["aparat_soni"], 15)
+        self.assertEqual(d["ulangan_soni"], 10)
+        self.assertEqual(d["updated_at"], "2026-09-24 03:00:00")
         self.assertNotIn("deleted_at", d)
 
     def test_organization_validation(self):

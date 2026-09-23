@@ -8,6 +8,28 @@ if getattr(sys, "frozen", False):
 else:
     # Python skripti rejimida loyiha ildiz papkasi
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# .env muhit faylini mustaqil o'qish (tashqi kutubxonalarsiz)
+def _load_env():
+    env_file = os.path.join(BASE_DIR, ".env")
+    if os.path.isfile(env_file):
+        try:
+            with open(env_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line.startswith("#"):
+                        continue
+                    if "=" in line:
+                        k, v = line.split("=", 1)
+                        k = k.strip()
+                        v = v.strip().strip("'\"")
+                        if k and k not in os.environ:
+                            os.environ[k] = v
+        except Exception:
+            pass
+
+_load_env()
+
 DB_FILE = os.path.join(BASE_DIR, "mahalla_bazasi.json")
 SQLITE_DB_FILE = os.path.join(BASE_DIR, "mahalla_tizimi.db")
 TRASH_FILE = os.path.join(BASE_DIR, "trash.json")
@@ -16,7 +38,11 @@ LOG_FILE = os.path.join(BASE_DIR, "activity_log.json")
 SETTINGS_FILE = os.path.join(BASE_DIR, "settings.json")
 SYNC_CONFIG_FILE = os.path.join(BASE_DIR, "sync_config.json")
 CATEGORIES_FILE = os.path.join(BASE_DIR, "categories.json")
-SERVICE_ACCOUNT_FILE = os.path.join(BASE_DIR, "service_account.json")
+SERVICE_ACCOUNT_FILE = (
+    os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    or os.getenv("SERVICE_ACCOUNT_FILE")
+    or os.path.join(BASE_DIR, "service_account.json")
+)
 ICON_PATH = os.path.join(BASE_DIR, "popdata.png")
 
 # Oyna parametrlari

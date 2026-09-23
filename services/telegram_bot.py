@@ -18,7 +18,7 @@ from services.cabinet_service import build_cabinet_access_text
 class TelegramBotService:
     """Telegram Bot orqali tashkilotlar bazasini qidirish, verifikatsiya va ommaviy xabarnoma taqdim etish."""
 
-    def __init__(self, arg1: Any, arg2: Any = None):
+    def __init__(self, arg1: Any = None, arg2: Any = None):
         # Parametrlar tartibiga nisbatan moslashuvchanlik (data_manager, token yoki token, data_manager)
         if isinstance(arg1, str) and not (isinstance(arg2, str) and arg2):
             self.token = arg1.strip()
@@ -27,12 +27,30 @@ class TelegramBotService:
             self.data_manager = arg1
             self.token = str(arg2 or "").strip()
 
+        # Agar data_manager berilmagan bo'lsa, zaxiradan yaratish
+        if not self.data_manager:
+            try:
+                from database.data_manager import DataManager
+                self.data_manager = DataManager()
+            except Exception:
+                self.data_manager = None
+
+        # Agar token berilmagan bo'lsa, muhit o'zgaruvchisi yoki settings dan olish
+        if not self.token:
+            self.token = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+        if not self.token and self.data_manager and hasattr(self.data_manager, "settings"):
+            self.token = str(self.data_manager.settings.get("telegram_bot_token", "")).strip()
+
         self.base_url = f"https://api.telegram.org/bot{self.token}/"
         self.running = False
         self.thread: Optional[threading.Thread] = None
         self.last_update_id = 0
         self.subscribers: Set[int] = set()
         self._load_subscribers()
+
+    def is_configured(self) -> bool:
+        """Bot tokeni kiritilgan va sozlanganligini tekshirish."""
+        return bool(self.token and len(self.token) > 15)
 
     def _load_subscribers(self) -> None:
         """Oldin saqlangan obunachilar (chat_id) ro'yxatini yuklash."""
@@ -211,3 +229,13 @@ class TelegramBotService:
             if q in str(item.get("m", "")).lower() or q in str(item.get("f", "")).lower():
                 return item
         return None
+
+_bot_singleton_instance: Optional[TelegramBotService] = None
+
+def get_telegram_bot_service(data_manager: Any = None, token: Optional[str] = None) -> TelegramBotService:
+    """Yagona TelegramBotService instansiyasini olish."""
+    global _bot_singleton_instance
+    if _bot_singleton_instance is None or token or data_manager:
+        _bot_singleton_instance = TelegramBotService(data_manager, token)
+    return _bot_singleton_instance
+

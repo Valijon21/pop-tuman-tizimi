@@ -9,9 +9,10 @@ import pyperclip
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QComboBox, QPushButton, QTableView, QHeaderView, QMenu,
-    QMessageBox, QFileDialog, QFrame, QScrollArea
+    QMessageBox, QFileDialog, QFrame, QScrollArea, QShortcut
 )
-from PyQt5.QtCore import Qt, QModelIndex
+from PyQt5.QtCore import Qt, QModelIndex, QTimer, QEvent
+from PyQt5.QtGui import QKeySequence
 from ui_qt.components.table_model import OrganizationTableModel
 from ui_qt.views.org_edit_dialog import OrgEditDialog
 from ui_qt.views.cabinet_dialog import open_cabinet_dialog, copy_cabinet_quick
@@ -20,6 +21,7 @@ from services.search_service import SearchService
 from services.excel_service import export_organizations_to_excel
 from services.qr_service import generate_phone_qr_image
 from core.logger import logger
+from core.threading_utils import WorkerThread
 
 class TableView(QWidget):
     """PyQt5 Tashkilotlar Jadvali Ekrani."""
@@ -30,6 +32,11 @@ class TableView(QWidget):
         self.current_category = "Barchasi"
         self.filtered_data: List[Dict[str, Any]] = []
         self.current_theme: str = getattr(app, "current_theme", "dark")
+
+        # Qidiruv uchun 250ms Debounce taymeri
+        self.search_timer = QTimer(self)
+        self.search_timer.setSingleShot(True)
+        self.search_timer.timeout.connect(self.filter_data)
 
         self.setup_ui()
         self.init_data()
@@ -51,8 +58,9 @@ class TableView(QWidget):
         toolbar.addWidget(self.combo_search_type)
 
         self.edit_search = QLineEdit()
-        self.edit_search.setPlaceholderText("🔍 Qidiruv...")
+        self.edit_search.setPlaceholderText("🔍 Qidiruv (Ctrl+F)...")
         self.edit_search.textChanged.connect(self.on_search_changed)
+        self.edit_search.returnPressed.connect(self.filter_data)
         self.edit_search.setMinimumWidth(140)
         toolbar.addWidget(self.edit_search, 1)
 
@@ -158,6 +166,11 @@ class TableView(QWidget):
         self.table_view.doubleClicked.connect(self.on_table_double_clicked)
         self.table_view.setContextMenuPolicy(Qt.CustomContextMenu)
         self.table_view.customContextMenuRequested.connect(self.show_context_menu)
+        self.table_view.installEventFilter(self)
+
+        # Klaviaturadan qidiruvga o'tish (Ctrl+F)
+        self.shortcut_search = QShortcut(QKeySequence("Ctrl+F"), self)
+        self.shortcut_search.activated.connect(self.focus_search)
 
         main_layout.addWidget(self.table_view, 1)
 
@@ -229,8 +242,30 @@ class TableView(QWidget):
         self.update_pill_selection(cat)
         self.filter_data()
 
+    def focus_search(self):
+        """Ctrl+F bosilganda qidiruv maydoniga fokus va matnni belgilash."""
+        self.edit_search.setFocus()
+        self.edit_search.selectAll()
+
     def on_search_changed(self):
-        self.filter_data()
+        """250ms Debounce bilan qidiruv: tez yozishda UI qotmasligini ta'minlaydi."""
+        if hasattr(self, "search_timer"):
+            self.search_timer.start(250)
+        else:
+            self.filter_data()
+
+    def eventFilter(self, source, event):
+        """Jadvalda klaviatura hodisalarini ushlash: Enter (tahrir), Delete (o'chirish)."""
+        if source == self.table_view and event.type() == QEvent.KeyPress:
+            if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+                self.open_edit_dialog()
+                return True
+            elif event.key() == Qt.Key_Delete:
+                item = self.get_selected_item()
+                if item:
+                    self.delete_item(item)
+                return True
+        return super().eventFilter(source, event)
 
     def filter_data(self):
         """Ma'lumotlarni SearchService orqali qidirish va modelga uzatish."""
@@ -309,13 +344,25 @@ class TableView(QWidget):
         if not path:
             return
 
-        try:
-            cnt = export_organizations_to_excel(self.filtered_data, path, category_name=self.current_category)
-            if hasattr(self.app, "show_toast"):
-                self.app.show_toast(f"📊 {cnt} ta tashkilot Excelga saqlandi!", "success")
-            QMessageBox.information(self, "Muvaffaqiyatli", f"{cnt} ta tashkilot muvaffaqiyatli Excelga saqlandi!")
-        except Exception as e:
-            QMessageBox.critical(self, "Xatolik", f"Excel saqlashda xatolik: {e}")
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast("📊 Excel fayl shakllantirilmoqda...", "info")
+
+        def _do_export():
+            return export_organizations_to_excel(self.filtered_data, path, category_name=self.current_category)
+
+        self._export_worker = WorkerThread(_do_export, parent=self)
+        self._export_worker.result_ready.connect(lambda cnt: self._on_export_done(cnt, path))
+        self._export_worker.error_occurred.connect(self._on_export_err)
+        self._export_worker.start()
+
+    def _on_export_done(self, cnt: int, path: str):
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast(f"📊 {cnt} ta tashkilot Excelga saqlandi!", "success")
+        QMessageBox.information(self, "Muvaffaqiyatli", f"{cnt} ta tashkilot muvaffaqiyatli Excelga saqlandi!\n\nFayl: {path}")
+
+    def _on_export_err(self, err: str):
+        logger.error(f"[EXCEL EKSPORT] Xatolik: {err}")
+        QMessageBox.critical(self, "Xatolik", f"Excel saqlashda xatolik yuz berdi:\n{err}")
 
     def show_context_menu(self, pos):
         """O'ng tugma bosilganda kontekst menyu."""
