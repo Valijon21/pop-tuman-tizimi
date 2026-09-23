@@ -721,3 +721,13 @@ class MahallaDasturi:
             logger.error(f"Tarix oynasini ochishda xatolik: {e}")
             messagebox.showerror("Xatolik", f"Tarix oynasini ochishda xatolik: {e}")
 
+    def open_cabinet(self, item: Optional[Dict[str, Any]] = None) -> None:
+        """Kabinetga dostup dialog oynasini ochish."""
+        try:
+            from ui.views.cabinet_dialog import open_cabinet_dialog
+            open_cabinet_dialog(self, item)
+        except Exception as e:
+            logger.error(f"Kabinet oynasini ochishda xatolik: {e}")
+            messagebox.showerror("Xatolik", f"Kabinet oynasini ochishda xatolik: {e}")
+
+

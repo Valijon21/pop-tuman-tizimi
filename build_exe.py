@@ -90,6 +90,7 @@ def build():
         "services.gsheet_service",
         "services.search_service",
         "services.verification_service",
+        "services.cabinet_service",
         "services.telegram_bot",
         "ui",
         "ui.style",
@@ -102,7 +103,8 @@ def build():
         "ui.views.settings_view",
         "ui.views.mahalla_passport_view",
         "ui.views.history_view",
-        "ui.views.import_dialog"
+        "ui.views.import_dialog",
+        "ui.views.cabinet_dialog"
     ]
     for h in hidden_imports:
         args.append(f"--hidden-import={h}")

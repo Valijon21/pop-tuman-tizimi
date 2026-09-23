@@ -1,7 +1,7 @@
 {
   "build_exe.py": {
-    "mtime": 1790158372.9833057,
-    "ast_hash": "86294f5043ae35a4703160e8f2fa74d2",
+    "mtime": 1790159207.230706,
+    "ast_hash": "d44f44daed41b8c1083d07e6ff355b1c",
     "semantic_hash": ""
   },
   "categories.json": {
@@ -125,8 +125,8 @@
     "semantic_hash": "9641c1d7accd175223250655a560687d"
   },
   "tests/test_services.py": {
-    "mtime": 1790147362.2616549,
-    "ast_hash": "ea55f1e43569f5082864df6bdcf0e6bf",
+    "mtime": 1790159192.3857117,
+    "ast_hash": "9fbac3591f1c9372c7a139bd98041023",
     "semantic_hash": ""
   },
   "tests/test_validators.py": {
@@ -135,9 +135,9 @@
     "semantic_hash": ""
   },
   "tests/test_views.py": {
-    "mtime": 1790139639.2906032,
-    "ast_hash": "d0daf0e439cf3ef5d9d516057e965fe0",
-    "semantic_hash": "d0daf0e439cf3ef5d9d516057e965fe0"
+    "mtime": 1790159220.0813985,
+    "ast_hash": "3280c668811fa2152ef5f33d75f24182",
+    "semantic_hash": ""
   },
   "ui/__init__.py": {
     "mtime": 1790139071.8237321,
@@ -145,8 +145,8 @@
     "semantic_hash": "f0f608577786a5a8c50b225e49f3059c"
   },
   "ui/app.py": {
-    "mtime": 1790158144.5286016,
-    "ast_hash": "cd9279f3635d30505fef56ef53d23419",
+    "mtime": 1790159179.500906,
+    "ast_hash": "b90c0b530d8e326ccf63b1b604e2e515",
     "semantic_hash": ""
   },
   "ui/style.py": {
@@ -165,8 +165,8 @@
     "semantic_hash": "8d43a251501ca947fb3a60445f33c39c"
   },
   "ui/views/dashboard_view.py": {
-    "mtime": 1790147347.3820162,
-    "ast_hash": "bf5455c5606d513e4db8898d51dbca04",
+    "mtime": 1790159134.1773815,
+    "ast_hash": "0e512784a8edc000cdd01c843afe762e",
     "semantic_hash": ""
   },
   "ui/views/settings_view.py": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "ui/views/table_view.py": {
-    "mtime": 1790158230.1919181,
-    "ast_hash": "0b0809b104336179ad9db704b1e1fafb",
+    "mtime": 1790159121.8791065,
+    "ast_hash": "bbca6f58da10c410dbcf6e7d2571ad1d",
     "semantic_hash": ""
   },
   "ui/views/trash_view.py": {
@@ -245,8 +245,18 @@
     "semantic_hash": ""
   },
   "ui/views/mahalla_passport_view.py": {
-    "mtime": 1790158026.3301058,
-    "ast_hash": "8b359cff31fbcc25d36ba6fdcf0e8011",
+    "mtime": 1790159161.9826703,
+    "ast_hash": "801833332880017cee53d80f7c7fafab",
+    "semantic_hash": ""
+  },
+  "services/cabinet_service.py": {
+    "mtime": 1790159083.8304093,
+    "ast_hash": "8f81ba9bebdc49fcd07ef70490235ad0",
+    "semantic_hash": ""
+  },
+  "ui/views/cabinet_dialog.py": {
+    "mtime": 1790159093.5956032,
+    "ast_hash": "8a21b9734f8736b2f56e773212ece388",
     "semantic_hash": ""
   }
 }

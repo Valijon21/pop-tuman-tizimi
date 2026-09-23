@@ -102,6 +102,29 @@ class TestServices(unittest.TestCase):
         self.assertIn("Lavozimi: Chorkesar MFY hokim yordamchisi", text)
         self.assertIn("verfikatsiya bervoring.", text)
 
+    def test_cabinet_access_text_builder(self):
+        from services.cabinet_service import build_cabinet_access_text, get_cabinet_portal_url
+        sample = {
+            "m": "22-Sonli Umumiy O'rta Ta'lim Maktabi",
+            "inn": "206907205",
+            "f": "Dehqanova Azimaxon Ortiqovna",
+            "s": "Maktab"
+        }
+        
+        text = build_cabinet_access_text(sample)
+        expected = (
+            "Tashkilot nomi: 22-Sonli Umumiy O'rta Ta'lim Maktabi\n"
+            "INN:   206907205\n"
+            "F.I.O:  Dehqanova Azimaxon Ortiqovna\n"
+            "cabinetga dostup"
+        )
+        self.assertEqual(text, expected)
+        
+        # Test portal resolution
+        url = get_cabinet_portal_url(sample["s"])
+        self.assertEqual(url, "https://e-maktab.uz")
+
 if __name__ == "__main__":
     unittest.main()
+
 

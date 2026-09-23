@@ -9,6 +9,7 @@ from typing import Any, Optional, Dict
 
 from services.qr_service import clean_phone_number, generate_phone_qr_image
 from core.validators import validate_inn, validate_phone, clean_inn, validate_jshshir, validate_passport_series
+from ui.views.cabinet_dialog import open_cabinet_dialog, copy_cabinet_quick
 
 def render_table(parent: tk.Widget, app: Any) -> None:
     """Asosiy jadval (Table View) sahifasini ko'rsatish."""
@@ -39,6 +40,7 @@ def render_table(parent: tk.Widget, app: Any) -> None:
     def add_btn(txt, cmd, col, w=96):
         ctk.CTkButton(btn_frame, text=txt, command=cmd, fg_color=col, height=40, font=("Segoe UI", int(app.font_size * 0.78), "bold"), width=w).pack(side="right", padx=2)
 
+    add_btn("🔑 Kabinet", lambda: open_cabinet_dialog(app), "#d97706", 88)
     add_btn("🛡 Verifikatsiya", lambda: open_verification_dialog(app), "#0284c7", 108)
     add_btn("🏘 Yettilik", lambda: app.open_yettilik(), "#16a34a", 85)
     add_btn("📜 Tarix", lambda: app.open_history(), "#7c3aed", 75)
@@ -182,6 +184,9 @@ def show_context_menu(app: Any, event: Any) -> None:
     v = app.tree.item(item)["values"]
     selected_mahalla = str(v[2]) if v and len(v) > 2 else None
 
+    menu.add_command(label="🔑 Kabinetga dostup (Dialog)", command=lambda: open_cabinet_dialog(app))
+    menu.add_command(label="⚡ Tezkor Kabinetga dostup nusxalash", command=lambda: copy_cabinet_quick(app))
+    menu.add_separator()
     menu.add_command(label="🛡 Verifikatsiya so'rovi (Dialog)", command=lambda: open_verification_dialog(app))
     menu.add_command(label="⚡ Tezkor Verifikatsiya nusxalash", command=lambda: copy_verification_quick(app))
     menu.add_separator()

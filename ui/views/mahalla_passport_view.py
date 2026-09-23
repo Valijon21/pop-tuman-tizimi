@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional
 
 from core.config import THEMES
 from services.verification_service import build_verification_text
+from services.cabinet_service import build_cabinet_access_text
 from services.qr_service import generate_phone_qr_image, clean_phone_number
 from PIL import ImageTk
 
@@ -134,6 +135,11 @@ def open_mahalla_passport(app: Any, mahalla_name: Optional[str] = None) -> None:
                 act_row = ctk.CTkFrame(c_content, fg_color="transparent")
                 act_row.pack(fill="x", pady=(8, 0))
 
+                def make_copy_cabinet(it=assigned_item):
+                    txt = build_cabinet_access_text(it)
+                    pyperclip.copy(txt)
+                    app.show_toast(f"✅ {it.get('f', '')} kabinetga dostup matni nusxalandi!", "success")
+
                 def make_copy_verif(it=assigned_item):
                     txt = build_verification_text(it)
                     pyperclip.copy(txt)
@@ -155,9 +161,10 @@ def open_mahalla_passport(app: Any, mahalla_name: Optional[str] = None) -> None:
                     tk.Label(qw, text=it.get("f", ""), font=("Segoe UI", 11, "bold")).pack()
                     tk.Label(qw, text=cl, font=("Segoe UI", 13, "bold"), fg="#10b981").pack()
 
-                ctk.CTkButton(act_row, text="🛡 Verifikatsiya", command=make_copy_verif, height=28, width=105, font=("Segoe UI", 11, "bold"), fg_color="#2563eb").pack(side="left", padx=2)
-                ctk.CTkButton(act_row, text="📱 QR", command=make_show_qr, height=28, width=65, font=("Segoe UI", 11), fg_color="#f59e0b").pack(side="left", padx=2)
-                ctk.CTkButton(act_row, text="📞 Nusxa", command=lambda t=tel: (pyperclip.copy(t), app.show_toast("Telefon nusxalandi!")), height=28, width=75, font=("Segoe UI", 11), fg_color="#64748b").pack(side="left", padx=2)
+                ctk.CTkButton(act_row, text="🔑 Kabinet", command=make_copy_cabinet, height=28, width=78, font=("Segoe UI", 11, "bold"), fg_color="#d97706").pack(side="left", padx=2)
+                ctk.CTkButton(act_row, text="🛡 Verifikatsiya", command=make_copy_verif, height=28, width=98, font=("Segoe UI", 11, "bold"), fg_color="#2563eb").pack(side="left", padx=2)
+                ctk.CTkButton(act_row, text="📱 QR", command=make_show_qr, height=28, width=55, font=("Segoe UI", 11), fg_color="#f59e0b").pack(side="left", padx=2)
+                ctk.CTkButton(act_row, text="📞 Tel", command=lambda t=tel: (pyperclip.copy(t), app.show_toast("Telefon nusxalandi!")), height=28, width=55, font=("Segoe UI", 11), fg_color="#64748b").pack(side="left", padx=2)
             else:
                 ctk.CTkLabel(top_bar, text="○ Vakant (Bo'sh)", font=("Segoe UI", 11, "bold"), text_color="#ef4444").pack(side="right")
                 ctk.CTkLabel(c_content, text="Xodim biriktirilmagan", font=("Segoe UI", 12), text_color="gray", anchor="w").pack(fill="x", pady=10)

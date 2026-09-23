@@ -159,12 +159,20 @@ def render_dashboard(parent: tk.Widget, app: Any) -> None:
         v = prev_tree.item(item_id)["values"]
         menu = tk.Menu(app.root, tearoff=0)
         from services.verification_service import build_verification_text
+        from ui.views.cabinet_dialog import open_cabinet_dialog, copy_cabinet_quick
+
+        data_item = {"m": v[2], "s": v[1], "f": v[3], "t": v[4], "inn": v[5]}
+
+        menu.add_command(label="🔑 Kabinetga dostup (Dialog)", command=lambda: open_cabinet_dialog(app, data_item))
+        menu.add_command(label="⚡ Tezkor Kabinetga dostup nusxalash", command=lambda: copy_cabinet_quick(app, data_item))
+        menu.add_separator()
+
         def quick_copy():
-            data_item = {"m": v[2], "s": v[1], "f": v[3], "t": v[4], "inn": v[5]}
             text = build_verification_text(data_item)
             import pyperclip
             pyperclip.copy(text)
             app.show_toast("✅ Verifikatsiya shablon matni nusxalandi!", "success")
+
         menu.add_command(label="⚡ Tezkor Verifikatsiya nusxalash", command=quick_copy)
         menu.add_command(label="📋 Jadvalda ochish", command=lambda: (app.cat_var.set("Barchasi"), app.show_table()))
         menu.post(event.x_root, event.y_root)
