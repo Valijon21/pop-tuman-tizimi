@@ -1,4 +1,5 @@
 import tkinter as tk
+from typing import Any
 import customtkinter as ctk
 from PIL import Image, ImageTk
 from core.config import THEMES, CHART_COLORS, ICON_PATH

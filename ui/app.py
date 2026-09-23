@@ -65,12 +65,18 @@ class MahallaDasturi:
         except Exception as e:
             logger.warning(f"Ikonka yuklanmadi: {e}")
 
+        logger.info(f"DataManager yuklandi: {len(self.data)} ta tashkilot, {len(self.data_manager.trash)} ta chiqindida")
+        logger.info(f"Oyna o'lchami: {DEFAULT_WINDOW_SIZE}, Minimal: {MIN_WINDOW_SIZE}")
+
         # UI maketini o'rnatish
         self.setup_ui()
+        logger.info("Foydalanuvchi interfeysi (UI) muvaffaqiyatli qurildi.")
 
     def on_close(self) -> None:
         """Dastur yopilayotganda avtomatik zaxira olish."""
+        logger.info("Dastur yopilmoqda. Avtomatik zaxira nusxa yaratilmoqda...")
         self.data_manager.backup_data()
+        logger.info("Zaxira nusxa olindi. Oyna yopilmoqda.")
         self.root.destroy()
 
     def save_data(self) -> None:
@@ -223,16 +229,19 @@ class MahallaDasturi:
             widget.destroy()
 
     def show_dashboard(self) -> None:
+        logger.info("[NAVIGATSIYA] Dashboard sahifasiga o'tildi.")
         self.clear_content()
         self.current_view = "dashboard"
         render_dashboard(self.content_area, self)
 
     def show_table(self) -> None:
+        logger.info("[NAVIGATSIYA] Tashkilotlar jadvali sahifasiga o'tildi.")
         self.clear_content()
         self.current_view = "table"
         render_table(self.content_area, self)
 
     def show_trash(self) -> None:
+        logger.info(f"[NAVIGATSIYA] Chiqindi qutisiga o'tildi (Yozuvlar: {len(self.data_manager.trash)} ta).")
         self.clear_content()
         self.current_view = "trash"
         render_trash(self.content_area, self)

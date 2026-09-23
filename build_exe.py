@@ -43,10 +43,20 @@ def build():
     main_script = os.path.join(BASE_DIR, "main.py")
     icon_file = os.path.join(BASE_DIR, "popdata.png")
 
+    # Eski kesh va yig'ilgan fayllarni tozalash (Clean build)
+    build_dir = os.path.join(BASE_DIR, "build")
+    dist_dir = os.path.join(BASE_DIR, "dist", app_name)
+    print("[TOZALASH] Eski kesh va build papkalari tozalanmoqda...")
+    if os.path.exists(build_dir):
+        shutil.rmtree(build_dir, ignore_errors=True)
+    if os.path.exists(dist_dir):
+        shutil.rmtree(dist_dir, ignore_errors=True)
+
     # Buyruq argumentlari
     args = [
         sys.executable, "-m", "PyInstaller",
         "--noconfirm",
+        "--clean",
         "--onedir",                # Tez ishga tushishi va barqarorlik uchun papka ko'rinishida
         "--windowed",              # Orqada qora terminal oynasi ochilmaydi
         f"--name={app_name}",
@@ -65,9 +75,27 @@ def build():
         "openpyxl",
         "qrcode",
         "core",
+        "core.config",
+        "core.logger",
+        "core.security",
+        "core.validators",
         "database",
+        "database.models",
+        "database.data_manager",
         "services",
-        "ui"
+        "services.qr_service",
+        "services.excel_service",
+        "services.gsheet_service",
+        "services.search_service",
+        "ui",
+        "ui.style",
+        "ui.toast",
+        "ui.app",
+        "ui.views",
+        "ui.views.dashboard_view",
+        "ui.views.table_view",
+        "ui.views.trash_view",
+        "ui.views.settings_view"
     ]
     for h in hidden_imports:
         args.append(f"--hidden-import={h}")

@@ -109,8 +109,9 @@ class DataManager:
             with open(temp_file, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)
             os.replace(temp_file, filepath)
+            logger.debug(f"[SAQLANDI] Atomik yozish muvaffaqiyatli: {filepath} ({len(data) if isinstance(data, (list, dict)) else 'N/A'} ta element)")
         except Exception as e:
-            logger.error(f"Faylni atomik saqlashda xatolik ({filepath}): {e}")
+            logger.error(f"[XATO] Faylni atomik saqlashda xatolik ({filepath}): {e}")
             if os.path.exists(temp_file):
                 try:
                     os.remove(temp_file)
@@ -143,8 +144,9 @@ class DataManager:
             if len(self.activity_log) > 1000:
                 self.activity_log.pop()
             self.save_json(self.log_file, self.activity_log)
+            logger.info(f"[AUDIT] Foydalanuvchi: {user} | Amal: {action} | Tafsilot: {details}")
         except Exception as e:
-            logger.error(f"Log yozishda xatolik: {e}")
+            logger.error(f"Audit log yozishda xatolik: {e}")
 
     def move_to_trash(self, item: Dict[str, Any]) -> bool:
         """Yozuvni Chiqindi qutisiga ko'chirish."""
@@ -156,7 +158,9 @@ class DataManager:
             self.trash.append(target)
             self.save_data()
             self.save_trash()
+            logger.info(f"[CHIQINDI] Yozuv chiqindiga ko'chirildi: ID={target_id}, Nomi='{target.get('m')}'")
             return True
+        logger.warning(f"[CHIQINDI] O'chirish uchun yozuv topilmadi: ID={target_id}")
         return False
 
     def restore_from_trash(self, item: Dict[str, Any]) -> bool:
@@ -170,7 +174,9 @@ class DataManager:
             self.data.append(target)
             self.save_data()
             self.save_trash()
+            logger.info(f"[TIKLASH] Yozuv bazaga tiklandi: ID={target_id}, Nomi='{target.get('m')}'")
             return True
+        logger.warning(f"[TIKLASH] Tiklash uchun yozuv topilmadi: ID={target_id}")
         return False
 
     def permanent_delete(self, item: Dict[str, Any]) -> bool:
@@ -180,7 +186,9 @@ class DataManager:
         if target:
             self.trash.remove(target)
             self.save_trash()
+            logger.info(f"[BUTUNLAY O'CHIRISH] Yozuv bazadan to'liq o'chirildi: ID={target_id}, Nomi='{target.get('m')}'")
             return True
+        logger.warning(f"[BUTUNLAY O'CHIRISH] O'chirish uchun yozuv topilmadi: ID={target_id}")
         return False
 
     def backup_data(self) -> None:
@@ -191,7 +199,10 @@ class DataManager:
             try:
                 shutil.copy2(self.db_file, backup_path)
                 backups = sorted([os.path.join(self.backup_dir, f) for f in os.listdir(self.backup_dir) if f.endswith(".json")])
+                logger.info(f"[ZAXIRA] Baza zaxiralandi: {backup_path} (Jami zaxiralar: {len(backups)})")
                 while len(backups) > 10:
-                    os.remove(backups.pop(0))
+                    old_b = backups.pop(0)
+                    os.remove(old_b)
+                    logger.debug(f"[ZAXIRA] Eski zaxira tozalandi: {old_b}")
             except Exception as e:
-                logger.error(f"Zaxira olishda xatolik: {e}")
+                logger.error(f"[XATO] Zaxira olishda xatolik: {e}")
