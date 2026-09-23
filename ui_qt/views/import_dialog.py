@@ -22,22 +22,24 @@ class ImportDialog(QDialog):
         self.imported_items: List[Dict[str, Any]] = []
 
         self.setWindowTitle("📥 Excel / CSV Ommaviy Import")
-        self.resize(880, 580)
+        self.resize(780, 480)
+        self.setMinimumSize(620, 380)
         self.setModal(True)
 
         self.setup_ui()
 
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 20, 24, 20)
-        layout.setSpacing(14)
+        layout.setContentsMargins(16, 12, 16, 12)
+        layout.setSpacing(8)
 
         # Header
         head = QVBoxLayout()
+        head.setSpacing(2)
         title = QLabel("📥 Excel va CSV dan Ommaviy Import")
-        title.setStyleSheet("font-size: 18px; font-weight: 800; color: #10b981;")
+        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #10b981;")
         sub = QLabel("Excel (.xlsx, .xls) yoki CSV faylini tanlang va tizimga integratsiya qiling")
-        sub.setStyleSheet("font-size: 12px; color: #94a3b8;")
+        sub.setStyleSheet("font-size: 11px; color: #94a3b8;")
         head.addWidget(title)
         head.addWidget(sub)
         layout.addLayout(head)
@@ -45,12 +47,12 @@ class ImportDialog(QDialog):
         # Fayl tanlash paneli
         file_box = QHBoxLayout()
         self.lbl_file = QLabel("Fayl tanlanmagan")
-        self.lbl_file.setStyleSheet("font-size: 13px; color: #f8fafc; background: #1e293b; padding: 8px 12px; border-radius: 8px;")
+        self.lbl_file.setStyleSheet("font-size: 11.5px; color: #f8fafc; background: #1e293b; padding: 5px 10px; border-radius: 6px;")
         file_box.addWidget(self.lbl_file, 1)
 
         btn_browse = QPushButton("📁 Faylni Tanlash...")
         btn_browse.setStyleSheet("""
-            background: #2563eb; color: white; font-weight: 700; padding: 8px 16px; border-radius: 8px;
+            background: #2563eb; color: white; font-weight: 700; padding: 5px 12px; border-radius: 6px; font-size: 11.5px;
         """)
         btn_browse.clicked.connect(self.browse_file)
         file_box.addWidget(btn_browse)

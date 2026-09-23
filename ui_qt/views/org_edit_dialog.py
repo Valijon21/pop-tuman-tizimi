@@ -25,7 +25,8 @@ class OrgEditDialog(QDialog):
         self.is_edit = bool(item)
 
         self.setWindowTitle("Tashkilotni Tahrirlash" if self.is_edit else "Yangi Tashkilot Qo'shish")
-        self.setFixedSize(540, 680)
+        self.resize(500, 500)
+        self.setMinimumSize(440, 380)
         self.setModal(True)
 
         self.setup_ui()
@@ -34,23 +35,31 @@ class OrgEditDialog(QDialog):
 
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 20, 24, 20)
-        layout.setSpacing(14)
+        layout.setContentsMargins(18, 14, 18, 14)
+        layout.setSpacing(10)
 
         # Sarlavha
         head_layout = QVBoxLayout()
+        head_layout.setSpacing(2)
         title_lbl = QLabel("Tashkilotni Tahrirlash" if self.is_edit else "Yangi Tashkilot Qo'shish")
-        title_lbl.setStyleSheet("font-size: 18px; font-weight: 800; color: #38bdf8;")
+        title_lbl.setStyleSheet("font-size: 15px; font-weight: 800; color: #38bdf8;")
         sub_lbl = QLabel("Kerakli ma'lumotlarni to'ldiring va saqlash tugmasini bosing")
-        sub_lbl.setStyleSheet("font-size: 12px; color: #94a3b8;")
+        sub_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
         head_layout.addWidget(title_lbl)
         head_layout.addWidget(sub_lbl)
         layout.addLayout(head_layout)
 
-        # Forma maydonlari
-        form_grid = QGridLayout()
-        form_grid.setVerticalSpacing(10)
-        form_grid.setHorizontalSpacing(12)
+        # Skroll maydoni forma uchun
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setStyleSheet("background: transparent;")
+
+        form_widget = QWidget()
+        form_grid = QGridLayout(form_widget)
+        form_grid.setVerticalSpacing(6)
+        form_grid.setHorizontalSpacing(10)
+        form_grid.setContentsMargins(0, 4, 4, 4)
 
         # 1. Turi (Kategoriya)
         form_grid.addWidget(QLabel("Tashkilot Turi:"), 0, 0)
@@ -108,26 +117,28 @@ class OrgEditDialog(QDialog):
         form_grid.addWidget(QLabel("Izoh:"), 8, 0)
         self.edit_izoh = QTextEdit()
         self.edit_izoh.setPlaceholderText("Qo'shimcha ma'lumotlar...")
-        self.edit_izoh.setMaximumHeight(80)
+        self.edit_izoh.setMaximumHeight(48)
         form_grid.addWidget(self.edit_izoh, 8, 1)
 
-        layout.addLayout(form_grid)
+        scroll.setWidget(form_widget)
+        layout.addWidget(scroll, 1)
 
         # Validatsiya indikatori
         self.lbl_status = QLabel("")
-        self.lbl_status.setStyleSheet("font-size: 11px; color: #f59e0b;")
+        self.lbl_status.setStyleSheet("font-size: 10px; color: #f59e0b;")
         layout.addWidget(self.lbl_status)
 
         # Tugmalar paneli
         btn_layout = QHBoxLayout()
-        btn_layout.setSpacing(10)
+        btn_layout.setSpacing(8)
 
         self.btn_cancel = QPushButton("Bekor Qilish")
+        self.btn_cancel.setStyleSheet("padding: 6px 14px; border-radius: 6px; font-size: 11.5px;")
         self.btn_cancel.clicked.connect(self.reject)
 
         self.btn_save = QPushButton("💾 Saqlash")
         self.btn_save.setProperty("class", "btn_primary")
-        self.btn_save.setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #2563eb, stop:1 #3b82f6); color: white; font-weight: 700; padding: 10px 20px; border-radius: 8px;")
+        self.btn_save.setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #2563eb, stop:1 #3b82f6); color: white; font-weight: 700; padding: 6px 18px; border-radius: 6px; font-size: 11.5px;")
         self.btn_save.clicked.connect(self.save)
 
         btn_layout.addStretch()

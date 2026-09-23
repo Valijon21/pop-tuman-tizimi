@@ -20,7 +20,8 @@ class BroadcastView(QDialog):
         super().__init__(parent)
         self.app = app
         self.setWindowTitle("📢 Ommaviy Xabarnoma (SMS / Telegram)")
-        self.resize(800, 620)
+        self.resize(740, 510)
+        self.setMinimumSize(620, 390)
         self.setModal(True)
 
         self.setup_ui()
@@ -28,22 +29,23 @@ class BroadcastView(QDialog):
 
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(24, 20, 24, 20)
-        main_layout.setSpacing(14)
+        main_layout.setContentsMargins(16, 12, 16, 12)
+        main_layout.setSpacing(8)
 
         # Header
         head = QVBoxLayout()
+        head.setSpacing(2)
         title = QLabel("📢 Ommaviy Xabarnoma Tarqatish Tizimi")
-        title.setStyleSheet("font-size: 18px; font-weight: 800; color: #38bdf8;")
+        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #38bdf8;")
         sub = QLabel("Mahalla raislari, hokim yordamchilari yoki boshqa tashkilotlarga tezkor xabar yuborish")
-        sub.setStyleSheet("font-size: 12px; color: #94a3b8;")
+        sub.setStyleSheet("font-size: 11px; color: #94a3b8;")
         head.addWidget(title)
         head.addWidget(sub)
         main_layout.addLayout(head)
 
         # Yuqori parametrlar paneli
         top_grid = QGridLayout()
-        top_grid.setSpacing(10)
+        top_grid.setSpacing(6)
 
         # 1. Auditoriya tanlash
         top_grid.addWidget(QLabel("Auditoriya:"), 0, 0)
@@ -70,20 +72,20 @@ class BroadcastView(QDialog):
 
         # Xabar matni
         lbl_msg = QLabel("Xabar Matni ({nomi}, {fio}, {lavozim} teglari avtomatik to'ldiriladi):")
-        lbl_msg.setStyleSheet("font-size: 12px; font-weight: 600; color: #cbd5e1;")
+        lbl_msg.setStyleSheet("font-size: 11px; font-weight: 600; color: #cbd5e1;")
         main_layout.addWidget(lbl_msg)
 
         self.txt_message = QTextEdit()
         self.txt_message.setPlaceholderText("Xabar matnini kiriting...")
         self.txt_message.setStyleSheet("""
-            font-size: 13px;
+            font-size: 11.5px;
             background-color: #1e293b;
             color: #f8fafc;
             border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 6px;
+            padding: 6px;
         """)
-        self.txt_message.setMaximumHeight(110)
+        self.txt_message.setMaximumHeight(70)
         self.txt_message.setPlainText(SMS_TEMPLATES.get(self.combo_template.currentText(), ""))
         main_layout.addWidget(self.txt_message)
 

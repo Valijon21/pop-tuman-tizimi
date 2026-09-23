@@ -95,8 +95,8 @@
     "semantic_hash": ""
   },
   "settings.json": {
-    "mtime": 1790160832.7988746,
-    "ast_hash": "590a192a4f2f26fd260f53a04ed60419",
+    "mtime": 1790161024.3183627,
+    "ast_hash": "1d381b64d26be76ba5413e6b20b61b16",
     "semantic_hash": ""
   },
   "test_sync.py": {
@@ -285,8 +285,8 @@
     "semantic_hash": ""
   },
   "ui_qt/app_window.py": {
-    "mtime": 1790160733.0998585,
-    "ast_hash": "1cc7bdf378e82c3aeda7a08e469b6dec",
+    "mtime": 1790161204.6368663,
+    "ast_hash": "7c64c0a18125844cac7cd791192d493d",
     "semantic_hash": ""
   },
   "ui_qt/components/__init__.py": {
@@ -300,8 +300,8 @@
     "semantic_hash": ""
   },
   "ui_qt/styles.py": {
-    "mtime": 1790160574.1877768,
-    "ast_hash": "543c2d357ba8e0e322a3a81d36fd1721",
+    "mtime": 1790161184.8492537,
+    "ast_hash": "2df401a6e5756b172406cc478e9a581f",
     "semantic_hash": ""
   },
   "ui_qt/views/__init__.py": {
@@ -310,58 +310,58 @@
     "semantic_hash": ""
   },
   "ui_qt/views/broadcast_view.py": {
-    "mtime": 1790160649.6287148,
-    "ast_hash": "3abfc156eb1387139e71b37be83dc9b5",
+    "mtime": 1790161376.0270705,
+    "ast_hash": "77fb4830a584167a1d08714e7c0a88f0",
     "semantic_hash": ""
   },
   "ui_qt/views/cabinet_dialog.py": {
-    "mtime": 1790160615.750147,
-    "ast_hash": "69e7f0de4e34d3614fcc2a5347337f62",
+    "mtime": 1790161313.25248,
+    "ast_hash": "c9ab50889da36376d865f902aa7770c4",
     "semantic_hash": ""
   },
   "ui_qt/views/dashboard_view.py": {
-    "mtime": 1790160705.4965136,
-    "ast_hash": "70fd4ab4a437b5eba5a96a09d4404c6d",
+    "mtime": 1790161265.225595,
+    "ast_hash": "110151a2a826ea0d1064f263e8bc0f71",
     "semantic_hash": ""
   },
   "ui_qt/views/history_view.py": {
-    "mtime": 1790160660.0937018,
-    "ast_hash": "2baab763746ea066f16a69043efc3b84",
+    "mtime": 1790161385.8922849,
+    "ast_hash": "2d210e34e5e571aa8136335b709d6cb8",
     "semantic_hash": ""
   },
   "ui_qt/views/import_dialog.py": {
-    "mtime": 1790160800.809165,
-    "ast_hash": "3829172a4922be2ae6ada67e1a9e7d55",
+    "mtime": 1790161396.4502964,
+    "ast_hash": "58099fb9b0b92b2c62e9db064d265ce8",
     "semantic_hash": ""
   },
   "ui_qt/views/mahalla_passport_view.py": {
-    "mtime": 1790160638.961151,
-    "ast_hash": "2a58a61adbf8b6e248b27dcdec035d36",
+    "mtime": 1790161364.9737666,
+    "ast_hash": "b76e497f1314db05fd86c29a9764a1d2",
     "semantic_hash": ""
   },
   "ui_qt/views/org_edit_dialog.py": {
-    "mtime": 1790160605.3817227,
-    "ast_hash": "7a904d96d05c18a029e42a56df3e5f6e",
+    "mtime": 1790161298.7652209,
+    "ast_hash": "c5b84e481ee87e3c4f71e8fe70127d4e",
     "semantic_hash": ""
   },
   "ui_qt/views/settings_view.py": {
-    "mtime": 1790160692.7842474,
-    "ast_hash": "84c446300da5d4fcb57bab2887be1238",
+    "mtime": 1790161418.69269,
+    "ast_hash": "4c803f4a3364d20b12be8c6a4bcac097",
     "semantic_hash": ""
   },
   "ui_qt/views/table_view.py": {
-    "mtime": 1790160720.2598877,
-    "ast_hash": "7bd91e86f5a1ffa60f237034cb325f97",
+    "mtime": 1790161228.2635808,
+    "ast_hash": "36dbb8d95b9375e94c803b8bded2f668",
     "semantic_hash": ""
   },
   "ui_qt/views/trash_view.py": {
-    "mtime": 1790160681.2786336,
-    "ast_hash": "1c8659d9d450cbd45dad33909dc2aeab",
+    "mtime": 1790161408.7041996,
+    "ast_hash": "3a3c55c6b7093169b5c40f594102e5df",
     "semantic_hash": ""
   },
   "ui_qt/views/verification_dialog.py": {
-    "mtime": 1790160625.38537,
-    "ast_hash": "60b66cfca7b5554044824596a6c25b81",
+    "mtime": 1790161322.809234,
+    "ast_hash": "ed8bf9dc79dfe12fcad6ac31fa701410",
     "semantic_hash": ""
   }
 }

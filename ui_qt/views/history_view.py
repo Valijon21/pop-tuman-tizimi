@@ -21,7 +21,8 @@ class HistoryView(QDialog):
         self.mahalla = mahalla
 
         self.setWindowTitle("📜 Kadrlar Almashinuvi va Rotatsiyasi Tarixi (Audit)")
-        self.resize(900, 560)
+        self.resize(800, 500)
+        self.setMinimumSize(640, 380)
         self.setModal(True)
 
         self.setup_ui()
@@ -29,15 +30,16 @@ class HistoryView(QDialog):
 
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 20, 24, 20)
-        layout.setSpacing(14)
+        layout.setContentsMargins(16, 12, 16, 12)
+        layout.setSpacing(8)
 
         # Header
         head = QVBoxLayout()
+        head.setSpacing(2)
         title = QLabel("📜 Kadrlar Almashinuvi Tarixi (Audit)")
-        title.setStyleSheet("font-size: 18px; font-weight: 800; color: #a855f7;")
+        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #a855f7;")
         sub = QLabel("Pop tumanidagi tashkilot va mahallalarda xodimlar o'zgarishi qaydnomasi")
-        sub.setStyleSheet("font-size: 12px; color: #94a3b8;")
+        sub.setStyleSheet("font-size: 11px; color: #94a3b8;")
         head.addWidget(title)
         head.addWidget(sub)
         layout.addLayout(head)

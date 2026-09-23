@@ -20,7 +20,8 @@ class CabinetDialog(QDialog):
         self.app = app
         self.item = item
         self.setWindowTitle("🔑 Kabinetga Dostup Shablon")
-        self.setFixedSize(520, 480)
+        self.resize(480, 390)
+        self.setMinimumSize(400, 300)
         self.setModal(True)
 
         self.setup_ui()
@@ -29,16 +30,16 @@ class CabinetDialog(QDialog):
 
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(24, 20, 24, 20)
-        layout.setSpacing(14)
+        layout.setContentsMargins(16, 12, 16, 12)
+        layout.setSpacing(8)
 
         # Sarlavha
         title_lbl = QLabel("🔑 Kabinetga Dostup So'rovi")
-        title_lbl.setStyleSheet("font-size: 18px; font-weight: 800; color: #f59e0b;")
+        title_lbl.setStyleSheet("font-size: 15px; font-weight: 800; color: #f59e0b;")
         layout.addWidget(title_lbl)
 
         desc_lbl = QLabel("Soliq yoki davlat xizmatlari kabinetiga kirish uchun standart shablon matni:")
-        desc_lbl.setStyleSheet("font-size: 12px; color: #94a3b8;")
+        desc_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
         layout.addWidget(desc_lbl)
 
         # Tashkilot tanlash (agar bittasi tanlanmagan bo'lsa)
@@ -59,34 +60,35 @@ class CabinetDialog(QDialog):
         self.txt_preview.setReadOnly(False)
         self.txt_preview.setStyleSheet("""
             font-family: 'Consolas', 'Segoe UI', monospace;
-            font-size: 14px;
+            font-size: 12px;
             background-color: #1e293b;
             color: #38bdf8;
             border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 6px;
+            padding: 8px;
         """)
         layout.addWidget(self.txt_preview)
 
         # Tugmalar
         btn_layout = QHBoxLayout()
-        btn_layout.setSpacing(10)
+        btn_layout.setSpacing(8)
 
         self.btn_copy = QPushButton("📋 Nusxalash")
         self.btn_copy.setStyleSheet("""
             background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #d97706, stop:1 #f59e0b);
-            color: white; font-weight: 700; padding: 10px 18px; border-radius: 8px;
+            color: white; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;
         """)
         self.btn_copy.clicked.connect(self.copy_to_clipboard)
 
         self.btn_telegram = QPushButton("✈ Telegramga Yuborish")
         self.btn_telegram.setStyleSheet("""
             background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0284c7, stop:1 #38bdf8);
-            color: white; font-weight: 700; padding: 10px 18px; border-radius: 8px;
+            color: white; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;
         """)
         self.btn_telegram.clicked.connect(self.send_to_telegram)
 
         self.btn_close = QPushButton("Yopish")
+        self.btn_close.setStyleSheet("padding: 6px 12px; border-radius: 6px; font-size: 11.5px;")
         self.btn_close.clicked.connect(self.accept)
 
         btn_layout.addWidget(self.btn_copy)

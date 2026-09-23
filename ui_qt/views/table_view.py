@@ -34,72 +34,101 @@ class TableView(QWidget):
 
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(24, 20, 24, 16)
-        main_layout.setSpacing(12)
+        main_layout.setContentsMargins(14, 10, 14, 10)
+        main_layout.setSpacing(8)
 
         # 1. ASBOBLAR PANELI (TOOLBAR)
         toolbar = QHBoxLayout()
-        toolbar.setSpacing(10)
+        toolbar.setSpacing(6)
 
         # Qidiruv maydoni
         self.combo_search_type = QComboBox()
         self.combo_search_type.addItems(["Nomi", "F.I.SH", "INN", "Izoh"])
-        self.combo_search_type.setFixedWidth(110)
+        self.combo_search_type.setFixedWidth(85)
         self.combo_search_type.currentIndexChanged.connect(self.on_search_changed)
         toolbar.addWidget(self.combo_search_type)
 
         self.edit_search = QLineEdit()
-        self.edit_search.setPlaceholderText("🔍 Tezkor qidiruv...")
+        self.edit_search.setPlaceholderText("🔍 Qidiruv...")
         self.edit_search.textChanged.connect(self.on_search_changed)
-        self.edit_search.setMinimumWidth(260)
-        toolbar.addWidget(self.edit_search)
+        self.edit_search.setMinimumWidth(140)
+        toolbar.addWidget(self.edit_search, 1)
 
         btn_clear = QPushButton("✖")
-        btn_clear.setFixedSize(36, 36)
-        btn_clear.setStyleSheet("background: #334155; color: #94a3b8; font-weight: bold; border-radius: 8px;")
+        btn_clear.setFixedSize(26, 26)
+        btn_clear.setStyleSheet("background: #334155; color: #94a3b8; font-weight: bold; border-radius: 6px; padding: 0px;")
         btn_clear.clicked.connect(lambda: self.edit_search.clear())
         toolbar.addWidget(btn_clear)
 
-        toolbar.addStretch()
-
-        # Amallar tugmalari
-        def add_tool_btn(txt, cmd, bg_color, min_w=85):
+        # Amallar tugmalari (Ixcham va tartibli)
+        def add_tool_btn(txt, cmd, bg_color, min_w=70):
             btn = QPushButton(txt)
             btn.setStyleSheet(f"""
                 QPushButton {{
                     background-color: {bg_color};
                     color: white;
                     font-weight: 700;
-                    padding: 8px 12px;
-                    border-radius: 8px;
+                    padding: 5px 9px;
+                    border-radius: 6px;
                     min-width: {min_w}px;
+                    font-size: 11.5px;
                 }}
             """)
             btn.clicked.connect(cmd)
             toolbar.addWidget(btn)
             return btn
 
-        add_tool_btn("➕ Qo'shish", self.open_add_dialog, "#16a34a", 90)
-        add_tool_btn("✏ Tahrirlash", self.open_edit_dialog, "#f59e0b", 80)
-        add_tool_btn("🔑 Kabinet", self.open_cabinet, "#d97706", 80)
-        add_tool_btn("🛡 Verifikatsiya", self.open_verification, "#0284c7", 95)
-        add_tool_btn("🏘 Yettilik", self.open_yettilik, "#2563eb", 75)
-        add_tool_btn("📢 Xabar", self.open_broadcast, "#06b6d4", 75)
-        add_tool_btn("📊 Excel", self.export_excel, "#059669", 75)
+        add_tool_btn("➕ Qo'shish", self.open_add_dialog, "#16a34a", 72)
+        add_tool_btn("✏ Tahrir", self.open_edit_dialog, "#f59e0b", 62)
+        add_tool_btn("🔑 Kabinet", self.open_cabinet, "#d97706", 68)
+        add_tool_btn("🛡 Verifikatsiya", self.open_verification, "#0284c7", 82)
+        add_tool_btn("📊 Excel", self.export_excel, "#059669", 60)
+
+        # Qo'shimcha amallar menyu tugmasi
+        btn_more = QPushButton("⚡ Boshqa ▾")
+        btn_more.setStyleSheet("""
+            QPushButton {
+                background-color: #334155;
+                color: #f8fafc;
+                font-weight: 700;
+                padding: 5px 9px;
+                border-radius: 6px;
+                min-width: 70px;
+                font-size: 11.5px;
+            }
+            QPushButton:hover {
+                background-color: #475569;
+            }
+        """)
+        more_menu = QMenu(self)
+        act_yettilik = more_menu.addAction("🏘 Mahalla 'Yettiligi' (360° Pasport)")
+        act_yettilik.triggered.connect(self.open_yettilik)
+        act_broadcast = more_menu.addAction("📢 Ommaviy Xabarnoma (SMS/Telegram)")
+        act_broadcast.triggered.connect(self.open_broadcast)
+        act_history = more_menu.addAction("📜 Kadrlar Almashinuvi Tarixi")
+        act_history.triggered.connect(lambda: self.app.open_history() if hasattr(self.app, "open_history") else None)
+        act_import = more_menu.addAction("📥 Excel / CSV Ommaviy Import")
+        act_import.triggered.connect(lambda: self.app.open_import() if hasattr(self.app, "open_import") else None)
+        more_menu.addSeparator()
+        act_trash = more_menu.addAction("🗑 Chiqindi Qutisi")
+        act_trash.triggered.connect(lambda: self.app.show_trash() if hasattr(self.app, "show_trash") else None)
+
+        btn_more.setMenu(more_menu)
+        toolbar.addWidget(btn_more)
 
         main_layout.addLayout(toolbar)
 
         # 2. KATEGORIYA PILL-PANELI (Gorizontal skroll bilan)
         cat_scroll = QScrollArea()
         cat_scroll.setWidgetResizable(True)
-        cat_scroll.setFixedHeight(48)
+        cat_scroll.setFixedHeight(34)
         cat_scroll.setFrameShape(QFrame.NoFrame)
         cat_scroll.setStyleSheet("background: transparent;")
 
         cat_container = QWidget()
         self.cat_layout = QHBoxLayout(cat_container)
         self.cat_layout.setContentsMargins(0, 0, 0, 0)
-        self.cat_layout.setSpacing(8)
+        self.cat_layout.setSpacing(6)
 
         self.pill_buttons: Dict[str, QPushButton] = {}
         categories = ["Barchasi"] + (self.app.data_manager.categories if self.app else [])

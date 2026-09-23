@@ -20,16 +20,17 @@ class TrashView(QWidget):
 
     def setup_ui(self):
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(30, 24, 30, 24)
-        layout.setSpacing(16)
+        layout.setContentsMargins(16, 12, 16, 12)
+        layout.setSpacing(10)
 
         # Header
         head = QHBoxLayout()
         title_box = QVBoxLayout()
+        title_box.setSpacing(2)
         title = QLabel("🗑 Chiqindi Qutisi")
-        title.setStyleSheet("font-size: 22px; font-weight: 800; color: #ef4444;")
+        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #ef4444;")
         sub = QLabel("Bu yerdan o'chirilgan tashkilotlarni qayta tiklashingiz yoki butunlay o'chirishingiz mumkin")
-        sub.setStyleSheet("font-size: 13px; color: #94a3b8;")
+        sub.setStyleSheet("font-size: 11px; color: #94a3b8;")
         title_box.addWidget(title)
         title_box.addWidget(sub)
         head.addLayout(title_box)
@@ -40,7 +41,7 @@ class TrashView(QWidget):
         self.btn_restore = QPushButton("♻ Qayta Tiklash")
         self.btn_restore.setStyleSheet("""
             background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #059669, stop:1 #10b981);
-            color: white; font-weight: 700; padding: 10px 18px; border-radius: 8px;
+            color: white; font-weight: 700; padding: 5px 12px; border-radius: 6px; font-size: 11.5px;
         """)
         self.btn_restore.clicked.connect(self.restore_selected)
         head.addWidget(self.btn_restore)
@@ -48,7 +49,7 @@ class TrashView(QWidget):
         self.btn_perm_delete = QPushButton("🗑 Butunlay O'chirish")
         self.btn_perm_delete.setStyleSheet("""
             background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #dc2626, stop:1 #ef4444);
-            color: white; font-weight: 700; padding: 10px 18px; border-radius: 8px;
+            color: white; font-weight: 700; padding: 5px 12px; border-radius: 6px; font-size: 11.5px;
         """)
         self.btn_perm_delete.clicked.connect(self.perm_delete_selected)
         head.addWidget(self.btn_perm_delete)

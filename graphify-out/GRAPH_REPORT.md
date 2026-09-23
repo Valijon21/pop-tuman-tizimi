@@ -1,7 +1,7 @@
 # Graph Report - tashkilotlar INN tizim  (2026-09-23)
 
 ## Corpus Check
-- 71 files · ~54,062 words
+- 71 files · ~54,134 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e026e7c9`
+- Built from commit: `d9f4eee3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -163,7 +163,7 @@ Nodes (8): Any, QModelIndex, QWidget, Ma'lumotlarni SearchService orqali qidiris
 
 ### Community 29 - "TestQtArchitecture"
 Cohesion: 0.15
-Nodes (10): tests/test_qt_views.py: PyQt5 UI komponentlari va modellarining avtomatlashtiril, PyQt5 arxitekturasi, modellari va ko'rinishlarini sinash., TestQtArchitecture, get_stylesheet(), Pop Tuman Tizimi - PyQt5 Zamonaviy Dizayn Tizimi (Fluent & Material Design QSS), Belgilangan mavzu (Dark yoki Light) uchun to'liq QSS stilini qaytaradi., copy_cabinet_quick(), Oynani ochmasdan tezkor nusxalash. (+2 more)
+Nodes (10): tests/test_qt_views.py: PyQt5 UI komponentlari va modellarining avtomatlashtiril, PyQt5 arxitekturasi, modellari va ko'rinishlarini sinash., TestQtArchitecture, get_stylesheet(), Pop Tuman Tizimi - PyQt5 Zamonaviy Dizayn Tizimi (Senior Compact Edition) Kichik, Belgilangan mavzu (Dark yoki Light) uchun to'liq QSS stilini qaytaradi., copy_cabinet_quick(), Oynani ochmasdan tezkor nusxalash. (+2 more)
 
 ### Community 30 - "SettingsView"
 Cohesion: 0.16
@@ -183,7 +183,7 @@ Nodes (7): Any, QWidget, ui_qt.views.trash_view: Chiqindi qutisi (Recycle Bin) s
 
 ### Community 34 - "CabinetDialog"
 Cohesion: 0.24
-Nodes (5): CabinetDialog, Any, QDialog, Kabinetga dostup shablon oynasi., Belgilangan tashkilot bo'yicha matnni generatsiya qilish.
+Nodes (5): CabinetDialog, Any, QDialog, Belgilangan tashkilot bo'yicha matnni generatsiya qilish., Kabinetga dostup shablon oynasi.
 
 ### Community 35 - "open_record_dialog"
 Cohesion: 0.24

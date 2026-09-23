@@ -24,15 +24,16 @@ class SettingsView(QWidget):
 
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(30, 24, 30, 24)
-        main_layout.setSpacing(18)
+        main_layout.setContentsMargins(16, 12, 16, 12)
+        main_layout.setSpacing(10)
 
         # Header
         head = QVBoxLayout()
+        head.setSpacing(2)
         title = QLabel("⚙ Tizim Sozlamalari")
-        title.setStyleSheet("font-size: 22px; font-weight: 800; color: #38bdf8;")
+        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #38bdf8;")
         sub = QLabel("Xavfsizlik, SQLite ma'lumotlar bazasi zaxirasi va Telegram Bot sozlamalari")
-        sub.setStyleSheet("font-size: 13px; color: #94a3b8;")
+        sub.setStyleSheet("font-size: 11px; color: #94a3b8;")
         head.addWidget(title)
         head.addWidget(sub)
         main_layout.addLayout(head)
@@ -45,7 +46,7 @@ class SettingsView(QWidget):
 
         container = QWidget()
         c_layout = QVBoxLayout(container)
-        c_layout.setSpacing(20)
+        c_layout.setSpacing(12)
 
         # 1. SQLITE BAZA VA ZAXIRA
         grp_db = QGroupBox("💾 SQLite Ma'lumotlar Bazasi va Zaxira")

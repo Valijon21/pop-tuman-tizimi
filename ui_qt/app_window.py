@@ -35,8 +35,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle(f"{APP_TITLE} (PyQt5 PRO)")
-        self.resize(1280, 800)
-        self.setMinimumSize(960, 640)
+        self.resize(1150, 700)
+        self.setMinimumSize(840, 520)
 
         # Ma'lumotlar boshqaruvchisi
         self.data_manager = DataManager()
@@ -66,13 +66,13 @@ class MainWindow(QMainWindow):
         self.sidebar = QFrame()
         self.sidebar.setObjectName("sidebar")
         self.sidebar_layout = QVBoxLayout(self.sidebar)
-        self.sidebar_layout.setContentsMargins(12, 20, 12, 16)
-        self.sidebar_layout.setSpacing(4)
+        self.sidebar_layout.setContentsMargins(8, 12, 8, 10)
+        self.sidebar_layout.setSpacing(2)
 
         # Logo va Sarlavha
         if os.path.exists(ICON_PATH):
             logo_lbl = QLabel()
-            pixmap = QPixmap(ICON_PATH).scaled(64, 64, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = QPixmap(ICON_PATH).scaled(38, 38, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             logo_lbl.setPixmap(pixmap)
             logo_lbl.setAlignment(Qt.AlignCenter)
             self.sidebar_layout.addWidget(logo_lbl)
@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
 
         self.sidebar_layout.addWidget(title_lbl)
         self.sidebar_layout.addWidget(subtitle_lbl)
-        self.sidebar_layout.addSpacing(16)
+        self.sidebar_layout.addSpacing(8)
 
         # Navigatsiya tugmalari guruhi
         self.nav_buttons = {}

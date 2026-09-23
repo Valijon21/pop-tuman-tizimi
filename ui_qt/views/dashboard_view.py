@@ -22,8 +22,8 @@ class DashboardView(QWidget):
 
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(30, 24, 30, 24)
-        main_layout.setSpacing(20)
+        main_layout.setContentsMargins(16, 12, 16, 12)
+        main_layout.setSpacing(12)
 
         # Skroll maydoni
         scroll = QScrollArea()
@@ -34,25 +34,26 @@ class DashboardView(QWidget):
         container = QWidget()
         c_layout = QVBoxLayout(container)
         c_layout.setContentsMargins(0, 0, 0, 0)
-        c_layout.setSpacing(24)
+        c_layout.setSpacing(14)
 
         # 1. HEADER (Sarlavha + Xush kelibsiz banneri)
         head_banner = QFrame()
         head_banner.setStyleSheet("""
             QFrame {
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #1e3a8a, stop:0.5 #1e40af, stop:1 #2563eb);
-                border-radius: 14px;
-                padding: 24px;
+                border-radius: 8px;
+                padding: 8px 14px;
             }
         """)
         h_layout = QHBoxLayout(head_banner)
-        h_layout.setContentsMargins(20, 16, 20, 16)
+        h_layout.setContentsMargins(12, 8, 12, 8)
 
         banner_text = QVBoxLayout()
+        banner_text.setSpacing(2)
         title = QLabel("Pop Tumani Tashkilotlari va INN Tizimi")
-        title.setStyleSheet("font-size: 22px; font-weight: 800; color: #ffffff;")
-        sub = QLabel("Raqamli boshqaruv, Mahalla 'Yettiligi' 360° Pasporti va xavfsiz ma'lumotlar bazasi")
-        sub.setStyleSheet("font-size: 13px; color: #bfdbfe; font-weight: 500;")
+        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #ffffff;")
+        sub = QLabel("Raqamli boshqaruv, Mahalla 'Yettiligi' 360° Pasporti va ma'lumotlar bazasi")
+        sub.setStyleSheet("font-size: 11px; color: #bfdbfe; font-weight: 500;")
         banner_text.addWidget(title)
         banner_text.addWidget(sub)
         h_layout.addLayout(banner_text)
@@ -63,10 +64,10 @@ class DashboardView(QWidget):
         btn_new_org.setStyleSheet("""
             background-color: #ffffff;
             color: #1e40af;
-            font-size: 14px;
+            font-size: 11.5px;
             font-weight: 800;
-            padding: 12px 24px;
-            border-radius: 10px;
+            padding: 6px 14px;
+            border-radius: 6px;
         """)
         btn_new_org.clicked.connect(self.app.open_add_dialog)
         h_layout.addWidget(btn_new_org)
@@ -75,17 +76,18 @@ class DashboardView(QWidget):
 
         # 2. STATISTIKA KARTALARI GRIDI
         self.cards_grid = QGridLayout()
-        self.cards_grid.setSpacing(16)
+        self.cards_grid.setSpacing(10)
         c_layout.addLayout(self.cards_grid)
 
         # 3. TEZKOR AMALLAR PANELI
         actions_box = QVBoxLayout()
+        actions_box.setSpacing(8)
         act_title = QLabel("⚡ Tezkor Amallar va Xizmatlar")
-        act_title.setStyleSheet("font-size: 16px; font-weight: 700; color: #f1f5f9;")
+        act_title.setStyleSheet("font-size: 13px; font-weight: 700; color: #f1f5f9;")
         actions_box.addWidget(act_title)
 
         act_grid = QHBoxLayout()
-        act_grid.setSpacing(14)
+        act_grid.setSpacing(10)
 
         def make_action_card(title, desc, icon, color, callback):
             card = QPushButton()
@@ -93,8 +95,8 @@ class DashboardView(QWidget):
                 QPushButton {{
                     background-color: #1e293b;
                     border: 1px solid #334155;
-                    border-radius: 12px;
-                    padding: 16px;
+                    border-radius: 8px;
+                    padding: 8px;
                     text-align: left;
                 }}
                 QPushButton:hover {{
@@ -103,20 +105,20 @@ class DashboardView(QWidget):
                 }}
             """)
             card_layout = QVBoxLayout(card)
-            card_layout.setContentsMargins(8, 8, 8, 8)
-            card_layout.setSpacing(6)
+            card_layout.setContentsMargins(6, 6, 6, 6)
+            card_layout.setSpacing(3)
 
             top = QHBoxLayout()
             icon_lbl = QLabel(icon)
-            icon_lbl.setStyleSheet(f"font-size: 24px; background: {color}22; border-radius: 8px; padding: 4px 8px;")
+            icon_lbl.setStyleSheet(f"font-size: 18px; background: {color}22; border-radius: 6px; padding: 2px 6px;")
             top.addWidget(icon_lbl)
             top.addStretch()
             card_layout.addLayout(top)
 
             t_lbl = QLabel(title)
-            t_lbl.setStyleSheet("font-size: 14px; font-weight: 700; color: #ffffff;")
+            t_lbl.setStyleSheet("font-size: 12px; font-weight: 700; color: #ffffff;")
             d_lbl = QLabel(desc)
-            d_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
+            d_lbl.setStyleSheet("font-size: 10px; color: #94a3b8;")
             card_layout.addWidget(t_lbl)
             card_layout.addWidget(d_lbl)
 
@@ -124,19 +126,19 @@ class DashboardView(QWidget):
             return card
 
         card_pasport = make_action_card(
-            "Mahalla Pasporti", "7 ta asosiy mas'ul xodimlar kartasi",
+            "Mahalla Pasporti", "7 ta xodim kartasi",
             "🏘", "#3b82f6", self.app.open_yettilik
         )
         card_msg = make_action_card(
-            "Ommaviy Xabarnoma", "SMS va Telegram shablon xabarlar",
+            "Ommaviy Xabarnoma", "SMS / Telegram xabar",
             "📢", "#06b6d4", self.app.open_broadcast
         )
         card_import = make_action_card(
-            "Excel Import", "Yangi bazalarni yuklash",
+            "Excel Import", "Yangi bazani yuklash",
             "📥", "#10b981", self.app.open_import
         )
         card_history = make_action_card(
-            "Kadrlar Tarixi", "Xodimlar rotatsiyasi auditi",
+            "Kadrlar Tarixi", "Rotatsiya auditi",
             "📜", "#8b5cf6", self.app.open_history
         )
 
@@ -149,14 +151,15 @@ class DashboardView(QWidget):
 
         # 4. SO'NGGI QO'SHILGANLAR / PREVIEW
         recent_box = QVBoxLayout()
+        recent_box.setSpacing(6)
         recent_head = QHBoxLayout()
-        r_title = QLabel("📋 So'nggi Tashkilotlar Ro'yxati")
-        r_title.setStyleSheet("font-size: 16px; font-weight: 700; color: #f1f5f9;")
+        r_title = QLabel("📋 So'nggi Tashkilotlar")
+        r_title.setStyleSheet("font-size: 13px; font-weight: 700; color: #f1f5f9;")
         recent_head.addWidget(r_title)
 
         recent_head.addStretch()
         btn_all = QPushButton("Barchasini ko'rish →")
-        btn_all.setStyleSheet("background: transparent; color: #38bdf8; font-weight: 700; font-size: 13px; border: none;")
+        btn_all.setStyleSheet("background: transparent; color: #38bdf8; font-weight: 700; font-size: 11.5px; border: none;")
         btn_all.clicked.connect(self.app.show_table)
         recent_head.addWidget(btn_all)
         recent_box.addLayout(recent_head)
@@ -169,7 +172,7 @@ class DashboardView(QWidget):
         self.table_recent.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         self.table_recent.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.table_recent.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
-        self.table_recent.setMaximumHeight(260)
+        self.table_recent.setMaximumHeight(160)
         recent_box.addWidget(self.table_recent)
 
         c_layout.addLayout(recent_box)
@@ -245,8 +248,8 @@ class DashboardView(QWidget):
             QPushButton {{
                 background-color: #1e293b;
                 border: 1px solid #334155;
-                border-radius: 12px;
-                padding: 16px;
+                border-radius: 8px;
+                padding: 8px 10px;
                 text-align: left;
             }}
             QPushButton:hover {{
@@ -255,26 +258,26 @@ class DashboardView(QWidget):
             }}
         """)
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(12, 10, 12, 10)
-        layout.setSpacing(6)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(2)
 
         top = QHBoxLayout()
         icon_lbl = QLabel(icon)
-        icon_lbl.setStyleSheet(f"font-size: 20px; background: {color}22; border-radius: 8px; padding: 4px 8px;")
+        icon_lbl.setStyleSheet(f"font-size: 16px; background: {color}22; border-radius: 6px; padding: 2px 5px;")
         top.addWidget(icon_lbl)
         top.addStretch()
 
         badge = QLabel("Ko'rish →")
-        badge.setStyleSheet("font-size: 11px; font-weight: 700; color: #64748b;")
+        badge.setStyleSheet("font-size: 10px; font-weight: 700; color: #64748b;")
         top.addWidget(badge)
         layout.addLayout(top)
 
         val_lbl = QLabel(str(count))
-        val_lbl.setStyleSheet(f"font-size: 28px; font-weight: 800; color: {color};")
+        val_lbl.setStyleSheet(f"font-size: 19px; font-weight: 800; color: {color};")
         layout.addWidget(val_lbl)
 
         t_lbl = QLabel(title)
-        t_lbl.setStyleSheet("font-size: 13px; font-weight: 600; color: #94a3b8;")
+        t_lbl.setStyleSheet("font-size: 11.5px; font-weight: 600; color: #94a3b8;")
         layout.addWidget(t_lbl)
 
         card.clicked.connect(lambda: self.on_card_click(cat_key))

@@ -33,8 +33,8 @@ class MahallaPassportView(QDialog):
         self.app = app
         self.selected_mahalla = selected_mahalla
         self.setWindowTitle("🏘 Mahalla 'Yettiligi' 360° Pasport Tizimi")
-        self.resize(1000, 720)
-        self.setMinimumSize(850, 600)
+        self.resize(850, 540)
+        self.setMinimumSize(700, 420)
 
         self.setup_ui()
         self.populate_mahallalar()
@@ -50,16 +50,17 @@ class MahallaPassportView(QDialog):
 
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(24, 20, 24, 20)
-        main_layout.setSpacing(16)
+        main_layout.setContentsMargins(14, 10, 14, 10)
+        main_layout.setSpacing(8)
 
         # Header Paneli
         header = QHBoxLayout()
         title_box = QVBoxLayout()
+        title_box.setSpacing(2)
         title = QLabel("🏘 Mahalla 'Yettiligi' 360° Raqamli Pasporti")
-        title.setStyleSheet("font-size: 20px; font-weight: 800; color: #38bdf8;")
+        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #38bdf8;")
         subtitle = QLabel("Pop tumani barcha mahallalarining 7 ta asosiy mas'ul xodimlari ma'lumotlar bazasi")
-        subtitle.setStyleSheet("font-size: 12px; color: #94a3b8;")
+        subtitle.setStyleSheet("font-size: 11px; color: #94a3b8;")
         title_box.addWidget(title)
         title_box.addWidget(subtitle)
         header.addLayout(title_box)
@@ -69,14 +70,14 @@ class MahallaPassportView(QDialog):
         # Mahalla tanlash
         select_box = QHBoxLayout()
         lbl = QLabel("Mahalla:")
-        lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #f1f5f9;")
+        lbl.setStyleSheet("font-size: 11.5px; font-weight: 700; color: #f1f5f9;")
         select_box.addWidget(lbl)
 
         self.combo_mahalla = QComboBox()
         self.combo_mahalla.setEditable(True)
-        self.combo_mahalla.setMinimumWidth(260)
+        self.combo_mahalla.setMinimumWidth(200)
         self.combo_mahalla.setStyleSheet("""
-            QComboBox { font-size: 14px; font-weight: 600; padding: 6px 12px; }
+            QComboBox { font-size: 12px; font-weight: 600; padding: 4px 8px; }
         """)
         self.combo_mahalla.currentTextChanged.connect(self.on_mahalla_changed)
         select_box.addWidget(self.combo_mahalla)
@@ -201,8 +202,8 @@ class MahallaPassportView(QDialog):
             QFrame {{
                 background-color: #1e293b;
                 border: 1px solid #334155;
-                border-radius: 12px;
-                padding: 14px;
+                border-radius: 8px;
+                padding: 8px 10px;
             }}
             QFrame:hover {{
                 border: 1px solid {color};
@@ -210,30 +211,30 @@ class MahallaPassportView(QDialog):
         """)
 
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(12, 10, 12, 10)
-        layout.setSpacing(8)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(4)
 
         # Yuqori qism: Ikonka + Lavozim nomi
         top = QHBoxLayout()
         icon_lbl = QLabel(icon)
-        icon_lbl.setStyleSheet(f"font-size: 22px; background: {color}22; border-radius: 8px; padding: 4px 8px;")
+        icon_lbl.setStyleSheet(f"font-size: 16px; background: {color}22; border-radius: 6px; padding: 2px 6px;")
         top.addWidget(icon_lbl)
 
         role_lbl = QLabel(role_title)
-        role_lbl.setStyleSheet(f"font-size: 14px; font-weight: 700; color: {color};")
+        role_lbl.setStyleSheet(f"font-size: 12px; font-weight: 700; color: {color};")
         top.addWidget(role_lbl)
         top.addStretch()
 
         status_txt = "✅ To'liq" if fio else "⚠️ Bo'sh"
         status_color = "#10b981" if fio else "#ef4444"
         status_lbl = QLabel(status_txt)
-        status_lbl.setStyleSheet(f"font-size: 11px; font-weight: 700; color: {status_color}; background: #0f172a; border-radius: 6px; padding: 2px 6px;")
+        status_lbl.setStyleSheet(f"font-size: 10px; font-weight: 700; color: {status_color}; background: #0f172a; border-radius: 4px; padding: 1px 5px;")
         top.addWidget(status_lbl)
         layout.addLayout(top)
 
         # F.I.SH
-        fio_lbl = QLabel(f"👤 {fio if fio else 'Xodim biriktirilmagan'}")
-        fio_lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #ffffff;" if fio else "font-size: 13px; color: #64748b; font-style: italic;")
+        fio_lbl = QLabel(f"👤 {fio if fio else 'Biriktirilmagan'}")
+        fio_lbl.setStyleSheet("font-size: 11.5px; font-weight: 700; color: #ffffff;" if fio else "font-size: 11px; color: #64748b; font-style: italic;")
         layout.addWidget(fio_lbl)
 
         # Ma'lumotlar qatori
@@ -241,9 +242,9 @@ class MahallaPassportView(QDialog):
         phone_txt = f"📞 {phone}" if phone else "📞 -"
         inn_txt = f"🆔 INN: {inn}" if inn else "🆔 -"
         p_lbl = QLabel(phone_txt)
-        p_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        p_lbl.setStyleSheet("font-size: 10px; color: #94a3b8;")
         i_lbl = QLabel(inn_txt)
-        i_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        i_lbl.setStyleSheet("font-size: 10px; color: #94a3b8;")
         info_layout.addWidget(p_lbl)
         info_layout.addWidget(i_lbl)
         info_layout.addStretch()
@@ -254,9 +255,9 @@ class MahallaPassportView(QDialog):
         jshr_txt = f"🔢 JSHR: {jshr}" if jshr else "🔢 JSHR: -"
         ser_txt = f"📄 Seriya: {seriya}" if seriya else "📄 Seriya: -"
         j_lbl = QLabel(jshr_txt)
-        j_lbl.setStyleSheet("font-size: 11px; color: #64748b;")
+        j_lbl.setStyleSheet("font-size: 10px; color: #64748b;")
         s_lbl = QLabel(ser_txt)
-        s_lbl.setStyleSheet("font-size: 11px; color: #64748b;")
+        s_lbl.setStyleSheet("font-size: 10px; color: #64748b;")
         pass_layout.addWidget(j_lbl)
         pass_layout.addWidget(s_lbl)
         pass_layout.addStretch()
@@ -264,18 +265,18 @@ class MahallaPassportView(QDialog):
 
         # Tugmalar paneli
         btns = QHBoxLayout()
-        btns.setSpacing(6)
+        btns.setSpacing(5)
 
         btn_verif = QPushButton("🛡 Verifikatsiya")
-        btn_verif.setStyleSheet("font-size: 11px; padding: 4px 8px; background: #0284c7; color: white; border-radius: 6px;")
+        btn_verif.setStyleSheet("font-size: 10.5px; padding: 3px 6px; background: #0284c7; color: white; border-radius: 4px;")
         btn_verif.clicked.connect(lambda: self.copy_role_verif(mahalla, role_title, fio, inn, jshr, seriya))
 
         btn_cab = QPushButton("🔑 Kabinet")
-        btn_cab.setStyleSheet("font-size: 11px; padding: 4px 8px; background: #d97706; color: white; border-radius: 6px;")
+        btn_cab.setStyleSheet("font-size: 10.5px; padding: 3px 6px; background: #d97706; color: white; border-radius: 4px;")
         btn_cab.clicked.connect(lambda: self.copy_role_cabinet(mahalla, fio, inn))
 
-        btn_edit = QPushButton("✏ Tahrirlash")
-        btn_edit.setStyleSheet("font-size: 11px; padding: 4px 8px; background: #334155; color: white; border-radius: 6px;")
+        btn_edit = QPushButton("✏ Tahrir")
+        btn_edit.setStyleSheet("font-size: 10.5px; padding: 3px 6px; background: #334155; color: white; border-radius: 4px;")
         btn_edit.clicked.connect(lambda: self.edit_role_person(item, role_title))
 
         btns.addWidget(btn_verif)
