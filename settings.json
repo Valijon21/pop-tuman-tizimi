@@ -1,8 +1,8 @@
 {
-    "font_size": 13,
+    "font_size": 15,
     "passwords": {
-        "admin": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+        "admin": "e4454da7c8e2872f158cfd2633a9b03793405a6574b68111a7803d48a5538924",
         "operator": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
     },
-    "telegram_bot_token": ""
+    "telegram_bot_token": "8761106897:AAEkxir3O1i0tj8110_fvyhlNtM-nkKwEGs"
 }

@@ -1,6 +1,7 @@
 """
 ui_qt.views.cabinet_dialog: 'Kabinetga dostup' shablonini generatsiya qilish,
 bir bosishda nusxalash va Telegramga yuborish dialogi (PyQt5).
+To'liq Dark va Light rejimini qo'llab-quvvatlaydi, High-DPI va tezkor yuklanish.
 """
 import pyperclip
 from typing import Optional, Dict, Any
@@ -10,6 +11,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from services.cabinet_service import build_cabinet_access_text
+from ui_qt.styles import get_stylesheet
 from core.logger import logger
 
 class CabinetDialog(QDialog):
@@ -19,16 +21,22 @@ class CabinetDialog(QDialog):
         super().__init__(parent)
         self.app = app
         self.item = item
+        self.current_theme = getattr(app, "current_theme", "dark")
+
         self.setWindowTitle("🔑 Kabinetga Dostup Shablon")
-        self.resize(480, 390)
-        self.setMinimumSize(400, 300)
+        self.resize(490, 390)
+        self.setMinimumSize(420, 310)
         self.setModal(True)
+
+        # Mavzuni qo'llash
+        self.setStyleSheet(get_stylesheet(self.current_theme))
 
         self.setup_ui()
         if self.item:
             self.load_item(self.item)
 
     def setup_ui(self):
+        is_light = (self.current_theme == "light")
         layout = QVBoxLayout(self)
         layout.setContentsMargins(16, 12, 16, 12)
         layout.setSpacing(8)
@@ -39,35 +47,45 @@ class CabinetDialog(QDialog):
         layout.addWidget(title_lbl)
 
         desc_lbl = QLabel("Soliq yoki davlat xizmatlari kabinetiga kirish uchun standart shablon matni:")
-        desc_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        desc_lbl.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
         layout.addWidget(desc_lbl)
 
-        # Tashkilot tanlash (agar bittasi tanlanmagan bo'lsa)
+        # Tashkilot tanlash (tezkor blockSignals bilan)
         select_layout = QHBoxLayout()
-        select_layout.addWidget(QLabel("Tashkilot:"))
+        lbl_org = QLabel("Tashkilot:")
+        lbl_org.setStyleSheet("font-weight: 600;")
+        select_layout.addWidget(lbl_org)
+
         self.combo_orgs = QComboBox()
         self.combo_orgs.setEditable(True)
+        self.combo_orgs.blockSignals(True)
         if self.app and hasattr(self.app, "data"):
             for org in self.app.data:
                 display_name = f"{org.get('m', '')} (INN: {org.get('inn', '-')})"
                 self.combo_orgs.addItem(display_name, org)
+        self.combo_orgs.blockSignals(False)
         self.combo_orgs.currentIndexChanged.connect(self.on_org_changed)
-        select_layout.addWidget(self.combo_orgs)
+        select_layout.addWidget(self.combo_orgs, 1)
         layout.addLayout(select_layout)
 
-        # Matn maydoni
+        # Matn maydoni (Mavzuga mos konsol/shablon dizayni)
         self.txt_preview = QTextEdit()
         self.txt_preview.setReadOnly(False)
-        self.txt_preview.setStyleSheet("""
-            font-family: 'Consolas', 'Segoe UI', monospace;
-            font-size: 12px;
-            background-color: #1e293b;
-            color: #38bdf8;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            padding: 8px;
+        bg = "#f8fafc" if is_light else "#1e293b"
+        fg = "#0369a1" if is_light else "#38bdf8"
+        border = "#cbd5e1" if is_light else "#334155"
+        self.txt_preview.setStyleSheet(f"""
+            QTextEdit {{
+                font-family: 'Consolas', 'Segoe UI', monospace;
+                font-size: 12px;
+                background-color: {bg};
+                color: {fg};
+                border: 1.5px solid {border};
+                border-radius: 6px;
+                padding: 8px;
+            }}
         """)
-        layout.addWidget(self.txt_preview)
+        layout.addWidget(self.txt_preview, 1)
 
         # Tugmalar
         btn_layout = QHBoxLayout()
@@ -75,20 +93,28 @@ class CabinetDialog(QDialog):
 
         self.btn_copy = QPushButton("📋 Nusxalash")
         self.btn_copy.setStyleSheet("""
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #d97706, stop:1 #f59e0b);
-            color: white; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;
+            QPushButton {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #d97706, stop:1 #f59e0b);
+                color: white; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;
+            }
+            QPushButton:hover { background-color: #b45309; }
         """)
         self.btn_copy.clicked.connect(self.copy_to_clipboard)
 
         self.btn_telegram = QPushButton("✈ Telegramga Yuborish")
         self.btn_telegram.setStyleSheet("""
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0284c7, stop:1 #38bdf8);
-            color: white; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;
+            QPushButton {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0284c7, stop:1 #38bdf8);
+                color: white; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;
+            }
+            QPushButton:hover { background-color: #0369a1; }
         """)
         self.btn_telegram.clicked.connect(self.send_to_telegram)
 
         self.btn_close = QPushButton("Yopish")
-        self.btn_close.setStyleSheet("padding: 6px 12px; border-radius: 6px; font-size: 11.5px;")
+        close_bg = "#e2e8f0" if is_light else "#334155"
+        close_fg = "#334155" if is_light else "#f8fafc"
+        self.btn_close.setStyleSheet(f"background: {close_bg}; color: {close_fg}; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;")
         self.btn_close.clicked.connect(self.accept)
 
         btn_layout.addWidget(self.btn_copy)
@@ -98,40 +124,45 @@ class CabinetDialog(QDialog):
         layout.addLayout(btn_layout)
 
     def load_item(self, item: Dict[str, Any]):
-        """Belgilangan tashkilot bo'yicha matnni generatsiya qilish."""
+        """Tanlangan tashkilot ma'lumotlarini yuklash."""
+        self.item = item
         text = build_cabinet_access_text(item)
         self.txt_preview.setPlainText(text)
-        # Comboboxda mos keluvchi elementni tanlash
-        target_inn = item.get("inn", "")
+
+        inn = item.get("inn", "")
         for idx in range(self.combo_orgs.count()):
-            org_data = self.combo_orgs.itemData(idx)
-            if org_data and org_data.get("inn") == target_inn:
+            org = self.combo_orgs.itemData(idx)
+            if org and org.get("inn") == inn and org.get("m") == item.get("m"):
                 self.combo_orgs.setCurrentIndex(idx)
                 break
 
-    def on_org_changed(self, index: int):
-        org_data = self.combo_orgs.itemData(index)
-        if org_data:
-            text = build_cabinet_access_text(org_data)
+    def on_org_changed(self, idx: int):
+        org = self.combo_orgs.itemData(idx)
+        if org:
+            self.item = org
+            text = build_cabinet_access_text(org)
             self.txt_preview.setPlainText(text)
 
     def copy_to_clipboard(self):
-        text = self.txt_preview.toPlainText().strip()
-        if text:
+        text = self.txt_preview.toPlainText()
+        if text.strip():
             pyperclip.copy(text)
-            if self.app and hasattr(self.app, "show_toast"):
+            if hasattr(self.app, "show_toast"):
                 self.app.show_toast("Kabinetga dostup matni nusxalandi! 📋", "success")
-            else:
-                QMessageBox.information(self, "Muvaffaqiyatli", "Shablon matni xotiraga (clipboard) nusxalandi!")
+            QMessageBox.information(self, "Nusxalandi", "Kabinetga dostup shablon matni xotiraga nusxalandi! 📋")
 
     def send_to_telegram(self):
-        text = self.txt_preview.toPlainText().strip()
-        if not text:
+        text = self.txt_preview.toPlainText()
+        if not text.strip():
             return
+
         try:
-            from services.telegram_bot import get_telegram_bot_service
-            bot = get_telegram_bot_service()
-            if bot.is_configured():
+            from services.telegram_bot import TelegramBotService
+            token = ""
+            if self.app and hasattr(self.app, "data_manager"):
+                token = self.app.data_manager.settings.get("telegram_bot_token", "")
+            if token:
+                bot = TelegramBotService(token)
                 res = bot.broadcast_message(text)
                 sent = res.get("sent", 0)
                 if sent > 0:

@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from services.broadcast_service import BroadcastService, SMS_TEMPLATES
+from ui_qt.styles import get_stylesheet
 from core.logger import logger
 
 class BroadcastView(QDialog):
@@ -19,15 +20,18 @@ class BroadcastView(QDialog):
     def __init__(self, parent=None, app=None):
         super().__init__(parent)
         self.app = app
+        self.current_theme = getattr(app, "current_theme", "dark")
         self.setWindowTitle("📢 Ommaviy Xabarnoma (SMS / Telegram)")
         self.resize(740, 510)
         self.setMinimumSize(620, 390)
         self.setModal(True)
+        self.setStyleSheet(get_stylesheet(self.current_theme))
 
         self.setup_ui()
         self.update_recipients()
 
     def setup_ui(self):
+        is_light = (self.current_theme == "light")
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(16, 12, 16, 12)
         main_layout.setSpacing(8)
@@ -36,9 +40,9 @@ class BroadcastView(QDialog):
         head = QVBoxLayout()
         head.setSpacing(2)
         title = QLabel("📢 Ommaviy Xabarnoma Tarqatish Tizimi")
-        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #38bdf8;")
+        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #0284c7;" if is_light else "font-size: 15px; font-weight: 800; color: #38bdf8;")
         sub = QLabel("Mahalla raislari, hokim yordamchilari yoki boshqa tashkilotlarga tezkor xabar yuborish")
-        sub.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        sub.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
         head.addWidget(title)
         head.addWidget(sub)
         main_layout.addLayout(head)
@@ -72,16 +76,20 @@ class BroadcastView(QDialog):
 
         # Xabar matni
         lbl_msg = QLabel("Xabar Matni ({nomi}, {fio}, {lavozim} teglari avtomatik to'ldiriladi):")
-        lbl_msg.setStyleSheet("font-size: 11px; font-weight: 600; color: #cbd5e1;")
+        lbl_msg.setStyleSheet(f"font-size: 11px; font-weight: 600; color: {'#334155' if is_light else '#cbd5e1'};")
         main_layout.addWidget(lbl_msg)
+
+        msg_bg = "#ffffff" if is_light else "#1e293b"
+        msg_fg = "#0f172a" if is_light else "#f8fafc"
+        msg_border = "#cbd5e1" if is_light else "#334155"
 
         self.txt_message = QTextEdit()
         self.txt_message.setPlaceholderText("Xabar matnini kiriting...")
-        self.txt_message.setStyleSheet("""
+        self.txt_message.setStyleSheet(f"""
             font-size: 11.5px;
-            background-color: #1e293b;
-            color: #f8fafc;
-            border: 1px solid #334155;
+            background-color: {msg_bg};
+            color: {msg_fg};
+            border: 1px solid {msg_border};
             border-radius: 6px;
             padding: 6px;
         """)
@@ -91,7 +99,7 @@ class BroadcastView(QDialog):
 
         # Qabul qiluvchilar jadvali
         self.lbl_recipients_count = QLabel("Qabul qiluvchilar: 0 ta")
-        self.lbl_recipients_count.setStyleSheet("font-size: 12px; font-weight: 700; color: #38bdf8;")
+        self.lbl_recipients_count.setStyleSheet(f"font-size: 12px; font-weight: 700; color: {'#0284c7' if is_light else '#38bdf8'};")
         main_layout.addWidget(self.lbl_recipients_count)
 
         self.table_recipients = QTableWidget()
@@ -170,12 +178,16 @@ class BroadcastView(QDialog):
         self.current_recipients = filtered
         self.lbl_recipients_count.setText(f"Qabul qiluvchilar soni: {len(filtered)} ta mas'ul xodim")
 
-        self.table_recipients.setRowCount(len(filtered))
-        for r_idx, it in enumerate(filtered):
-            self.table_recipients.setItem(r_idx, 0, QTableWidgetItem(str(r_idx + 1)))
-            self.table_recipients.setItem(r_idx, 1, QTableWidgetItem(str(it.get("m", "-"))))
-            self.table_recipients.setItem(r_idx, 2, QTableWidgetItem(str(it.get("f", "-"))))
-            self.table_recipients.setItem(r_idx, 3, QTableWidgetItem(str(it.get("t", "-"))))
+        self.table_recipients.setUpdatesEnabled(False)
+        try:
+            self.table_recipients.setRowCount(len(filtered))
+            for r_idx, it in enumerate(filtered):
+                self.table_recipients.setItem(r_idx, 0, QTableWidgetItem(str(r_idx + 1)))
+                self.table_recipients.setItem(r_idx, 1, QTableWidgetItem(str(it.get("m", "-"))))
+                self.table_recipients.setItem(r_idx, 2, QTableWidgetItem(str(it.get("f", "-"))))
+                self.table_recipients.setItem(r_idx, 3, QTableWidgetItem(str(it.get("t", "-"))))
+        finally:
+            self.table_recipients.setUpdatesEnabled(True)
 
     def send_broadcast(self):
         msg_template = self.txt_message.toPlainText().strip()

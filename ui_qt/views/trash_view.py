@@ -27,12 +27,12 @@ class TrashView(QWidget):
         head = QHBoxLayout()
         title_box = QVBoxLayout()
         title_box.setSpacing(2)
-        title = QLabel("🗑 Chiqindi Qutisi")
-        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #ef4444;")
-        sub = QLabel("Bu yerdan o'chirilgan tashkilotlarni qayta tiklashingiz yoki butunlay o'chirishingiz mumkin")
-        sub.setStyleSheet("font-size: 11px; color: #94a3b8;")
-        title_box.addWidget(title)
-        title_box.addWidget(sub)
+        self.title_lbl = QLabel("🗑 Chiqindi Qutisi")
+        self.title_lbl.setStyleSheet("font-size: 15px; font-weight: 800; color: #ef4444;")
+        self.sub_lbl = QLabel("Bu yerdan o'chirilgan tashkilotlarni qayta tiklashingiz yoki butunlay o'chirishingiz mumkin")
+        self.sub_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        title_box.addWidget(self.title_lbl)
+        title_box.addWidget(self.sub_lbl)
         head.addLayout(title_box)
 
         head.addStretch()
@@ -75,12 +75,22 @@ class TrashView(QWidget):
         footer.addWidget(self.lbl_count)
 
         footer.addStretch()
-        btn_empty = QPushButton("🧹 Barcha Chiqindini Bo'shatish")
-        btn_empty.setStyleSheet("background: #334155; color: #ef4444; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
-        btn_empty.clicked.connect(self.empty_trash)
-        footer.addWidget(btn_empty)
+        self.btn_empty = QPushButton("🧹 Barcha Chiqindini Bo'shatish")
+        self.btn_empty.setStyleSheet("background: #334155; color: #ef4444; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
+        self.btn_empty.clicked.connect(self.empty_trash)
+        footer.addWidget(self.btn_empty)
 
         layout.addLayout(footer)
+
+    def set_theme(self, theme: str):
+        """Chiqindi qutisi sahifasini tanlangan mavzuga moslashtirish."""
+        is_light = (theme == "light")
+        self.sub_lbl.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
+        self.lbl_count.setStyleSheet(f"font-size: 13px; color: {'#475569' if is_light else '#94a3b8'}; font-weight: 600;")
+        if is_light:
+            self.btn_empty.setStyleSheet("background: #e2e8f0; color: #ef4444; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
+        else:
+            self.btn_empty.setStyleSheet("background: #334155; color: #ef4444; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
 
     def load_trash(self):
         """Chiqindi ro'yxatini yuklash."""
@@ -88,16 +98,20 @@ class TrashView(QWidget):
         if self.app and hasattr(self.app, "data_manager"):
             trash = getattr(self.app.data_manager, "trash", [])
 
-        self.table.setRowCount(len(trash))
-        for idx, it in enumerate(trash):
-            self.table.setItem(idx, 0, QTableWidgetItem(str(idx + 1)))
-            self.table.setItem(idx, 1, QTableWidgetItem(str(it.get("s", "-"))))
-            self.table.setItem(idx, 2, QTableWidgetItem(str(it.get("m", "-"))))
-            self.table.setItem(idx, 3, QTableWidgetItem(str(it.get("f", "-"))))
-            self.table.setItem(idx, 4, QTableWidgetItem(str(it.get("t", "-"))))
-            self.table.setItem(idx, 5, QTableWidgetItem(str(it.get("inn", "-"))))
+        self.table.setUpdatesEnabled(False)
+        try:
+            self.table.setRowCount(len(trash))
+            for idx, it in enumerate(trash):
+                self.table.setItem(idx, 0, QTableWidgetItem(str(idx + 1)))
+                self.table.setItem(idx, 1, QTableWidgetItem(str(it.get("s", "-"))))
+                self.table.setItem(idx, 2, QTableWidgetItem(str(it.get("m", "-"))))
+                self.table.setItem(idx, 3, QTableWidgetItem(str(it.get("f", "-"))))
+                self.table.setItem(idx, 4, QTableWidgetItem(str(it.get("t", "-"))))
+                self.table.setItem(idx, 5, QTableWidgetItem(str(it.get("inn", "-"))))
 
-        self.lbl_count.setText(f"Chiqindidagi yozuvlar soni: {len(trash)} ta")
+            self.lbl_count.setText(f"Chiqindidagi yozuvlar soni: {len(trash)} ta")
+        finally:
+            self.table.setUpdatesEnabled(True)
 
     def restore_selected(self):
         selected_rows = sorted(set(idx.row() for idx in self.table.selectedIndexes()), reverse=True)

@@ -1,19 +1,19 @@
 """
-ui_qt.views.org_edit_dialog: Tashkilot qo'shish va tahrirlash dialogi.
-Maydonlarni real-vaqtda tekshirish (INN 9 raqam, JSHSHIR 14 raqam, Pasport formati).
+ui_qt.views.org_edit_dialog: Tashkilot qo'shish va tahrirlash dialogi (PyQt5).
+Senior darajadagi validatsiya, to'liq Dark/Light mavzu, Buxgalter va kadrlar tarixi integratsiyasi.
 """
-import uuid
 from typing import Optional, Dict, Any
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
-    QLineEdit, QComboBox, QTextEdit, QPushButton, QMessageBox, QFrame,
-    QScrollArea, QWidget
+    QLineEdit, QComboBox, QTextEdit, QPushButton, QMessageBox,
+    QScrollArea, QWidget, QFrame
 )
 from PyQt5.QtCore import Qt
 from core.validators import (
-    validate_inn, validate_phone, clean_inn,
+    validate_inn, validate_phone, clean_inn, clean_phone,
     validate_jshshir, validate_passport_series
 )
+from ui_qt.styles import get_stylesheet
 from core.logger import logger
 
 class OrgEditDialog(QDialog):
@@ -24,17 +24,22 @@ class OrgEditDialog(QDialog):
         self.app = app
         self.item = item or {}
         self.is_edit = bool(item)
+        self.current_theme = getattr(app, "current_theme", "dark")
 
         self.setWindowTitle("Tashkilotni Tahrirlash" if self.is_edit else "Yangi Tashkilot Qo'shish")
-        self.resize(500, 500)
-        self.setMinimumSize(440, 380)
+        self.resize(520, 520)
+        self.setMinimumSize(450, 400)
         self.setModal(True)
+
+        # Mavzuni qo'llash
+        self.setStyleSheet(get_stylesheet(self.current_theme))
 
         self.setup_ui()
         if self.is_edit:
             self.load_data()
 
     def setup_ui(self):
+        is_light = (self.current_theme == "light")
         layout = QVBoxLayout(self)
         layout.setContentsMargins(18, 14, 18, 14)
         layout.setSpacing(10)
@@ -43,9 +48,9 @@ class OrgEditDialog(QDialog):
         head_layout = QVBoxLayout()
         head_layout.setSpacing(2)
         title_lbl = QLabel("Tashkilotni Tahrirlash" if self.is_edit else "Yangi Tashkilot Qo'shish")
-        title_lbl.setStyleSheet("font-size: 15px; font-weight: 800; color: #38bdf8;")
+        title_lbl.setStyleSheet("font-size: 15px; font-weight: 800; color: #0284c7;" if is_light else "font-size: 15px; font-weight: 800; color: #38bdf8;")
         sub_lbl = QLabel("Kerakli ma'lumotlarni to'ldiring va saqlash tugmasini bosing")
-        sub_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        sub_lbl.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
         head_layout.addWidget(title_lbl)
         head_layout.addWidget(sub_lbl)
         layout.addLayout(head_layout)
@@ -66,7 +71,7 @@ class OrgEditDialog(QDialog):
         form_grid.addWidget(QLabel("Tashkilot Turi:"), 0, 0)
         self.combo_type = QComboBox()
         self.combo_type.setEditable(True)
-        categories = ["Mahalla (MFY)", "Maktab", "Bog'cha (MTT)", "Tibbiyot", "Boshqa"]
+        categories = ["Mahalla (MFY)", "Maktab", "Bog'cha (MTT)", "Hokim yordamchisi", "Yoshlar yetakchisi", "Xotin qizlar", "Ijtimoiy xodim", "Profilaktika inspektori", "Soliq inspektori", "Boshqa"]
         if self.app and hasattr(self.app, "data_manager"):
             categories = self.app.data_manager.categories
         self.combo_type.addItems(categories)
@@ -96,30 +101,36 @@ class OrgEditDialog(QDialog):
         self.edit_phone.setPlaceholderText("+998 90 123-45-67")
         form_grid.addWidget(self.edit_phone, 4, 1)
 
-        # 6. INN (9 xonali)
-        form_grid.addWidget(QLabel("INN (9 raqam):"), 5, 0)
+        # 6. Buxgalter Telefoni
+        form_grid.addWidget(QLabel("Buxgalter Telefoni:"), 5, 0)
+        self.edit_bux_tel = QLineEdit()
+        self.edit_bux_tel.setPlaceholderText("Masalan: 94 592 60 04")
+        form_grid.addWidget(self.edit_bux_tel, 5, 1)
+
+        # 7. INN (9 xonali)
+        form_grid.addWidget(QLabel("INN (9 raqam):"), 6, 0)
         self.edit_inn = QLineEdit()
         self.edit_inn.setPlaceholderText("Masalan: 203599806")
-        form_grid.addWidget(self.edit_inn, 5, 1)
+        form_grid.addWidget(self.edit_inn, 6, 1)
 
-        # 7. JSHSHIR (14 xonali PINFL)
-        form_grid.addWidget(QLabel("JSHSHIR (PINFL 14 raqam):"), 6, 0)
+        # 8. JSHSHIR (14 xonali PINFL)
+        form_grid.addWidget(QLabel("JSHSHIR (PINFL 14 raqam):"), 7, 0)
         self.edit_jshr = QLineEdit()
         self.edit_jshr.setPlaceholderText("Masalan: 30807995910027")
-        form_grid.addWidget(self.edit_jshr, 6, 1)
+        form_grid.addWidget(self.edit_jshr, 7, 1)
 
-        # 8. Pasport Seriya (AB1234567)
-        form_grid.addWidget(QLabel("Pasport Seriya:"), 7, 0)
+        # 9. Pasport Seriya (AB1234567)
+        form_grid.addWidget(QLabel("Pasport Seriya:"), 8, 0)
         self.edit_seriya = QLineEdit()
         self.edit_seriya.setPlaceholderText("Masalan: AB4561091")
-        form_grid.addWidget(self.edit_seriya, 7, 1)
+        form_grid.addWidget(self.edit_seriya, 8, 1)
 
-        # 9. Izoh
-        form_grid.addWidget(QLabel("Izoh:"), 8, 0)
+        # 10. Izoh
+        form_grid.addWidget(QLabel("Izoh:"), 9, 0)
         self.edit_izoh = QTextEdit()
         self.edit_izoh.setPlaceholderText("Qo'shimcha ma'lumotlar...")
         self.edit_izoh.setMaximumHeight(48)
-        form_grid.addWidget(self.edit_izoh, 8, 1)
+        form_grid.addWidget(self.edit_izoh, 9, 1)
 
         scroll.setWidget(form_widget)
         layout.addWidget(scroll, 1)
@@ -134,11 +145,12 @@ class OrgEditDialog(QDialog):
         btn_layout.setSpacing(8)
 
         self.btn_cancel = QPushButton("Bekor Qilish")
-        self.btn_cancel.setStyleSheet("padding: 6px 14px; border-radius: 6px; font-size: 11.5px;")
+        close_bg = "#e2e8f0" if is_light else "#334155"
+        close_fg = "#334155" if is_light else "#f8fafc"
+        self.btn_cancel.setStyleSheet(f"background: {close_bg}; color: {close_fg}; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;")
         self.btn_cancel.clicked.connect(self.reject)
 
         self.btn_save = QPushButton("💾 Saqlash")
-        self.btn_save.setProperty("class", "btn_primary")
         self.btn_save.setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #2563eb, stop:1 #3b82f6); color: white; font-weight: 700; padding: 6px 18px; border-radius: 6px; font-size: 11.5px;")
         self.btn_save.clicked.connect(self.save)
 
@@ -160,6 +172,7 @@ class OrgEditDialog(QDialog):
         self.edit_fio.setText(str(self.item.get("f", "") or ""))
         self.edit_lavozim.setText(str(self.item.get("lavozim", "") or ""))
         self.edit_phone.setText(str(self.item.get("t", "") or ""))
+        self.edit_bux_tel.setText(str(self.item.get("bux_tel", "") or ""))
         self.edit_inn.setText(str(self.item.get("inn", "") or ""))
         self.edit_jshr.setText(str(self.item.get("jshr", "") or ""))
         self.edit_seriya.setText(str(self.item.get("seriya", "") or ""))
@@ -179,53 +192,60 @@ class OrgEditDialog(QDialog):
 
         jshr = self.edit_jshr.text().strip()
         if jshr and not validate_jshshir(jshr):
-            QMessageBox.warning(self, "Ogohlantirish", f"JSHSHIR (PINFL) 14 ta raqamdan iborat bo'lishi lozim: {jshr}")
+            QMessageBox.warning(self, "Ogohlantirish", f"JSHSHIR 14 ta raqam bo'lishi lozim: {jshr}")
 
         seriya = self.edit_seriya.text().strip().upper()
         if seriya and not validate_passport_series(seriya):
-            QMessageBox.warning(self, "Ogohlantirish", f"Pasport seriyasi formati noto'g'ri (Masalan: AB1234567): {seriya}")
+            QMessageBox.warning(self, "Ogohlantirish", f"Pasport seriya formati noto'g'ri (masalan: AB1234567): {seriya}")
 
         phone = self.edit_phone.text().strip()
-        fio = self.edit_fio.text().strip()
-        lavozim = self.edit_lavozim.text().strip()
-        turi = self.combo_type.currentText().strip()
-        izoh = self.edit_izoh.toPlainText().strip()
+        bux_tel = self.edit_bux_tel.text().strip()
 
-        old_fio = self.item.get("f", "") if self.is_edit else ""
+        # O'zgarishlarni tayyorlash
+        data_to_save = {
+            "s": self.combo_type.currentText().strip(),
+            "m": name,
+            "f": self.edit_fio.text().strip(),
+            "lavozim": self.edit_lavozim.text().strip(),
+            "t": phone,
+            "bux_tel": bux_tel,
+            "inn": inn,
+            "jshr": jshr,
+            "seriya": seriya,
+            "izoh": self.edit_izoh.toPlainText().strip()
+        }
 
-        # Ob'ektni shakllantirish
-        self.item["s"] = turi
-        self.item["m"] = name
-        self.item["f"] = fio
-        self.item["lavozim"] = lavozim
-        self.item["t"] = phone
-        self.item["inn"] = inn
-        self.item["jshr"] = jshr
-        self.item["seriya"] = seriya
-        self.item["izoh"] = izoh
+        if self.is_edit:
+            data_to_save["id"] = self.item.get("id")
+            # Kadrlar almashinuvi auditini tekshirish
+            old_f = self.item.get("f", "")
+            new_f = data_to_save["f"]
+            old_t = self.item.get("t", "")
+            new_t = data_to_save["t"]
 
-        if not self.is_edit:
-            self.item["id"] = str(uuid.uuid4())
-            if self.app and hasattr(self.app, "data_manager"):
-                self.app.data_manager.data.append(self.item)
-                self.app.data_manager.save_data()
-                logger.info(f"[QT] Yangi tashkilot qo'shildi: {name}")
+            if (old_f and new_f and old_f != new_f) or (old_t and new_t and old_t != new_t):
+                if hasattr(self.app, "data_manager") and hasattr(self.app.data_manager, "sqlite"):
+                    self.app.data_manager.sqlite.add_staff_history(
+                        org_id=self.item.get("id", ""),
+                        mahalla=name,
+                        role=data_to_save["lavozim"] or data_to_save["s"],
+                        full_name=new_f,
+                        phone=new_t,
+                        inn=inn,
+                        jshr=jshr,
+                        seriya=seriya,
+                        old_fio=old_f,
+                        new_fio=new_f,
+                        old_phone=old_t,
+                        new_phone=new_t,
+                        changed_by="ADMIN (UI)",
+                        reason="Tahrirlash oynasi orqali o'zgartirildi"
+                    )
+
+            if hasattr(self.app, "data_manager"):
+                self.app.data_manager.update_organization(data_to_save)
         else:
-            if self.app and hasattr(self.app, "data_manager"):
-                self.app.data_manager.save_data()
-                # Agar mas'ul xodim o'zgargan bo'lsa, audit tarixiga kiritish
-                if old_fio and fio and old_fio != fio:
-                    try:
-                        self.app.data_manager.sqlite.log_staff_change(
-                            org_id=self.item.get("id"),
-                            mahalla=name,
-                            role=lavozim or "Mas'ul",
-                            old_name=old_fio,
-                            new_name=fio,
-                            change_reason=f"UI orqali tahrirlandi: {izoh}" if izoh else "Kadr almashinuvi"
-                        )
-                        logger.info(f"[QT] Kadrlar almashinuvi audit qilindi: {old_fio} -> {fio}")
-                    except Exception as e:
-                        logger.warning(f"Kadr auditida xatolik: {e}")
+            if hasattr(self.app, "data_manager"):
+                self.app.data_manager.add_organization(data_to_save)
 
         self.accept()

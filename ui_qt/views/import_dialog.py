@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from services.excel_service import import_organizations_from_file
+from ui_qt.styles import get_stylesheet
 from core.logger import logger
 
 class ImportDialog(QDialog):
@@ -19,16 +20,19 @@ class ImportDialog(QDialog):
     def __init__(self, parent=None, app=None):
         super().__init__(parent)
         self.app = app
+        self.current_theme = getattr(app, "current_theme", "dark")
         self.imported_items: List[Dict[str, Any]] = []
 
         self.setWindowTitle("📥 Excel / CSV Ommaviy Import")
         self.resize(780, 480)
         self.setMinimumSize(620, 380)
         self.setModal(True)
+        self.setStyleSheet(get_stylesheet(self.current_theme))
 
         self.setup_ui()
 
     def setup_ui(self):
+        is_light = (self.current_theme == "light")
         layout = QVBoxLayout(self)
         layout.setContentsMargins(16, 12, 16, 12)
         layout.setSpacing(8)
@@ -37,9 +41,9 @@ class ImportDialog(QDialog):
         head = QVBoxLayout()
         head.setSpacing(2)
         title = QLabel("📥 Excel va CSV dan Ommaviy Import")
-        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #10b981;")
+        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #059669;" if is_light else "font-size: 15px; font-weight: 800; color: #10b981;")
         sub = QLabel("Excel (.xlsx, .xls) yoki CSV faylini tanlang va tizimga integratsiya qiling")
-        sub.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        sub.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
         head.addWidget(title)
         head.addWidget(sub)
         layout.addLayout(head)
@@ -47,7 +51,10 @@ class ImportDialog(QDialog):
         # Fayl tanlash paneli
         file_box = QHBoxLayout()
         self.lbl_file = QLabel("Fayl tanlanmagan")
-        self.lbl_file.setStyleSheet("font-size: 11.5px; color: #f8fafc; background: #1e293b; padding: 5px 10px; border-radius: 6px;")
+        file_bg = "#ffffff" if is_light else "#1e293b"
+        file_fg = "#0f172a" if is_light else "#f8fafc"
+        file_border = "#cbd5e1" if is_light else "#334155"
+        self.lbl_file.setStyleSheet(f"font-size: 11.5px; color: {file_fg}; background: {file_bg}; border: 1px solid {file_border}; padding: 5px 10px; border-radius: 6px;")
         file_box.addWidget(self.lbl_file, 1)
 
         btn_browse = QPushButton("📁 Faylni Tanlash...")
@@ -60,7 +67,7 @@ class ImportDialog(QDialog):
 
         # Oldindan ko'rish jadvali
         self.lbl_preview = QLabel("Oldindan ko'rish (Import qilinadigan qatorlar):")
-        self.lbl_preview.setStyleSheet("font-size: 12px; font-weight: 600; color: #cbd5e1;")
+        self.lbl_preview.setStyleSheet(f"font-size: 12px; font-weight: 600; color: {'#334155' if is_light else '#cbd5e1'};")
         layout.addWidget(self.lbl_preview)
 
         self.table_preview = QTableWidget()
@@ -77,7 +84,7 @@ class ImportDialog(QDialog):
         # Footer
         footer = QHBoxLayout()
         self.lbl_count = QLabel("Topilgan yozuvlar: 0 ta")
-        self.lbl_count.setStyleSheet("font-size: 12px; color: #10b981; font-weight: 700;")
+        self.lbl_count.setStyleSheet(f"font-size: 12px; color: {'#059669' if is_light else '#10b981'}; font-weight: 700;")
         footer.addWidget(self.lbl_count)
 
         footer.addStretch()
@@ -113,14 +120,18 @@ class ImportDialog(QDialog):
             self.btn_import.setEnabled(bool(items))
 
             # Jadvalni to'ldirish
-            self.table_preview.setRowCount(len(items))
-            for idx, it in enumerate(items):
-                self.table_preview.setItem(idx, 0, QTableWidgetItem(str(idx + 1)))
-                self.table_preview.setItem(idx, 1, QTableWidgetItem(str(it.get("s", "-"))))
-                self.table_preview.setItem(idx, 2, QTableWidgetItem(str(it.get("m", "-"))))
-                self.table_preview.setItem(idx, 3, QTableWidgetItem(str(it.get("f", "-"))))
-                self.table_preview.setItem(idx, 4, QTableWidgetItem(str(it.get("t", "-"))))
-                self.table_preview.setItem(idx, 5, QTableWidgetItem(str(it.get("inn", "-"))))
+            self.table_preview.setUpdatesEnabled(False)
+            try:
+                self.table_preview.setRowCount(len(items))
+                for idx, it in enumerate(items):
+                    self.table_preview.setItem(idx, 0, QTableWidgetItem(str(idx + 1)))
+                    self.table_preview.setItem(idx, 1, QTableWidgetItem(str(it.get("s", "-"))))
+                    self.table_preview.setItem(idx, 2, QTableWidgetItem(str(it.get("m", "-"))))
+                    self.table_preview.setItem(idx, 3, QTableWidgetItem(str(it.get("f", "-"))))
+                    self.table_preview.setItem(idx, 4, QTableWidgetItem(str(it.get("t", "-"))))
+                    self.table_preview.setItem(idx, 5, QTableWidgetItem(str(it.get("inn", "-"))))
+            finally:
+                self.table_preview.setUpdatesEnabled(True)
 
         except Exception as e:
             QMessageBox.critical(self, "Xatolik", f"Faylni o'qishda xatolik yuz berdi:\n{e}")

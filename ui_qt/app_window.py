@@ -19,6 +19,7 @@ from database.data_manager import DataManager
 from ui_qt.styles import get_stylesheet
 from ui_qt.views.dashboard_view import DashboardView
 from ui_qt.views.table_view import TableView
+from ui_qt.views.contracts_view import ContractsView
 from ui_qt.views.trash_view import TrashView
 from ui_qt.views.settings_view import SettingsView
 from ui_qt.views.mahalla_passport_view import open_mahalla_passport
@@ -42,6 +43,13 @@ class MainWindow(QMainWindow):
         self.data_manager = DataManager()
         self.data = self.data_manager.data
         self.current_theme = "dark"
+        self._dirty_views = {
+            "dashboard": False,
+            "table": False,
+            "contracts": False,
+            "trash": True,
+            "settings": True
+        }
 
         # Ikonka
         if os.path.exists(ICON_PATH):
@@ -90,6 +98,7 @@ class MainWindow(QMainWindow):
 
         # Navigatsiya tugmalari guruhi
         self.nav_buttons = {}
+        self._last_page_key = "dashboard"  # Dialog ochilganda orqaga qaytish uchun
 
         # ASOSIY bo'limi
         sec_main = QLabel("ASOSIY")
@@ -98,8 +107,9 @@ class MainWindow(QMainWindow):
 
         self.add_nav_btn("📊 Dashboard", "dashboard", self.show_dashboard)
         self.add_nav_btn("📋 Tashkilotlar", "table", self.show_table)
-        self.add_nav_btn("🏘 Mahalla 'Yettiligi'", "passport", lambda: self.open_yettilik())
-        self.add_nav_btn("📜 Kadrlar Tarixi", "history", lambda: self.open_history())
+        self.add_nav_btn("📑 Shartnoma & Ulanish", "contracts", self.show_contracts)
+        self.add_nav_btn("🏘 Mahalla 'Yettiligi'", "passport", lambda: self._open_dialog_nav("passport", self.open_yettilik))
+        self.add_nav_btn("📜 Kadrlar Tarixi", "history", lambda: self._open_dialog_nav("history", self.open_history))
         self.add_nav_btn("⚙ Sozlamalar", "settings", self.show_settings)
 
         self.sidebar_layout.addSpacing(10)
@@ -109,8 +119,8 @@ class MainWindow(QMainWindow):
         sec_sys.setObjectName("sidebar_section")
         self.sidebar_layout.addWidget(sec_sys)
 
-        self.add_nav_btn("📢 Xabarnoma", "broadcast", lambda: self.open_broadcast())
-        self.add_nav_btn("📥 Excel Import", "import", lambda: self.open_import())
+        self.add_nav_btn("📢 Xabarnoma", "broadcast", lambda: self._open_dialog_nav("broadcast", self.open_broadcast))
+        self.add_nav_btn("📥 Excel Import", "import", lambda: self._open_dialog_nav("import", self.open_import))
         self.add_nav_btn("🗑 Chiqindi Qutisi", "trash", self.show_trash)
 
         self.sidebar_layout.addStretch()
@@ -137,13 +147,15 @@ class MainWindow(QMainWindow):
         # Sahifalarni yaratish
         self.dashboard_view = DashboardView(parent=self.content_stack, app=self)
         self.table_view = TableView(parent=self.content_stack, app=self)
+        self.contracts_view = ContractsView(parent=self.content_stack, app=self)
         self.trash_view = TrashView(parent=self.content_stack, app=self)
         self.settings_view = SettingsView(parent=self.content_stack, app=self)
 
         self.content_stack.addWidget(self.dashboard_view) # 0
         self.content_stack.addWidget(self.table_view)     # 1
-        self.content_stack.addWidget(self.trash_view)     # 2
-        self.content_stack.addWidget(self.settings_view)  # 3
+        self.content_stack.addWidget(self.contracts_view) # 2
+        self.content_stack.addWidget(self.trash_view)     # 3
+        self.content_stack.addWidget(self.settings_view)  # 4
 
         self.root_layout.addWidget(self.content_stack, 1)
 
@@ -172,15 +184,30 @@ class MainWindow(QMainWindow):
         return btn
 
     def set_active_nav_btn(self, active_key: str):
+        # Faqat sahifa tugmalari uchun oxirgi sahifani saqlash
+        if active_key in ("dashboard", "table", "contracts", "trash", "settings"):
+            self._last_page_key = active_key
         for k, btn in self.nav_buttons.items():
             btn.setChecked(k == active_key)
+
+    def _open_dialog_nav(self, key: str, func):
+        """Dialog ochuvchi sidebar tugmalari uchun: checked holatni to'g'ri boshqarish."""
+        func()
+        self.set_active_nav_btn(self._last_page_key)
 
     def apply_theme(self, theme: str):
         self.current_theme = theme
         qss = get_stylesheet(theme)
+        # Barcha top-level dialoglar (QDialog), menyular va oynalar uchun ilova darajasida qo'llash
+        app_inst = QApplication.instance()
+        if app_inst:
+            app_inst.setStyleSheet(qss)
         self.setStyleSheet(qss)
-        if hasattr(self, "dashboard_view") and hasattr(self.dashboard_view, "set_theme"):
-            self.dashboard_view.set_theme(theme)
+        # Barcha sahifalarning mavzusini yangilash
+        for view_name in ("dashboard_view", "table_view", "contracts_view", "trash_view", "settings_view"):
+            view = getattr(self, view_name, None)
+            if view and hasattr(view, "set_theme"):
+                view.set_theme(theme)
         if theme == "dark":
             self.btn_theme.setText("☀ Kunduzi Rejim")
         else:
@@ -196,23 +223,38 @@ class MainWindow(QMainWindow):
 
     def show_dashboard(self):
         self.set_active_nav_btn("dashboard")
-        self.dashboard_view.update_stats()
+        if self._dirty_views.get("dashboard", False):
+            self.dashboard_view.update_stats()
+            self._dirty_views["dashboard"] = False
         self.content_stack.setCurrentIndex(0)
 
     def show_table(self):
         self.set_active_nav_btn("table")
-        self.table_view.filter_data()
+        if self._dirty_views.get("table", False):
+            self.table_view.filter_data()
+            self._dirty_views["table"] = False
         self.content_stack.setCurrentIndex(1)
+
+    def show_contracts(self):
+        self.set_active_nav_btn("contracts")
+        if self._dirty_views.get("contracts", False):
+            self.contracts_view.load_data()
+            self._dirty_views["contracts"] = False
+        self.content_stack.setCurrentIndex(2)
 
     def show_trash(self):
         self.set_active_nav_btn("trash")
-        self.trash_view.load_trash()
-        self.content_stack.setCurrentIndex(2)
+        if self._dirty_views.get("trash", True):
+            self.trash_view.load_trash()
+            self._dirty_views["trash"] = False
+        self.content_stack.setCurrentIndex(3)
 
     def show_settings(self):
         self.set_active_nav_btn("settings")
-        self.settings_view.load_settings()
-        self.content_stack.setCurrentIndex(3)
+        if self._dirty_views.get("settings", True):
+            self.settings_view.load_settings()
+            self._dirty_views["settings"] = False
+        self.content_stack.setCurrentIndex(4)
 
     def filter_by_category(self, cat_key: str):
         self.show_table()
@@ -245,9 +287,26 @@ class MainWindow(QMainWindow):
     def refresh_all_views(self):
         self.data = self.data_manager.data
         self.lbl_status_total.setText(f"Jami tashkilotlar: {len(self.data)} ta")
-        self.dashboard_view.update_stats()
-        self.table_view.filter_data()
-        self.trash_view.load_trash()
+        for k in self._dirty_views:
+            self._dirty_views[k] = True
+
+        # Hozir ko'rinib turgan sahifani darhol yangilash
+        cur_idx = self.content_stack.currentIndex()
+        if cur_idx == 0:
+            self.dashboard_view.update_stats()
+            self._dirty_views["dashboard"] = False
+        elif cur_idx == 1:
+            self.table_view.filter_data()
+            self._dirty_views["table"] = False
+        elif cur_idx == 2:
+            self.contracts_view.load_data()
+            self._dirty_views["contracts"] = False
+        elif cur_idx == 3:
+            self.trash_view.load_trash()
+            self._dirty_views["trash"] = False
+        elif cur_idx == 4:
+            self.settings_view.load_settings()
+            self._dirty_views["settings"] = False
 
     def show_toast(self, message: str, toast_type: str = "info"):
         """Status bar orqali chiroyli xabar chiqarish."""

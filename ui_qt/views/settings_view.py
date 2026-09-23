@@ -32,10 +32,10 @@ class SettingsView(QWidget):
         head.setSpacing(2)
         title = QLabel("⚙ Tizim Sozlamalari")
         title.setStyleSheet("font-size: 15px; font-weight: 800; color: #38bdf8;")
-        sub = QLabel("Xavfsizlik, SQLite ma'lumotlar bazasi zaxirasi va Telegram Bot sozlamalari")
-        sub.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        self.sub_lbl = QLabel("Xavfsizlik, SQLite ma'lumotlar bazasi zaxirasi va Telegram Bot sozlamalari")
+        self.sub_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
         head.addWidget(title)
-        head.addWidget(sub)
+        head.addWidget(self.sub_lbl)
         main_layout.addLayout(head)
 
         # Skroll maydoni
@@ -67,12 +67,14 @@ class SettingsView(QWidget):
         btn_backup.clicked.connect(self.create_backup)
         db_btns.addWidget(btn_backup)
 
-        btn_restore = QPushButton("🔄 Zaxiradan Tiklash (Restore)")
-        btn_restore.setStyleSheet("""
+        btn_restore_db = QPushButton("🔄 Zaxiradan Tiklash (Restore)")
+        btn_restore_db.setObjectName("btn_restore_db")
+        btn_restore_db.setStyleSheet("""
             background: #334155; color: #cbd5e1; font-weight: 700; padding: 10px 18px; border-radius: 8px;
         """)
-        btn_restore.clicked.connect(self.restore_backup)
-        db_btns.addWidget(btn_restore)
+        btn_restore_db.clicked.connect(self.restore_backup)
+        self.btn_restore_db = btn_restore_db
+        db_btns.addWidget(btn_restore_db)
         db_btns.addStretch()
 
         db_layout.addLayout(db_btns)
@@ -150,6 +152,22 @@ class SettingsView(QWidget):
         c_layout.addStretch()
         scroll.setWidget(container)
         main_layout.addWidget(scroll, 1)
+
+    def set_theme(self, theme: str):
+        """Sozlamalar sahifasidagi inline stillarni mavzuga moslashtirish."""
+        is_light = (theme == "light")
+        self.sub_lbl.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
+        self.lbl_db_info.setStyleSheet(f"color: {'#64748b' if is_light else '#94a3b8'}; font-size: 12px;")
+        self.lbl_bot_status.setStyleSheet(f"color: {'#64748b' if is_light else '#94a3b8'}; font-size: 12px; font-weight: 600;")
+        if is_light:
+            self.btn_restore_db.setStyleSheet("background: #e2e8f0; color: #334155; font-weight: 700; padding: 10px 18px; border-radius: 8px;")
+        else:
+            self.btn_restore_db.setStyleSheet("background: #334155; color: #cbd5e1; font-weight: 700; padding: 10px 18px; border-radius: 8px;")
+
+        if hasattr(self, "combo_theme"):
+            self.combo_theme.blockSignals(True)
+            self.combo_theme.setCurrentIndex(0 if theme == "dark" else 1)
+            self.combo_theme.blockSignals(False)
 
     def load_settings(self):
         """Mavjud sozlamalarni yuklash."""

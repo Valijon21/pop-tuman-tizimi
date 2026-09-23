@@ -2,6 +2,7 @@
 ui_qt.views.table_view: Asosiy tashkilotlar jadvali (Table View) (PyQt5).
 Senior-darajadagi QTableView, QAbstractTableModel, toifalar pill-paneli,
 boyitilgan asboblar paneli va to'liq kontekstli menyu.
+Dark va Light mavzuga to'liq moslashgan.
 """
 from typing import Any, Optional, Dict, List
 import pyperclip
@@ -28,6 +29,7 @@ class TableView(QWidget):
         self.app = app
         self.current_category = "Barchasi"
         self.filtered_data: List[Dict[str, Any]] = []
+        self.current_theme: str = getattr(app, "current_theme", "dark")
 
         self.setup_ui()
         self.init_data()
@@ -54,11 +56,11 @@ class TableView(QWidget):
         self.edit_search.setMinimumWidth(140)
         toolbar.addWidget(self.edit_search, 1)
 
-        btn_clear = QPushButton("✖")
-        btn_clear.setFixedSize(26, 26)
-        btn_clear.setStyleSheet("background: #334155; color: #94a3b8; font-weight: bold; border-radius: 6px; padding: 0px;")
-        btn_clear.clicked.connect(lambda: self.edit_search.clear())
-        toolbar.addWidget(btn_clear)
+        self.btn_clear = QPushButton("✖")
+        self.btn_clear.setFixedSize(26, 26)
+        self.btn_clear.setObjectName("btn_clear_search")
+        self.btn_clear.clicked.connect(lambda: self.edit_search.clear())
+        toolbar.addWidget(self.btn_clear)
 
         # Amallar tugmalari (Ixcham va tartibli)
         def add_tool_btn(txt, cmd, bg_color, min_w=70):
@@ -85,21 +87,8 @@ class TableView(QWidget):
         add_tool_btn("📊 Excel", self.export_excel, "#059669", 60)
 
         # Qo'shimcha amallar menyu tugmasi
-        btn_more = QPushButton("⚡ Boshqa ▾")
-        btn_more.setStyleSheet("""
-            QPushButton {
-                background-color: #334155;
-                color: #f8fafc;
-                font-weight: 700;
-                padding: 5px 9px;
-                border-radius: 6px;
-                min-width: 70px;
-                font-size: 11.5px;
-            }
-            QPushButton:hover {
-                background-color: #475569;
-            }
-        """)
+        self.btn_more = QPushButton("⚡ Boshqa ▾")
+        self.btn_more.setObjectName("btn_more_actions")
         more_menu = QMenu(self)
         act_yettilik = more_menu.addAction("🏘 Mahalla 'Yettiligi' (360° Pasport)")
         act_yettilik.triggered.connect(self.open_yettilik)
@@ -113,8 +102,8 @@ class TableView(QWidget):
         act_trash = more_menu.addAction("🗑 Chiqindi Qutisi")
         act_trash.triggered.connect(lambda: self.app.show_trash() if hasattr(self.app, "show_trash") else None)
 
-        btn_more.setMenu(more_menu)
-        toolbar.addWidget(btn_more)
+        self.btn_more.setMenu(more_menu)
+        toolbar.addWidget(self.btn_more)
 
         main_layout.addLayout(toolbar)
 
@@ -175,15 +164,49 @@ class TableView(QWidget):
         # 4. FOOTER STATUS
         footer = QHBoxLayout()
         self.lbl_count = QLabel("Jami: 0 ta")
-        self.lbl_count.setStyleSheet("font-size: 13px; font-weight: 700; color: #94a3b8;")
+        self.lbl_count.setObjectName("table_footer_count")
         footer.addWidget(self.lbl_count)
 
         footer.addStretch()
         self.lbl_hint = QLabel("💡 2 marta bosish - Tahrirlash | O'ng tugma - Kabinet / Verifikatsiya menyusi")
-        self.lbl_hint.setStyleSheet("font-size: 11px; color: #64748b;")
+        self.lbl_hint.setObjectName("table_footer_hint")
         footer.addWidget(self.lbl_hint)
 
         main_layout.addLayout(footer)
+
+    def set_theme(self, theme: str):
+        """Jadval sahifasidagi barcha inline stillarni mavzuga moslashtirish."""
+        self.current_theme = theme
+        is_light = (theme == "light")
+
+        # Clear button
+        if is_light:
+            self.btn_clear.setStyleSheet("background: #e2e8f0; color: #475569; font-weight: bold; border-radius: 6px; padding: 0px;")
+        else:
+            self.btn_clear.setStyleSheet("background: #334155; color: #94a3b8; font-weight: bold; border-radius: 6px; padding: 0px;")
+
+        # Boshqa tugmasi
+        if is_light:
+            self.btn_more.setStyleSheet("""
+                QPushButton { background-color: #e2e8f0; color: #0f172a; font-weight: 700; padding: 5px 9px; border-radius: 6px; min-width: 70px; font-size: 11.5px; }
+                QPushButton:hover { background-color: #cbd5e1; }
+            """)
+        else:
+            self.btn_more.setStyleSheet("""
+                QPushButton { background-color: #334155; color: #f8fafc; font-weight: 700; padding: 5px 9px; border-radius: 6px; min-width: 70px; font-size: 11.5px; }
+                QPushButton:hover { background-color: #475569; }
+            """)
+
+        # Footer yozuvlari
+        if is_light:
+            self.lbl_count.setStyleSheet("font-size: 13px; font-weight: 700; color: #475569;")
+            self.lbl_hint.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        else:
+            self.lbl_count.setStyleSheet("font-size: 13px; font-weight: 700; color: #94a3b8;")
+            self.lbl_hint.setStyleSheet("font-size: 11px; color: #64748b;")
+
+        # Category pills
+        self.update_pill_selection(self.current_category)
 
     def init_data(self):
         self.update_pill_selection("Barchasi")
@@ -191,12 +214,16 @@ class TableView(QWidget):
 
     def update_pill_selection(self, selected_cat: str):
         self.current_category = selected_cat
+        is_light = (self.current_theme == "light")
         for cat, btn in self.pill_buttons.items():
             btn.setChecked(cat == selected_cat)
             if cat == selected_cat:
                 btn.setStyleSheet("background-color: #2563eb; color: white; font-weight: 700; border-radius: 14px; padding: 6px 16px;")
             else:
-                btn.setStyleSheet("background-color: #1e293b; color: #94a3b8; font-weight: 600; border: 1px solid #334155; border-radius: 14px; padding: 6px 16px;")
+                if is_light:
+                    btn.setStyleSheet("background-color: #f1f5f9; color: #475569; font-weight: 600; border: 1px solid #e2e8f0; border-radius: 14px; padding: 6px 16px;")
+                else:
+                    btn.setStyleSheet("background-color: #1e293b; color: #94a3b8; font-weight: 600; border: 1px solid #334155; border-radius: 14px; padding: 6px 16px;")
 
     def on_category_clicked(self, cat: str):
         self.update_pill_selection(cat)
@@ -337,6 +364,11 @@ class TableView(QWidget):
         act_copy_phone = menu.addAction("📞 Telefonni nusxalash")
         act_copy_phone.triggered.connect(lambda: pyperclip.copy(str(item.get("t", ""))))
 
+        bux_tel = str(item.get("bux_tel", "")).strip()
+        if bux_tel:
+            act_copy_bux = menu.addAction(f"💼 Buxgalter tel nusxalash ({bux_tel})")
+            act_copy_bux.triggered.connect(lambda: self._copy_and_toast(bux_tel, "Buxgalter telefoni nusxalandi! 💼"))
+
         act_copy_inn = menu.addAction("🆔 INN nusxalash")
         act_copy_inn.triggered.connect(lambda: pyperclip.copy(str(item.get("inn", ""))))
 
@@ -349,6 +381,12 @@ class TableView(QWidget):
         act_delete.triggered.connect(lambda: self.delete_item(item))
 
         menu.exec_(self.table_view.viewport().mapToGlobal(pos))
+
+    def _copy_and_toast(self, text: str, msg: str):
+        if text:
+            pyperclip.copy(text)
+            if hasattr(self.app, "show_toast"):
+                self.app.show_toast(msg, "success")
 
     def copy_entire_row(self, item: Dict[str, Any]):
         row_str = f"{item.get('s', '')}\t{item.get('m', '')}\t{item.get('f', '')}\t{item.get('t', '')}\t{item.get('inn', '')}\t{item.get('izoh', '')}"

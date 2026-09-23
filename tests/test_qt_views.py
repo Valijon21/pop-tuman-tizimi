@@ -61,6 +61,7 @@ class TestQtArchitecture(unittest.TestCase):
         from ui_qt.views.broadcast_view import BroadcastView
         from ui_qt.views.history_view import HistoryView
         from ui_qt.views.import_dialog import ImportDialog
+        from ui_qt.views.contracts_view import ContractsView
         from ui_qt.views.trash_view import TrashView
         from ui_qt.views.settings_view import SettingsView
         from ui_qt.views.dashboard_view import DashboardView
@@ -74,6 +75,7 @@ class TestQtArchitecture(unittest.TestCase):
         self.assertIsNotNone(BroadcastView)
         self.assertIsNotNone(HistoryView)
         self.assertIsNotNone(ImportDialog)
+        self.assertIsNotNone(ContractsView)
         self.assertIsNotNone(TrashView)
         self.assertIsNotNone(SettingsView)
         self.assertIsNotNone(DashboardView)
@@ -176,7 +178,9 @@ class TestQtArchitecture(unittest.TestCase):
         from ui_qt.app_window import MainWindow
         win = MainWindow()
         self.assertIsNotNone(win)
-        self.assertEqual(win.content_stack.count(), 4)
+        self.assertEqual(win.content_stack.count(), 5)
+        self.assertIsNotNone(win.contracts_view)
+        win.close()
     def test_theme_toggle_updates_dashboard(self):
         from ui_qt.app_window import MainWindow
         win = MainWindow()
@@ -203,6 +207,97 @@ class TestQtArchitecture(unittest.TestCase):
         self.assertEqual(win.dashboard_view.legend.theme, "dark")
         self.assertEqual(win.dashboard_view.bar_chart.theme, "dark")
         self.assertEqual(win.btn_theme.text(), "☀ Kunduzi Rejim")
+
+        win.close()
+
+    def test_dialogs_light_theme(self):
+        """Barcha dialoglar Light rejimida to'g'ri ochilishi va stillari o'rnatilishini tekshirish."""
+        from ui_qt.views.mahalla_passport_view import MahallaPassportView
+        from ui_qt.views.broadcast_view import BroadcastView
+        from ui_qt.views.cabinet_dialog import CabinetDialog
+        from ui_qt.views.verification_dialog import VerificationDialog
+        from ui_qt.views.org_edit_dialog import OrgEditDialog
+        from ui_qt.views.history_view import HistoryView
+        from ui_qt.views.import_dialog import ImportDialog
+
+        class MockApp:
+            current_theme = "light"
+            data = [
+                {"s": "Mahalla (MFY)", "m": "Yangi to'da MFY", "f": "O'ralov O'", "t": "+998939466283", "inn": "202701806"}
+            ]
+            def show_toast(self, msg, t="info"): pass
+
+        mock_app = MockApp()
+
+        # 1. Mahalla Passport
+        dlg_passport = MahallaPassportView(app=mock_app, selected_mahalla="Yangi to'da MFY")
+        self.assertEqual(dlg_passport.current_theme, "light")
+        self.assertIn("#f8fafc", dlg_passport.styleSheet())
+        dlg_passport.close()
+
+        # 2. Broadcast
+        dlg_broadcast = BroadcastView(app=mock_app)
+        self.assertEqual(dlg_broadcast.current_theme, "light")
+        self.assertIn("#f8fafc", dlg_broadcast.styleSheet())
+        dlg_broadcast.close()
+
+        # 3. Cabinet
+        dlg_cab = CabinetDialog(app=mock_app, item=mock_app.data[0])
+        self.assertEqual(dlg_cab.current_theme, "light")
+        self.assertIn("#f8fafc", dlg_cab.styleSheet())
+        dlg_cab.close()
+
+        # 4. Verification
+        dlg_verif = VerificationDialog(app=mock_app, item=mock_app.data[0])
+        self.assertEqual(dlg_verif.current_theme, "light")
+        self.assertIn("#f8fafc", dlg_verif.styleSheet())
+        dlg_verif.close()
+
+        # 5. Org Edit
+        dlg_edit = OrgEditDialog(app=mock_app, item=mock_app.data[0])
+        self.assertEqual(dlg_edit.current_theme, "light")
+        self.assertIn("#f8fafc", dlg_edit.styleSheet())
+        dlg_edit.close()
+
+        # 6. History
+        dlg_hist = HistoryView(app=mock_app, mahalla="Yangi to'da MFY")
+        self.assertEqual(dlg_hist.current_theme, "light")
+        self.assertIn("#f8fafc", dlg_hist.styleSheet())
+        dlg_hist.close()
+
+        # 7. Import
+        dlg_imp = ImportDialog(app=mock_app)
+        self.assertEqual(dlg_imp.current_theme, "light")
+        self.assertIn("#f8fafc", dlg_imp.styleSheet())
+        dlg_imp.close()
+
+    def test_fast_tab_navigation(self):
+        """Menyular orasida navigatsiya kechikishsiz va dirty bayrog'i orqali ishlashini tekshirish."""
+        from ui_qt.app_window import MainWindow
+        win = MainWindow()
+
+        # Dastlabki holat
+        self.assertEqual(win.content_stack.currentIndex(), 0)
+
+        # Ro'yxat jadvaliga o'tish
+        win.show_table()
+        self.assertEqual(win.content_stack.currentIndex(), 1)
+        self.assertFalse(win._dirty_views["table"])
+
+        # Shartnomalarga o'tish
+        win.show_contracts()
+        self.assertEqual(win.content_stack.currentIndex(), 2)
+        self.assertFalse(win._dirty_views["contracts"])
+
+        # Dashboardga qaytish
+        win.show_dashboard()
+        self.assertEqual(win.content_stack.currentIndex(), 0)
+        self.assertFalse(win._dirty_views["dashboard"])
+
+        # Sozlamalarga o'tish
+        win.show_settings()
+        self.assertEqual(win.content_stack.currentIndex(), 4)
+        self.assertFalse(win._dirty_views["settings"])
 
         win.close()
 

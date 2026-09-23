@@ -46,6 +46,9 @@ class SQLiteManager:
                     izoh TEXT,
                     jshr TEXT,
                     seriya TEXT,
+                    bux_tel TEXT,
+                    aparat_soni INTEGER,
+                    ulangan_soni INTEGER,
                     updated_at TEXT
                 );
                 """)
@@ -53,6 +56,13 @@ class SQLiteManager:
                 cursor.execute("CREATE INDEX IF NOT EXISTS idx_org_m ON organizations(m);")
                 cursor.execute("CREATE INDEX IF NOT EXISTS idx_org_s ON organizations(s);")
                 cursor.execute("CREATE INDEX IF NOT EXISTS idx_org_f ON organizations(f);")
+
+                # Schema migratsiyalari (Mavjud bazaga yangi ustunlarni xavfsiz qo'shish)
+                for col_name, col_type in [("bux_tel", "TEXT"), ("aparat_soni", "INTEGER"), ("ulangan_soni", "INTEGER")]:
+                    try:
+                        cursor.execute(f"ALTER TABLE organizations ADD COLUMN {col_name} {col_type};")
+                    except sqlite3.OperationalError:
+                        pass # Ustun allaqachon mavjud
 
                 # 2. Chiqindi qutisi (Trash) jadvali
                 cursor.execute("""
@@ -142,8 +152,8 @@ class SQLiteManager:
                 cursor = conn.cursor()
                 cursor.execute("DELETE FROM organizations;")
                 cursor.executemany("""
-                INSERT INTO organizations (id, s, m, f, t, inn, izoh, jshr, seriya, updated_at)
-                VALUES (:id, :s, :m, :f, :t, :inn, :izoh, :jshr, :seriya, :updated_at);
+                INSERT INTO organizations (id, s, m, f, t, inn, izoh, jshr, seriya, bux_tel, aparat_soni, ulangan_soni, updated_at)
+                VALUES (:id, :s, :m, :f, :t, :inn, :izoh, :jshr, :seriya, :bux_tel, :aparat_soni, :ulangan_soni, :updated_at);
                 """, [
                     {
                         "id": str(o.get("id") or o.get("uuid") or ""),
@@ -155,6 +165,9 @@ class SQLiteManager:
                         "izoh": str(o.get("izoh") or ""),
                         "jshr": str(o.get("jshr") or ""),
                         "seriya": str(o.get("seriya") or ""),
+                        "bux_tel": str(o.get("bux_tel") or ""),
+                        "aparat_soni": int(o.get("aparat_soni")) if o.get("aparat_soni") not in (None, "") else None,
+                        "ulangan_soni": int(o.get("ulangan_soni")) if o.get("ulangan_soni") not in (None, "") else None,
                         "updated_at": o.get("updated_at") or now
                     } for o in orgs
                 ])
@@ -170,8 +183,8 @@ class SQLiteManager:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
                 cursor.execute("""
-                INSERT OR REPLACE INTO organizations (id, s, m, f, t, inn, izoh, jshr, seriya, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                INSERT OR REPLACE INTO organizations (id, s, m, f, t, inn, izoh, jshr, seriya, bux_tel, aparat_soni, ulangan_soni, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                 """, (
                     str(o.get("id") or o.get("uuid") or ""),
                     str(o.get("s") or ""),
@@ -182,6 +195,9 @@ class SQLiteManager:
                     str(o.get("izoh") or ""),
                     str(o.get("jshr") or ""),
                     str(o.get("seriya") or ""),
+                    str(o.get("bux_tel") or ""),
+                    int(o.get("aparat_soni")) if o.get("aparat_soni") not in (None, "") else None,
+                    int(o.get("ulangan_soni")) if o.get("ulangan_soni") not in (None, "") else None,
                     now
                 ))
                 conn.commit()
