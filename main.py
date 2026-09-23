@@ -23,6 +23,18 @@ def main():
     logger.info(f"🐍 Python: {sys.version.split()[0]} | Frozen (EXE): {is_frozen}")
     logger.info("=" * 60)
 
+    # 3. GUI Dvigatelini tanlash (PyQt5 birinchi darajali, Tkinter zaxira)
+    use_tk = "--tk" in sys.argv
+    if not use_tk:
+        try:
+            from ui_qt.app_window import run_qt_app
+            logger.info("🚀 PyQt5 zamonaviy GUI dvigateli ishga tushirilmoqda...")
+            sys.exit(run_qt_app())
+        except ImportError as e:
+            logger.warning(f"PyQt5 topilmadi ({e}), CustomTkinter rejimiga o'tilmoqda...")
+        except Exception as e:
+            logger.error(f"PyQt5 ishga tushirishda xatolik ({e}), CustomTkinter rejimiga o'tilmoqda...", exc_info=True)
+
     try:
         logger.info("[QADAM 1] Asosiy oyna (root CTk) yaratilmoqda...")
         root = ctk.CTk()

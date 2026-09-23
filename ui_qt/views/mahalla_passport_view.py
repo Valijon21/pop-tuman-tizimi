@@ -1,0 +1,326 @@
+"""
+ui_qt.views.mahalla_passport_view: Mahalla 'Yettiligi' 360° Pasport oynasi (PyQt5).
+7 ta mas'ul xodimning (Rais, Hokim yordamchisi, Yoshlar yetakchisi, Xotin-qizlar,
+Profilaktika, Soliq inspektori, Ijtimoiy xodim) to'liq pasport kartasi va tezkor amallari.
+"""
+from typing import Optional, Dict, Any, List
+import pyperclip
+from PyQt5.QtWidgets import (
+    QDialog, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
+    QComboBox, QPushButton, QScrollArea, QWidget, QFrame,
+    QMessageBox, QLineEdit
+)
+from PyQt5.QtCore import Qt
+from services.verification_service import build_verification_text
+from services.cabinet_service import build_cabinet_access_text
+from core.logger import logger
+
+ROLES_CONFIG = [
+    ("Rais", "Mahalla Raisi", "👑", "#3b82f6"),
+    ("Hokim yordamchisi", "Hokim Yordamchisi", "💼", "#10b981"),
+    ("Yoshlar yetakchisi", "Yoshlar Yetakchisi", "🚀", "#8b5cf6"),
+    ("Xotin-qizlar faoli", "Xotin-qizlar Faoli", "🌸", "#ec4899"),
+    ("Profilaktika inspektori", "Profilaktika Inspektori", "👮", "#f59e0b"),
+    ("Soliq inspektori", "Soliq Inspektori", "📊", "#06b6d4"),
+    ("Ijtimoiy xodim", "Ijtimoiy Xodim (Inson)", "🤝", "#14b8a6"),
+]
+
+class MahallaPassportView(QDialog):
+    """Mahalla Yettiligi 360 Pasport Oynasi."""
+
+    def __init__(self, parent=None, app=None, selected_mahalla: Optional[str] = None):
+        super().__init__(parent)
+        self.app = app
+        self.selected_mahalla = selected_mahalla
+        self.setWindowTitle("🏘 Mahalla 'Yettiligi' 360° Pasport Tizimi")
+        self.resize(1000, 720)
+        self.setMinimumSize(850, 600)
+
+        self.setup_ui()
+        self.populate_mahallalar()
+        if self.selected_mahalla:
+            idx = self.combo_mahalla.findText(self.selected_mahalla)
+            if idx >= 0:
+                self.combo_mahalla.setCurrentIndex(idx)
+            else:
+                self.load_passport(self.selected_mahalla)
+        else:
+            if self.combo_mahalla.count() > 0:
+                self.load_passport(self.combo_mahalla.currentText())
+
+    def setup_ui(self):
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(24, 20, 24, 20)
+        main_layout.setSpacing(16)
+
+        # Header Paneli
+        header = QHBoxLayout()
+        title_box = QVBoxLayout()
+        title = QLabel("🏘 Mahalla 'Yettiligi' 360° Raqamli Pasporti")
+        title.setStyleSheet("font-size: 20px; font-weight: 800; color: #38bdf8;")
+        subtitle = QLabel("Pop tumani barcha mahallalarining 7 ta asosiy mas'ul xodimlari ma'lumotlar bazasi")
+        subtitle.setStyleSheet("font-size: 12px; color: #94a3b8;")
+        title_box.addWidget(title)
+        title_box.addWidget(subtitle)
+        header.addLayout(title_box)
+
+        header.addStretch()
+
+        # Mahalla tanlash
+        select_box = QHBoxLayout()
+        lbl = QLabel("Mahalla:")
+        lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #f1f5f9;")
+        select_box.addWidget(lbl)
+
+        self.combo_mahalla = QComboBox()
+        self.combo_mahalla.setEditable(True)
+        self.combo_mahalla.setMinimumWidth(260)
+        self.combo_mahalla.setStyleSheet("""
+            QComboBox { font-size: 14px; font-weight: 600; padding: 6px 12px; }
+        """)
+        self.combo_mahalla.currentTextChanged.connect(self.on_mahalla_changed)
+        select_box.addWidget(self.combo_mahalla)
+        header.addLayout(select_box)
+
+        main_layout.addLayout(header)
+
+        # Ajratuvchi chiziq
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setStyleSheet("color: #334155; margin: 4px 0px;")
+        main_layout.addWidget(line)
+
+        # Skroll maydoni kartalar uchun
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setFrameShape(QFrame.NoFrame)
+        scroll.setStyleSheet("background: transparent;")
+
+        self.cards_container = QWidget()
+        self.cards_grid = QGridLayout(self.cards_container)
+        self.cards_grid.setSpacing(16)
+        self.cards_grid.setContentsMargins(4, 4, 4, 4)
+        scroll.setWidget(self.cards_container)
+
+        main_layout.addWidget(scroll, 1)
+
+        # Pastki amallar
+        footer = QHBoxLayout()
+        self.lbl_stats = QLabel("Yuklanmoqda...")
+        self.lbl_stats.setStyleSheet("font-size: 12px; color: #94a3b8; font-weight: 600;")
+        footer.addWidget(self.lbl_stats)
+
+        footer.addStretch()
+        self.btn_close = QPushButton("Yopish")
+        self.btn_close.clicked.connect(self.accept)
+        footer.addWidget(self.btn_close)
+
+        main_layout.addLayout(footer)
+
+    def populate_mahallalar(self):
+        """Tizimdagi barcha mahallalarni to'plash."""
+        if not self.app or not hasattr(self.app, "data"):
+            return
+        mahallalar = set()
+        for item in self.app.data:
+            s_val = str(item.get("s", "")).strip()
+            m_val = str(item.get("m", "")).strip()
+            if "Mahalla" in s_val or "MFY" in s_val or "MFY" in m_val:
+                mahallalar.add(m_val)
+
+        sorted_m = sorted(list(mahallalar))
+        self.combo_mahalla.clear()
+        self.combo_mahalla.addItems(sorted_m)
+
+    def on_mahalla_changed(self, text: str):
+        if text.strip():
+            self.load_passport(text.strip())
+
+    def load_passport(self, mahalla_name: str):
+        """Tanlangan mahalla uchun 7 ta kartani to'ldirish."""
+        # Avvalgi kartalarni tozalash
+        while self.cards_grid.count():
+            item = self.cards_grid.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+
+        # Ma'lumotlarni qidirish
+        all_items = [i for i in self.app.data if str(i.get("m", "")).strip().lower() == mahalla_name.lower()]
+        main_item = all_items[0] if all_items else {"m": mahalla_name, "s": "Mahalla (MFY)"}
+
+        filled_count = 0
+
+        for idx, (role_key, role_title, icon, color) in enumerate(ROLES_CONFIG):
+            # Rollarga mos xodimni aniqlash
+            # 1. Asosiy tashkilotdagi ma'lumotlar
+            # 2. Lavozim bo'yicha mos keluvchi alohida yozuvlar
+            role_item = None
+            for it in all_items:
+                lavozim = str(it.get("lavozim", "")).lower()
+                izoh = str(it.get("izoh", "")).lower()
+                if role_key.lower() in lavozim or role_key.lower() in izoh:
+                    role_item = it
+                    break
+
+            if not role_item and idx == 0:
+                role_item = main_item
+
+            fio = role_item.get("f", "") if role_item else ""
+            phone = role_item.get("t", "") if role_item else ""
+            inn = role_item.get("inn", "") if role_item else main_item.get("inn", "")
+            jshr = role_item.get("jshr", "") if role_item else ""
+            seriya = role_item.get("seriya", "") if role_item else ""
+
+            if fio:
+                filled_count += 1
+
+            card = self.create_role_card(
+                mahalla=mahalla_name,
+                role_key=role_key,
+                role_title=role_title,
+                icon=icon,
+                color=color,
+                fio=fio,
+                phone=phone,
+                inn=inn,
+                jshr=jshr,
+                seriya=seriya,
+                item=role_item or main_item
+            )
+
+            row = idx // 2
+            col = idx % 2
+            self.cards_grid.addWidget(card, row, col)
+
+        self.lbl_stats.setText(f"Mahalla: {mahalla_name} | Yettilik to'liqligi: {filled_count}/7 ta xodim")
+
+    def create_role_card(self, mahalla, role_key, role_title, icon, color, fio, phone, inn, jshr, seriya, item):
+        card = QFrame()
+        card.setStyleSheet(f"""
+            QFrame {{
+                background-color: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 12px;
+                padding: 14px;
+            }}
+            QFrame:hover {{
+                border: 1px solid {color};
+            }}
+        """)
+
+        layout = QVBoxLayout(card)
+        layout.setContentsMargins(12, 10, 12, 10)
+        layout.setSpacing(8)
+
+        # Yuqori qism: Ikonka + Lavozim nomi
+        top = QHBoxLayout()
+        icon_lbl = QLabel(icon)
+        icon_lbl.setStyleSheet(f"font-size: 22px; background: {color}22; border-radius: 8px; padding: 4px 8px;")
+        top.addWidget(icon_lbl)
+
+        role_lbl = QLabel(role_title)
+        role_lbl.setStyleSheet(f"font-size: 14px; font-weight: 700; color: {color};")
+        top.addWidget(role_lbl)
+        top.addStretch()
+
+        status_txt = "✅ To'liq" if fio else "⚠️ Bo'sh"
+        status_color = "#10b981" if fio else "#ef4444"
+        status_lbl = QLabel(status_txt)
+        status_lbl.setStyleSheet(f"font-size: 11px; font-weight: 700; color: {status_color}; background: #0f172a; border-radius: 6px; padding: 2px 6px;")
+        top.addWidget(status_lbl)
+        layout.addLayout(top)
+
+        # F.I.SH
+        fio_lbl = QLabel(f"👤 {fio if fio else 'Xodim biriktirilmagan'}")
+        fio_lbl.setStyleSheet("font-size: 13px; font-weight: 700; color: #ffffff;" if fio else "font-size: 13px; color: #64748b; font-style: italic;")
+        layout.addWidget(fio_lbl)
+
+        # Ma'lumotlar qatori
+        info_layout = QHBoxLayout()
+        phone_txt = f"📞 {phone}" if phone else "📞 -"
+        inn_txt = f"🆔 INN: {inn}" if inn else "🆔 -"
+        p_lbl = QLabel(phone_txt)
+        p_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        i_lbl = QLabel(inn_txt)
+        i_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
+        info_layout.addWidget(p_lbl)
+        info_layout.addWidget(i_lbl)
+        info_layout.addStretch()
+        layout.addLayout(info_layout)
+
+        # JSHSHIR va Seriya
+        pass_layout = QHBoxLayout()
+        jshr_txt = f"🔢 JSHR: {jshr}" if jshr else "🔢 JSHR: -"
+        ser_txt = f"📄 Seriya: {seriya}" if seriya else "📄 Seriya: -"
+        j_lbl = QLabel(jshr_txt)
+        j_lbl.setStyleSheet("font-size: 11px; color: #64748b;")
+        s_lbl = QLabel(ser_txt)
+        s_lbl.setStyleSheet("font-size: 11px; color: #64748b;")
+        pass_layout.addWidget(j_lbl)
+        pass_layout.addWidget(s_lbl)
+        pass_layout.addStretch()
+        layout.addLayout(pass_layout)
+
+        # Tugmalar paneli
+        btns = QHBoxLayout()
+        btns.setSpacing(6)
+
+        btn_verif = QPushButton("🛡 Verifikatsiya")
+        btn_verif.setStyleSheet("font-size: 11px; padding: 4px 8px; background: #0284c7; color: white; border-radius: 6px;")
+        btn_verif.clicked.connect(lambda: self.copy_role_verif(mahalla, role_title, fio, inn, jshr, seriya))
+
+        btn_cab = QPushButton("🔑 Kabinet")
+        btn_cab.setStyleSheet("font-size: 11px; padding: 4px 8px; background: #d97706; color: white; border-radius: 6px;")
+        btn_cab.clicked.connect(lambda: self.copy_role_cabinet(mahalla, fio, inn))
+
+        btn_edit = QPushButton("✏ Tahrirlash")
+        btn_edit.setStyleSheet("font-size: 11px; padding: 4px 8px; background: #334155; color: white; border-radius: 6px;")
+        btn_edit.clicked.connect(lambda: self.edit_role_person(item, role_title))
+
+        btns.addWidget(btn_verif)
+        btns.addWidget(btn_cab)
+        btns.addWidget(btn_edit)
+        btns.addStretch()
+        layout.addLayout(btns)
+
+        return card
+
+    def copy_role_verif(self, mahalla, role_title, fio, inn, jshr, seriya):
+        text = (
+            f"Tashkilot nomi: {mahalla}\n"
+            f"INN:   {inn or '-'}\n"
+            f"F.I.O:  {fio or '-'}\n"
+            f"JSHR : {jshr or '-'}\n"
+            f"Seriya : {seriya or '-'}\n"
+            f"Lavozimi: {role_title}\n"
+            f"verfikatsiya bervoring."
+        )
+        pyperclip.copy(text)
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast(f"🛡 {role_title} verifikatsiya matni nusxalandi!", "success")
+        else:
+            QMessageBox.information(self, "OK", f"{role_title} verifikatsiya matni nusxalandi!")
+
+    def copy_role_cabinet(self, mahalla, fio, inn):
+        text = (
+            f"Tashkilot nomi: {mahalla}\n"
+            f"INN:   {inn or '-'}\n"
+            f"F.I.O:  {fio or '-'}\n"
+            f"cabinetga dostup"
+        )
+        pyperclip.copy(text)
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast(f"🔑 {mahalla} kabinet matni nusxalandi!", "success")
+        else:
+            QMessageBox.information(self, "OK", "Kabinetga dostup matni nusxalandi!")
+
+    def edit_role_person(self, item, role_title):
+        from ui_qt.views.org_edit_dialog import OrgEditDialog
+        dlg = OrgEditDialog(parent=self, app=self.app, item=item)
+        if dlg.exec_() == QDialog.Accepted:
+            self.load_passport(self.combo_mahalla.currentText())
+
+def open_mahalla_passport(app: Any, mahalla: Optional[str] = None) -> None:
+    dlg = MahallaPassportView(parent=app, app=app, selected_mahalla=mahalla)
+    dlg.exec_()

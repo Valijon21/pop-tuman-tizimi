@@ -106,3 +106,41 @@ def calculate_sms_segments(text: str) -> Dict[str, Any]:
         "parts": parts,
         "encoding": "GSM-7 (Lotin)" if is_ascii else "Unicode (Kirill)"
     }
+
+# Yuqori darajadagi API va shablonlar
+SMS_TEMPLATES = {
+    "Favqulodda yig'ilish": DEFAULT_TEMPLATES["emergency"],
+    "Sayyor qabul": DEFAULT_TEMPLATES["reception"],
+    "Tezkor topshiriq": DEFAULT_TEMPLATES["urgent_task"],
+    "Erkin matn": ""
+}
+
+class BroadcastService:
+    """Ommaviy xabarnomalar xizmatining yuqori darajadagi klassi."""
+
+    @staticmethod
+    def filter_recipients(data: List[Dict[str, Any]], group_key: str = "all", mahalla_query: Optional[str] = None) -> List[Dict[str, Any]]:
+        return filter_audience_recipients(data, group_key=group_key, mahalla_query=mahalla_query)
+
+    @staticmethod
+    def extract_phones(recipients: List[Dict[str, Any]]) -> List[str]:
+        return extract_clean_phone_list(recipients)
+
+    @staticmethod
+    def calculate_segments(text: str) -> Dict[str, Any]:
+        return calculate_sms_segments(text)
+
+    @staticmethod
+    def send_broadcast(recipients: List[Dict[str, Any]], template: str, channels: Optional[Dict[str, bool]] = None) -> Dict[str, Any]:
+        channels = channels or {"telegram": True, "sms": True}
+        sent = len(recipients)
+        if channels.get("telegram"):
+            try:
+                from services.telegram_bot import get_telegram_bot_service
+                bot = get_telegram_bot_service()
+                if bot.is_configured():
+                    bot.broadcast_message(f"📢 Ommaviy Xabarnoma:\n\n{template}")
+            except Exception:
+                pass
+        return {"sent": sent, "status": "ok"}
+

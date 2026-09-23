@@ -106,7 +106,28 @@ def build():
         "ui.views.history_view",
         "ui.views.import_dialog",
         "ui.views.cabinet_dialog",
-        "ui.views.broadcast_view"
+        "ui.views.broadcast_view",
+        "PyQt5",
+        "PyQt5.QtCore",
+        "PyQt5.QtWidgets",
+        "PyQt5.QtGui",
+        "ui_qt",
+        "ui_qt.styles",
+        "ui_qt.app_window",
+        "ui_qt.components",
+        "ui_qt.components.table_model",
+        "ui_qt.views",
+        "ui_qt.views.dashboard_view",
+        "ui_qt.views.table_view",
+        "ui_qt.views.trash_view",
+        "ui_qt.views.settings_view",
+        "ui_qt.views.mahalla_passport_view",
+        "ui_qt.views.cabinet_dialog",
+        "ui_qt.views.verification_dialog",
+        "ui_qt.views.broadcast_view",
+        "ui_qt.views.history_view",
+        "ui_qt.views.import_dialog",
+        "ui_qt.views.org_edit_dialog"
     ]
     for h in hidden_imports:
         args.append(f"--hidden-import={h}")
