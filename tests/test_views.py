@@ -41,6 +41,11 @@ class TestViewImports(unittest.TestCase):
         from ui.views import import_dialog
         self.assertTrue(callable(import_dialog.open_batch_import_dialog))
 
+    def test_broadcast_view_import(self):
+        from ui.views import broadcast_view
+        self.assertTrue(callable(broadcast_view.open_broadcast_dialog))
+
 if __name__ == "__main__":
     unittest.main()
+
 

@@ -40,6 +40,7 @@ def render_table(parent: tk.Widget, app: Any) -> None:
     def add_btn(txt, cmd, col, w=96):
         ctk.CTkButton(btn_frame, text=txt, command=cmd, fg_color=col, height=40, font=("Segoe UI", int(app.font_size * 0.78), "bold"), width=w).pack(side="right", padx=2)
 
+    add_btn("📢 Xabar", lambda: app.open_broadcast(), "#0284c7", 78)
     add_btn("🔑 Kabinet", lambda: open_cabinet_dialog(app), "#d97706", 88)
     add_btn("🛡 Verifikatsiya", lambda: open_verification_dialog(app), "#0284c7", 108)
     add_btn("🏘 Yettilik", lambda: app.open_yettilik(), "#16a34a", 85)
@@ -192,6 +193,7 @@ def show_context_menu(app: Any, event: Any) -> None:
     menu.add_separator()
     menu.add_command(label="🏘 Mahalla 'Yettiligi' (360° Pasport)", command=lambda: app.open_yettilik(selected_mahalla))
     menu.add_command(label="📜 Kadrlar almashinuvi tarixi", command=lambda: app.open_history(mahalla=selected_mahalla))
+    menu.add_command(label="📢 Ommaviy Xabarnoma (SMS/Telegram)", command=app.open_broadcast)
     menu.add_command(label="📥 Excel / CSV Ommaviy Import", command=app.open_import)
     menu.add_separator()
     menu.add_command(label="📞 Tel nusxalash", command=lambda: app.copy_cell(4))

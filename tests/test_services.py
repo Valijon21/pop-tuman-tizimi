@@ -124,7 +124,51 @@ class TestServices(unittest.TestCase):
         url = get_cabinet_portal_url(sample["s"])
         self.assertEqual(url, "https://e-maktab.uz")
 
+    def test_broadcast_service(self):
+        from services.broadcast_service import (
+            filter_audience_recipients, extract_clean_phone_list, calculate_sms_segments
+        )
+        data = [
+            {"s": "Hokim yordamchisi", "m": "Chorkesar MFY", "f": "Xojiakbar", "t": "+998901234567"},
+            {"s": "Mahalla (MFY)", "m": "Chorkesar MFY", "f": "Aliyev", "t": "+998912345678"},
+            {"s": "Maktab", "m": "1-maktab", "f": "Karimov", "t": "+998933334455"},
+        ]
+
+        # Test filter by Hokim yordamchisi
+        recipients = filter_audience_recipients(data, "hokim_yordamchilari")
+        self.assertEqual(len(recipients), 1)
+        self.assertEqual(recipients[0]["f"], "Xojiakbar")
+
+        # Test phone extraction
+        phones = extract_clean_phone_list(recipients)
+        self.assertEqual(phones, ["+998901234567"])
+
+        # Test SMS calculation
+        info = calculate_sms_segments("Favqulodda yig'ilish")
+        self.assertEqual(info["parts"], 1)
+        self.assertGreater(info["length"], 0)
+
+    def test_telegram_bot_service(self):
+        from services.telegram_bot import TelegramBotService
+        class MockDM:
+            data = [{"m": "Chorkesar MFY", "inn": "203599806", "f": "Xojiakbar", "s": "Hokim yordamchisi"}]
+            settings = {"telegram_subscribers": [123456]}
+        
+        # Test initialization with flexible argument order
+        bot1 = TelegramBotService(MockDM(), "dummy_token_123")
+        self.assertEqual(bot1.token, "dummy_token_123")
+        self.assertIn(123456, bot1.subscribers)
+
+        bot2 = TelegramBotService("dummy_token_456", MockDM())
+        self.assertEqual(bot2.token, "dummy_token_456")
+
+        # Test find first
+        found = bot1._find_first("203599806")
+        self.assertIsNotNone(found)
+        self.assertEqual(found["m"], "Chorkesar MFY")
+
 if __name__ == "__main__":
     unittest.main()
+
 
 

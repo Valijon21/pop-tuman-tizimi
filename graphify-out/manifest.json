@@ -1,7 +1,7 @@
 {
   "build_exe.py": {
-    "mtime": 1790159207.230706,
-    "ast_hash": "d44f44daed41b8c1083d07e6ff355b1c",
+    "mtime": 1790159826.2068799,
+    "ast_hash": "7209b0afc6b9e73a4839713842921434",
     "semantic_hash": ""
   },
   "categories.json": {
@@ -125,8 +125,8 @@
     "semantic_hash": "9641c1d7accd175223250655a560687d"
   },
   "tests/test_services.py": {
-    "mtime": 1790159192.3857117,
-    "ast_hash": "9fbac3591f1c9372c7a139bd98041023",
+    "mtime": 1790159804.1341999,
+    "ast_hash": "3bea53abf24f2028432405d6d552455e",
     "semantic_hash": ""
   },
   "tests/test_validators.py": {
@@ -135,8 +135,8 @@
     "semantic_hash": ""
   },
   "tests/test_views.py": {
-    "mtime": 1790159220.0813985,
-    "ast_hash": "3280c668811fa2152ef5f33d75f24182",
+    "mtime": 1790159816.5014226,
+    "ast_hash": "04ea8e80d24601bf92dbb552d8cf8ba9",
     "semantic_hash": ""
   },
   "ui/__init__.py": {
@@ -145,8 +145,8 @@
     "semantic_hash": "f0f608577786a5a8c50b225e49f3059c"
   },
   "ui/app.py": {
-    "mtime": 1790159179.500906,
-    "ast_hash": "b90c0b530d8e326ccf63b1b604e2e515",
+    "mtime": 1790159769.5780976,
+    "ast_hash": "dd2a314371986a18c360b57df69e6552",
     "semantic_hash": ""
   },
   "ui/style.py": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "ui/views/table_view.py": {
-    "mtime": 1790159121.8791065,
-    "ast_hash": "bbca6f58da10c410dbcf6e7d2571ad1d",
+    "mtime": 1790159792.8820074,
+    "ast_hash": "5f7a430a2f8e8ecb3b1a1fb4af9b3608",
     "semantic_hash": ""
   },
   "ui/views/trash_view.py": {
@@ -220,8 +220,8 @@
     "semantic_hash": ""
   },
   "services/telegram_bot.py": {
-    "mtime": 1790158070.1028602,
-    "ast_hash": "08fc44f07294c0b7204b08a37a0fc146",
+    "mtime": 1790159725.9172244,
+    "ast_hash": "72a689eb9329f25bbd569dee62cccec5",
     "semantic_hash": ""
   },
   "tests/test_import.py": {
@@ -257,6 +257,16 @@
   "ui/views/cabinet_dialog.py": {
     "mtime": 1790159093.5956032,
     "ast_hash": "8a21b9734f8736b2f56e773212ece388",
+    "semantic_hash": ""
+  },
+  "services/broadcast_service.py": {
+    "mtime": 1790159735.6652484,
+    "ast_hash": "3cedb84b30990d213482ad5957fcb184",
+    "semantic_hash": ""
+  },
+  "ui/views/broadcast_view.py": {
+    "mtime": 1790159751.3187203,
+    "ast_hash": "82d85cea9d6747714382421479728c05",
     "semantic_hash": ""
   }
 }

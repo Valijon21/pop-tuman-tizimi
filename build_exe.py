@@ -91,6 +91,7 @@ def build():
         "services.search_service",
         "services.verification_service",
         "services.cabinet_service",
+        "services.broadcast_service",
         "services.telegram_bot",
         "ui",
         "ui.style",
@@ -104,7 +105,8 @@ def build():
         "ui.views.mahalla_passport_view",
         "ui.views.history_view",
         "ui.views.import_dialog",
-        "ui.views.cabinet_dialog"
+        "ui.views.cabinet_dialog",
+        "ui.views.broadcast_view"
     ]
     for h in hidden_imports:
         args.append(f"--hidden-import={h}")

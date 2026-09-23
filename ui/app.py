@@ -128,6 +128,7 @@ class MahallaDasturi:
         self.create_sidebar_btn("⚙ Sozlamalar", self.show_settings)
 
         ctk.CTkLabel(self.sidebar, text="TIZIM", font=("Segoe UI", 12, "bold"), text_color="#95a5a6", anchor="w").pack(fill="x", padx=30, pady=(15, 5))
+        self.create_sidebar_btn("📢 Xabarnoma", lambda: self.open_broadcast())
         self.create_sidebar_btn("📥 Excel Import", lambda: self.open_import())
         self.create_sidebar_btn("🗑 Chiqindi Qutisi", self.show_trash)
         self.create_sidebar_btn("☁ Cloud Sync", self.open_cloud_menu)
@@ -729,5 +730,15 @@ class MahallaDasturi:
         except Exception as e:
             logger.error(f"Kabinet oynasini ochishda xatolik: {e}")
             messagebox.showerror("Xatolik", f"Kabinet oynasini ochishda xatolik: {e}")
+
+    def open_broadcast(self) -> None:
+        """Ommaviy xabarnoma (SMS & Telegram) dialogini ochish."""
+        try:
+            from ui.views.broadcast_view import open_broadcast_dialog
+            open_broadcast_dialog(self)
+        except Exception as e:
+            logger.error(f"Xabarnoma oynasini ochishda xatolik: {e}")
+            messagebox.showerror("Xatolik", f"Xabarnoma oynasini ochishda xatolik: {e}")
+
 
 
