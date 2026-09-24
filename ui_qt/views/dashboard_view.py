@@ -14,6 +14,7 @@ from PyQt5.QtCore import Qt
 from ui_qt.components.widgets import (
     ClickableCard, CategoryDonutChart, CategoryLegend, CategoryBarChart
 )
+from ui_qt.styles import hex_to_rgba
 
 class DashboardView(QWidget):
     """PyQt5 Zamonaviy, Professional Dashboard Ekrani."""
@@ -82,18 +83,19 @@ class DashboardView(QWidget):
             QPushButton {
                 background-color: #ffffff;
                 color: #1e40af;
-                font-size: 11.5px;
-                font-weight: 800;
+                font-size: 12px;
+                font-weight: 700;
                 padding: 7px 16px;
                 border-radius: 6px;
                 border: none;
             }
             QPushButton:hover {
-                background-color: #f8fafc;
+                background-color: #f1f5f9;
                 color: #1d4ed8;
             }
         """)
-        btn_new_org.clicked.connect(self.app.open_add_dialog)
+        if self.app and hasattr(self.app, "open_add_dialog"):
+            btn_new_org.clicked.connect(self.app.open_add_dialog)
         h_layout.addWidget(btn_new_org)
 
         c_layout.addWidget(self.head_banner)
@@ -196,19 +198,26 @@ class DashboardView(QWidget):
 
         def make_action_card(title, desc, icon, color, callback):
             card = ClickableCard(hover_color=color, theme=self.current_theme)
-            card.setMinimumHeight(68)
+            card.setMinimumHeight(76)
+            card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
             card_layout = QVBoxLayout(card)
-            card_layout.setContentsMargins(10, 8, 10, 8)
-            card_layout.setSpacing(3)
+            card_layout.setContentsMargins(12, 10, 12, 10)
+            card_layout.setSpacing(4)
 
             top = QHBoxLayout()
+            top.setContentsMargins(0, 0, 0, 0)
+            icon_bg = hex_to_rgba(color, 0.12 if self.current_theme == "light" else 0.18)
+            icon_border = hex_to_rgba(color, 0.25 if self.current_theme == "light" else 0.35)
             icon_lbl = QLabel(icon)
-            icon_lbl.setStyleSheet(f"font-size: 16px; background: {color}22; border-radius: 5px; padding: 2px 6px;")
+            icon_lbl.setFixedSize(30, 30)
+            icon_lbl.setAlignment(Qt.AlignCenter)
+            icon_lbl.setStyleSheet(f"font-size: 14px; background: {icon_bg}; border: 1px solid {icon_border}; border-radius: 7px;")
             top.addWidget(icon_lbl)
             top.addStretch()
 
+            badge_bg = hex_to_rgba(color, 0.08 if self.current_theme == "light" else 0.12)
             go_lbl = QLabel("Kirish →")
-            go_lbl.setStyleSheet(f"font-size: 9.5px; font-weight: 700; color: {color};")
+            go_lbl.setStyleSheet(f"font-size: 11px; font-weight: 700; color: {color}; background: {badge_bg}; border-radius: 4px; padding: 2px 6px;")
             top.addWidget(go_lbl)
             card_layout.addLayout(top)
 
@@ -223,19 +232,19 @@ class DashboardView(QWidget):
 
         card_pasport = make_action_card(
             "Mahalla Pasporti", "7 ta xodim kartasi va QR kod",
-            "🏘", "#3b82f6", self.app.open_yettilik
+            "🏘", "#3b82f6", getattr(self.app, "open_yettilik", lambda: None)
         )
         card_msg = make_action_card(
             "Ommaviy Xabarnoma", "SMS va Telegram xabar",
-            "📢", "#06b6d4", self.app.open_broadcast
+            "📢", "#06b6d4", getattr(self.app, "open_broadcast", lambda: None)
         )
         card_import = make_action_card(
             "Excel Import", "Yangi bazani yuklash",
-            "📥", "#10b981", self.app.open_import
+            "📥", "#10b981", getattr(self.app, "open_import", lambda: None)
         )
         card_history = make_action_card(
             "Kadrlar Tarixi", "Rotatsiya va audit jurnali",
-            "📜", "#8b5cf6", self.app.open_history
+            "📜", "#8b5cf6", getattr(self.app, "open_history", lambda: None)
         )
 
         act_grid.addWidget(card_pasport)
@@ -253,11 +262,12 @@ class DashboardView(QWidget):
         recent_head.addWidget(self.r_title)
 
         recent_head.addStretch()
-        btn_all = QPushButton("Barchasini ko'rish →")
-        btn_all.setCursor(Qt.PointingHandCursor)
-        btn_all.setStyleSheet("background: transparent; color: #38bdf8; font-weight: 700; font-size: 11.5px; border: none;")
-        btn_all.clicked.connect(self.app.show_table)
-        recent_head.addWidget(btn_all)
+        self.btn_all = QPushButton("Barchasini ko'rish →")
+        self.btn_all.setCursor(Qt.PointingHandCursor)
+        self.btn_all.setStyleSheet("background: transparent; color: #38bdf8; font-weight: 700; font-size: 12px; border: none;")
+        if hasattr(self.app, "show_table"):
+            self.btn_all.clicked.connect(self.app.show_table)
+        recent_head.addWidget(self.btn_all)
         recent_box.addLayout(recent_head)
 
         self.table_recent = QTableWidget()
@@ -272,7 +282,8 @@ class DashboardView(QWidget):
         self.table_recent.setAlternatingRowColors(True)
         self.table_recent.setSelectionBehavior(QTableWidget.SelectRows)
         self.table_recent.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.table_recent.setMaximumHeight(160)
+        self.table_recent.setMinimumHeight(190)
+        self.table_recent.setMaximumHeight(230)
         self.table_recent.doubleClicked.connect(lambda: self.app.show_table())
         recent_box.addWidget(self.table_recent)
 
@@ -327,11 +338,14 @@ class DashboardView(QWidget):
 
         # 3. Sarlavha yozuvlarining rangi
         title_col = "#0f172a" if is_light else "#f1f5f9"
-        self.d_title.setStyleSheet(f"font-size: 12.5px; font-weight: 700; color: {title_col};")
-        self.b_title.setStyleSheet(f"font-size: 12.5px; font-weight: 700; color: {title_col};")
-        self.act_title.setStyleSheet(f"font-size: 12.5px; font-weight: 700; color: {title_col};")
-        self.r_title.setStyleSheet(f"font-size: 12.5px; font-weight: 700; color: {title_col};")
-        self.d_hint.setStyleSheet(f"font-size: 10px; color: {'#64748b' if is_light else '#94a3b8'}; font-style: italic;")
+        self.d_title.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {title_col};")
+        self.b_title.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {title_col};")
+        self.act_title.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {title_col};")
+        self.r_title.setStyleSheet(f"font-size: 13px; font-weight: 700; color: {title_col};")
+        self.d_hint.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'}; font-style: italic;")
+
+        if hasattr(self, "btn_all"):
+            self.btn_all.setStyleSheet(f"background: transparent; color: {'#0284c7' if is_light else '#38bdf8'}; font-weight: 700; font-size: 12px; border: none;")
 
         # 4. Ichki vidjetlar (Donut, Legend, Bar)
         self.donut_chart.set_theme(theme)
@@ -342,20 +356,20 @@ class DashboardView(QWidget):
         for f, v, s in self.kpi_items:
             if is_light:
                 f.setStyleSheet("background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 4px;")
-                s.setStyleSheet("font-size: 9px; color: #64748b; font-weight: 600;")
+                s.setStyleSheet("font-size: 10px; color: #64748b; font-weight: 600;")
             else:
                 f.setStyleSheet("background-color: #172233; border: 1px solid #243248; border-radius: 6px; padding: 4px;")
-                s.setStyleSheet("font-size: 9px; color: #94a3b8; font-weight: 600;")
+                s.setStyleSheet("font-size: 10px; color: #94a3b8; font-weight: 600;")
 
         # 6. Tezkor amallar kartalari
         for card, t_lbl, d_lbl in self.action_cards:
             card.set_theme(theme)
             if is_light:
-                t_lbl.setStyleSheet("font-size: 11.5px; font-weight: 700; color: #0f172a;")
-                d_lbl.setStyleSheet("font-size: 10px; color: #64748b;")
+                t_lbl.setStyleSheet("font-size: 12px; font-weight: 700; color: #0f172a;")
+                d_lbl.setStyleSheet("font-size: 11px; color: #64748b;")
             else:
-                t_lbl.setStyleSheet("font-size: 11.5px; font-weight: 700; color: #ffffff;")
-                d_lbl.setStyleSheet("font-size: 10px; color: #94a3b8;")
+                t_lbl.setStyleSheet("font-size: 12px; font-weight: 700; color: #ffffff;")
+                d_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
 
         # 7. Stat kartalarini yangilash
         self.update_stats()
@@ -397,27 +411,28 @@ class DashboardView(QWidget):
                 item.widget().deleteLater()
 
         stat_items = [
-            ("Jami Tashkilotlar", total_count, "🏢", "#38bdf8", "Barchasi"),
-            ("Mahallalar (MFY)", counts["Mahalla (MFY)"], "🏘", "#10b981", "Mahalla (MFY)"),
-            ("Maktablar", counts["Maktab"], "🏫", "#f59e0b", "Maktab"),
-            ("Bog'chalar (MTT)", counts["Bog'cha (MTT)"], "🧸", "#8b5cf6", "Bog'cha (MTT)"),
-            ("Tibbiyot Muassasalari", counts["Tibbiyot"], "🏥", "#ec4899", "Tibbiyot"),
-            ("Boshqa Tashkilotlar", counts["Boshqa"], "📌", "#06b6d4", "Boshqa"),
+            ("Jami Tashkilotlar", total_count, "🏢", ("#38bdf8", "#0284c7"), "Barchasi"),
+            ("Mahallalar (MFY)", counts["Mahalla (MFY)"], "🏘", ("#34d399", "#059669"), "Mahalla (MFY)"),
+            ("Maktablar", counts["Maktab"], "🏫", ("#fbbf24", "#d97706"), "Maktab"),
+            ("Bog'chalar (MTT)", counts["Bog'cha (MTT)"], "🧸", ("#a78bfa", "#7c3aed"), "Bog'cha (MTT)"),
+            ("Tibbiyot Muassasalari", counts["Tibbiyot"], "🏥", ("#f472b6", "#db2777"), "Tibbiyot"),
+            ("Boshqa Tashkilotlar", counts["Boshqa"], "📌", ("#22d3ee", "#0891b2"), "Boshqa"),
         ]
 
-        for idx, (title, count, icon, color, cat_key) in enumerate(stat_items):
-            card = self.create_stat_card(title, count, icon, color, cat_key)
+        for idx, (title, count, icon, color_spec, cat_key) in enumerate(stat_items):
+            card = self.create_stat_card(title, count, icon, color_spec, cat_key)
             r = idx // 3
             c = idx % 3
             self.cards_grid.addWidget(card, r, c)
 
         # 2. Diagrammalar ma'lumotlarini yangilash
+        is_light = (self.current_theme == "light")
         chart_data = [
-            ("Mahalla (MFY)", counts["Mahalla (MFY)"], "#10b981"),
-            ("Maktablar", counts["Maktab"], "#f59e0b"),
-            ("Bog'chalar (MTT)", counts["Bog'cha (MTT)"], "#8b5cf6"),
-            ("Tibbiyot", counts["Tibbiyot"], "#ec4899"),
-            ("Boshqa", counts["Boshqa"], "#06b6d4"),
+            ("Mahalla (MFY)", counts["Mahalla (MFY)"], "#059669" if is_light else "#10b981"),
+            ("Maktablar", counts["Maktab"], "#d97706" if is_light else "#f59e0b"),
+            ("Bog'chalar (MTT)", counts["Bog'cha (MTT)"], "#7c3aed" if is_light else "#8b5cf6"),
+            ("Tibbiyot", counts["Tibbiyot"], "#db2777" if is_light else "#ec4899"),
+            ("Boshqa", counts["Boshqa"], "#0891b2" if is_light else "#06b6d4"),
         ]
         self.donut_chart.set_data(chart_data)
         self.legend.set_data(chart_data)
@@ -461,44 +476,64 @@ class DashboardView(QWidget):
 
             self.table_recent.setRowHeight(r_idx, 27)
 
-    def create_stat_card(self, title: str, count: int, icon: str, color: str, cat_key: str) -> ClickableCard:
+    def create_stat_card(self, title: str, count: int, icon: str, color_spec: Any, cat_key: str) -> ClickableCard:
         """
-        QFrame asosidagi ClickableCard vidjeti.
-        Joriy tanlangan mavzuga qarab o'zgaradi va matnlar hech qachon siqilmaydi.
+        Senior-darajadagi zamonaviy, mukammal balanslangan KPI statistika kartasi.
+        Maydon 4 burchakka proporsional taqsimlangan:
+        - Yuqori chap: Toifa nomi (12px, semi-bold)
+        - Yuqori o'ng: Nafis ixcham nishon (30x30, 14px emoji squircle)
+        - Quyi chap: Katta va qalin raqamli ko'rsatkich (26px, 800)
+        - Quyi o'ng: 'Ko'rish →' interaktiv tugma nishoni
         """
+        is_light = (self.current_theme == "light")
+        if isinstance(color_spec, (tuple, list)):
+            color = color_spec[1] if is_light else color_spec[0]
+        else:
+            color = color_spec
+
         card = ClickableCard(hover_color=color, theme=self.current_theme)
-        card.setMinimumHeight(76)
+        card.setMinimumHeight(86)
+        card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
 
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(10, 8, 10, 8)
-        layout.setSpacing(2)
+        layout.setContentsMargins(14, 10, 14, 10)
+        layout.setSpacing(6)
 
-        # Yuqori qator: Ikonka va Ko'rish havolasi
+        # 1. YUQORI QATOR: Toifa nomi (chapda) + Nafis ikonka nishoni (o'ngda)
         top = QHBoxLayout()
         top.setContentsMargins(0, 0, 0, 0)
-        
-        icon_lbl = QLabel(icon)
-        icon_lbl.setStyleSheet(f"font-size: 14px; background: {color}22; border-radius: 5px; padding: 2px 5px;")
-        top.addWidget(icon_lbl)
-        
+
+        t_col = "#64748b" if is_light else "#94a3b8"
+        t_lbl = QLabel(title)
+        t_lbl.setStyleSheet(f"font-size: 12px; font-weight: 600; color: {t_col};")
+        top.addWidget(t_lbl)
+
         top.addStretch()
 
-        badge_col = "#94a3b8" if self.current_theme == "light" else "#64748b"
-        badge = QLabel("Ko'rish →")
-        badge.setStyleSheet(f"font-size: 10px; font-weight: 700; color: {badge_col};")
-        top.addWidget(badge)
+        icon_bg = hex_to_rgba(color, 0.10 if is_light else 0.15)
+        icon_border = hex_to_rgba(color, 0.20 if is_light else 0.30)
+        icon_lbl = QLabel(icon)
+        icon_lbl.setFixedSize(30, 30)
+        icon_lbl.setAlignment(Qt.AlignCenter)
+        icon_lbl.setStyleSheet(f"font-size: 14px; background: {icon_bg}; border: 1px solid {icon_border}; border-radius: 7px;")
+        top.addWidget(icon_lbl)
         layout.addLayout(top)
 
-        # Raqamli ko'rsatkich (Katta va qalin)
-        val_lbl = QLabel(str(count))
-        val_lbl.setStyleSheet(f"font-size: 20px; font-weight: 800; color: {color}; margin-top: 1px;")
-        layout.addWidget(val_lbl)
+        # 2. QUYI QATOR: Katta ko'rsatkich (chapda) + 'Ko'rish →' nishoni (o'ngda)
+        bottom = QHBoxLayout()
+        bottom.setContentsMargins(0, 0, 0, 0)
 
-        # Toifa nomi
-        t_col = "#64748b" if self.current_theme == "light" else "#94a3b8"
-        t_lbl = QLabel(title)
-        t_lbl.setStyleSheet(f"font-size: 10.5px; font-weight: 700; color: {t_col}; text-transform: uppercase;")
-        layout.addWidget(t_lbl)
+        val_lbl = QLabel(f"{count:,}".replace(",", " "))
+        val_lbl.setStyleSheet(f"font-size: 26px; font-weight: 800; color: {color};")
+        bottom.addWidget(val_lbl)
+
+        bottom.addStretch()
+
+        badge_bg = hex_to_rgba(color, 0.08 if is_light else 0.12)
+        badge = QLabel("Ko'rish →")
+        badge.setStyleSheet(f"font-size: 11px; font-weight: 700; color: {color}; background: {badge_bg}; border-radius: 4px; padding: 2px 8px;")
+        bottom.addWidget(badge, alignment=Qt.AlignBottom)
+        layout.addLayout(bottom)
 
         card.clicked.connect(lambda: self.on_card_click(cat_key))
         return card

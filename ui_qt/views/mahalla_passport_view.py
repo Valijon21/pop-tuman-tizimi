@@ -13,7 +13,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from services.verification_service import build_verification_text
 from services.cabinet_service import build_cabinet_access_text
-from ui_qt.styles import get_stylesheet
+from ui_qt.views.qr_dialog import open_qr_dialog
+from ui_qt.styles import get_stylesheet, hex_to_rgba
 from core.logger import logger
 
 ROLES_CONFIG = [
@@ -231,26 +232,30 @@ class MahallaPassportView(QDialog):
         card_border = "#e2e8f0" if is_light else "#334155"
 
         card = QFrame()
+        card.setObjectName("mahalla_role_card")
         card.setStyleSheet(f"""
-            QFrame {{
+            QFrame#mahalla_role_card {{
                 background-color: {card_bg};
                 border: 1px solid {card_border};
                 border-radius: 8px;
-                padding: 8px 10px;
             }}
-            QFrame:hover {{
+            QFrame#mahalla_role_card:hover {{
                 border: 1px solid {color};
             }}
         """)
 
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setContentsMargins(10, 8, 10, 8)
         layout.setSpacing(4)
 
         # Yuqori qism: Ikonka + Lavozim nomi
         top = QHBoxLayout()
+        icon_bg = hex_to_rgba(color, 0.12 if is_light else 0.18)
+        icon_border = hex_to_rgba(color, 0.25 if is_light else 0.35)
         icon_lbl = QLabel(icon)
-        icon_lbl.setStyleSheet(f"font-size: 16px; background: {color}22; border-radius: 6px; padding: 2px 6px;")
+        icon_lbl.setFixedSize(30, 30)
+        icon_lbl.setAlignment(Qt.AlignCenter)
+        icon_lbl.setStyleSheet(f"font-size: 15px; background: {icon_bg}; border: 1px solid {icon_border}; border-radius: 6px;")
         top.addWidget(icon_lbl)
 
         role_lbl = QLabel(role_title)
@@ -262,7 +267,7 @@ class MahallaPassportView(QDialog):
         status_color = "#10b981" if fio else "#ef4444"
         status_bg = "#f1f5f9" if is_light else "#0f172a"
         status_lbl = QLabel(status_txt)
-        status_lbl.setStyleSheet(f"font-size: 10px; font-weight: 700; color: {status_color}; background: {status_bg}; border-radius: 4px; padding: 1px 5px;")
+        status_lbl.setStyleSheet(f"font-size: 10px; font-weight: 700; color: {status_color}; background: {status_bg}; border-radius: 4px; padding: 1px 6px;")
         top.addWidget(status_lbl)
         layout.addLayout(top)
 
@@ -270,7 +275,7 @@ class MahallaPassportView(QDialog):
         fio_color = "#0f172a" if is_light else "#ffffff"
         fio_muted = "#64748b" if is_light else "#94a3b8"
         fio_lbl = QLabel(f"👤 {fio if fio else 'Biriktirilmagan'}")
-        fio_lbl.setStyleSheet(f"font-size: 11.5px; font-weight: 700; color: {fio_color};" if fio else f"font-size: 11px; color: {fio_muted}; font-style: italic;")
+        fio_lbl.setStyleSheet(f"font-size: 12px; font-weight: 700; color: {fio_color};" if fio else f"font-size: 11px; color: {fio_muted}; font-style: italic;")
         layout.addWidget(fio_lbl)
 
         # Ma'lumotlar qatori
@@ -279,9 +284,9 @@ class MahallaPassportView(QDialog):
         inn_txt = f"🆔 INN: {inn}" if inn else "🆔 -"
         meta_color = "#475569" if is_light else "#94a3b8"
         p_lbl = QLabel(phone_txt)
-        p_lbl.setStyleSheet(f"font-size: 10px; color: {meta_color};")
+        p_lbl.setStyleSheet(f"font-size: 11px; color: {meta_color};")
         i_lbl = QLabel(inn_txt)
-        i_lbl.setStyleSheet(f"font-size: 10px; color: {meta_color};")
+        i_lbl.setStyleSheet(f"font-size: 11px; color: {meta_color};")
         info_layout.addWidget(p_lbl)
         info_layout.addWidget(i_lbl)
         info_layout.addStretch()
@@ -291,7 +296,7 @@ class MahallaPassportView(QDialog):
         pass_layout = QHBoxLayout()
         jshr_txt = f"🔢 JSHR: {jshr}" if jshr else "🔢 JSHR: -"
         ser_txt = f"📄 Seriya: {seriya}" if seriya else "📄 Seriya: -"
-        sub_color = "#64748b" if is_light else "#64748b"
+        sub_color = "#64748b" if is_light else "#94a3b8"
         j_lbl = QLabel(jshr_txt)
         j_lbl.setStyleSheet(f"font-size: 10px; color: {sub_color};")
         s_lbl = QLabel(ser_txt)
@@ -303,25 +308,44 @@ class MahallaPassportView(QDialog):
 
         # Tugmalar paneli
         btns = QHBoxLayout()
-        btns.setSpacing(5)
+        btns.setSpacing(6)
 
         btn_verif = QPushButton("🛡 Verifikatsiya")
-        btn_verif.setStyleSheet("font-size: 10.5px; padding: 3px 6px; background: #0284c7; color: white; border-radius: 4px;")
+        btn_verif.setProperty("class", "btn_info")
+        btn_verif.setCursor(Qt.PointingHandCursor)
+        btn_verif.setStyleSheet("font-size: 11px; padding: 4px 8px; border-radius: 5px;")
         btn_verif.clicked.connect(lambda: self.copy_role_verif(mahalla, role_title, fio, inn, jshr, seriya))
 
         btn_cab = QPushButton("🔑 Kabinet")
-        btn_cab.setStyleSheet("font-size: 10.5px; padding: 3px 6px; background: #d97706; color: white; border-radius: 4px;")
+        btn_cab.setProperty("class", "btn_warning")
+        btn_cab.setCursor(Qt.PointingHandCursor)
+        btn_cab.setStyleSheet("font-size: 11px; padding: 4px 8px; border-radius: 5px;")
         btn_cab.clicked.connect(lambda: self.copy_role_cabinet(mahalla, fio, inn))
 
-        btn_edit_bg = "#f1f5f9" if is_light else "#334155"
-        btn_edit_fg = "#0f172a" if is_light else "#ffffff"
-        btn_edit_border = "#cbd5e1" if is_light else "#475569"
+        btn_qr = QPushButton("📱 QR")
+        btn_qr.setProperty("class", "btn_purple")
+        btn_qr.setCursor(Qt.PointingHandCursor)
+        btn_qr.setStyleSheet("font-size: 11px; padding: 4px 8px; border-radius: 5px;")
+        btn_qr.setToolTip(f"{role_title} ({fio or 'Masʼul'}) uchun mobil QR kod")
+        btn_qr.clicked.connect(lambda _, m=mahalla, r=role_title, f=fio, p=phone, i=inn, it=item: open_qr_dialog(
+            self.app,
+            phone=p,
+            org_name=f"{m} MFY",
+            person_name=f,
+            role=r,
+            inn=i,
+            item=it
+        ))
+
         btn_edit = QPushButton("✏ Tahrir")
-        btn_edit.setStyleSheet(f"font-size: 10.5px; padding: 3px 6px; background: {btn_edit_bg}; color: {btn_edit_fg}; border: 1px solid {btn_edit_border}; border-radius: 4px;")
+        btn_edit.setProperty("class", "btn_secondary")
+        btn_edit.setCursor(Qt.PointingHandCursor)
+        btn_edit.setStyleSheet("font-size: 11px; padding: 4px 8px; border-radius: 5px;")
         btn_edit.clicked.connect(lambda: self.edit_role_person(item, role_title))
 
         btns.addWidget(btn_verif)
         btns.addWidget(btn_cab)
+        btns.addWidget(btn_qr)
         btns.addWidget(btn_edit)
         btns.addStretch()
         layout.addLayout(btns)

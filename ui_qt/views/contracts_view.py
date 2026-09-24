@@ -10,11 +10,16 @@ import openpyxl
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
-    QMenu, QMessageBox, QFileDialog, QFrame, QScrollArea, QShortcut
+    QMenu, QMessageBox, QFileDialog, QFrame, QScrollArea, QShortcut,
+    QSizePolicy
 )
 from PyQt5.QtCore import Qt, QTimer, QEvent
 from PyQt5.QtGui import QKeySequence
 from ui_qt.views.cabinet_dialog import open_cabinet_dialog
+from ui_qt.views.contract_add_dialog import ContractAddDialog
+from ui_qt.views.qr_dialog import open_qr_dialog
+from ui_qt.components.widgets import ClickableCard
+from ui_qt.styles import hex_to_rgba
 from core.logger import logger
 
 class ContractsView(QWidget):
@@ -56,14 +61,15 @@ class ContractsView(QWidget):
         head_layout.addLayout(title_box)
         head_layout.addStretch()
 
+        self.btn_add = QPushButton("➕ Qo'shish")
+        self.btn_add.setProperty("class", "btn_primary")
+        self.btn_add.setCursor(Qt.PointingHandCursor)
+        self.btn_add.clicked.connect(self.open_add_dialog)
+        head_layout.addWidget(self.btn_add)
+
         self.btn_export = QPushButton("📊 Excelga Eksport")
-        self.btn_export.setStyleSheet("""
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #059669, stop:1 #10b981);
-                color: white; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;
-            }
-            QPushButton:hover { background-color: #047857; }
-        """)
+        self.btn_export.setProperty("class", "btn_success")
+        self.btn_export.setCursor(Qt.PointingHandCursor)
         self.btn_export.clicked.connect(self.export_to_excel)
         head_layout.addWidget(self.btn_export)
 
@@ -73,10 +79,10 @@ class ContractsView(QWidget):
         kpi_layout = QHBoxLayout()
         kpi_layout.setSpacing(10)
 
-        self.card_total = self._create_kpi_card("🏢 Jami Shartnomalar", "0", "Shartnoma tuzganlar", "#3b82f6")
-        self.card_aparat = self._create_kpi_card("👥 Apparat Shtati", "0", "Jami apparat xodimlari", "#10b981")
-        self.card_ulangan = self._create_kpi_card("🔗 Ulangan Xodimlar", "0", "Shartnomadagi litsenziyalar", "#8b5cf6")
-        self.card_bux = self._create_kpi_card("📞 Buxgalter Aloqalari", "0", "Mavjud buxgalter raqamlari", "#f59e0b")
+        self.card_total = self._create_kpi_card("Jami Shartnomalar", "🏢", "0 ta", "Tuzilgan", ("#38bdf8", "#0284c7"))
+        self.card_aparat = self._create_kpi_card("Apparat Shtati", "👥", "0 ta", "Shtat birligi", ("#34d399", "#059669"))
+        self.card_ulangan = self._create_kpi_card("Ulangan Xodimlar", "🔗", "0 ta", "Litsenziyalar", ("#a78bfa", "#7c3aed"))
+        self.card_bux = self._create_kpi_card("Buxgalter Aloqalari", "📞", "0 ta", "Aloqada", ("#fbbf24", "#d97706"))
 
         kpi_layout.addWidget(self.card_total)
         kpi_layout.addWidget(self.card_aparat)
@@ -118,6 +124,7 @@ class ContractsView(QWidget):
         categories = ["Barchasi", "Mahalla", "Maktab", "Bog'cha", "Ta'lim", "Tibbiyot", "Boshqa"]
         for cat in categories:
             btn = QPushButton(cat)
+            btn.setProperty("class", "pill_btn")
             btn.setCheckable(True)
             btn.clicked.connect(lambda checked, c=cat: self.on_category_clicked(c))
             self.cat_layout.addWidget(btn)
@@ -148,6 +155,7 @@ class ContractsView(QWidget):
         self.table.setAlternatingRowColors(True)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.table.setSelectionMode(QTableWidget.SingleSelection)
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setContextMenuPolicy(Qt.CustomContextMenu)
         self.table.customContextMenuRequested.connect(self.show_context_menu)
         self.table.doubleClicked.connect(self.on_table_double_clicked)
@@ -175,29 +183,64 @@ class ContractsView(QWidget):
 
         self.update_styles()
 
-    def _create_kpi_card(self, title: str, value: str, sub: str, color_hex: str) -> QFrame:
-        """KPI statistika kartochkasini yaratish."""
-        card = QFrame()
-        card.setObjectName("contract_kpi_card")
-        card_layout = QVBoxLayout(card)
-        card_layout.setContentsMargins(12, 10, 12, 10)
-        card_layout.setSpacing(2)
+    def _create_kpi_card(self, title: str, icon: str, value: str, sub: str, color_spec: Any) -> ClickableCard:
+        """Senior-darajadagi muvozanatli 2x2 KPI statistika kartochkasi."""
+        is_light = (self.current_theme == "light")
+        if isinstance(color_spec, (tuple, list)):
+            color = color_spec[1] if is_light else color_spec[0]
+        else:
+            color = color_spec
 
+        card = ClickableCard(hover_color=color, theme=self.current_theme)
+        card.setMinimumHeight(86)
+        card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        card.setObjectName("contract_kpi_card")
+        card._kpi_meta = (title, icon, sub, color_spec)
+
+        layout = QVBoxLayout(card)
+        layout.setContentsMargins(14, 10, 14, 10)
+        layout.setSpacing(6)
+
+        # 1. YUQORI QATOR: Toifa nomi (chapda) + Nozik ikonka nishoni (o'ngda)
+        top = QHBoxLayout()
+        top.setContentsMargins(0, 0, 0, 0)
+
+        t_col = "#64748b" if is_light else "#94a3b8"
         lbl_t = QLabel(title)
         lbl_t.setObjectName("card_t")
-        lbl_t.setStyleSheet("font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;")
+        lbl_t.setStyleSheet(f"font-size: 12px; font-weight: 600; color: {t_col};")
+        top.addWidget(lbl_t)
+
+        top.addStretch()
+
+        icon_bg = hex_to_rgba(color, 0.10 if is_light else 0.15)
+        icon_border = hex_to_rgba(color, 0.20 if is_light else 0.30)
+        icon_lbl = QLabel(icon)
+        icon_lbl.setObjectName("card_icon")
+        icon_lbl.setFixedSize(30, 30)
+        icon_lbl.setAlignment(Qt.AlignCenter)
+        icon_lbl.setStyleSheet(f"font-size: 14px; background: {icon_bg}; border: 1px solid {icon_border}; border-radius: 7px;")
+        top.addWidget(icon_lbl)
+        layout.addLayout(top)
+
+        # 2. QUYI QATOR: Katta ko'rsatkich (chapda) + Izoh nishoni (o'ngda)
+        bottom = QHBoxLayout()
+        bottom.setContentsMargins(0, 0, 0, 0)
 
         lbl_v = QLabel(value)
         lbl_v.setObjectName("card_v")
-        lbl_v.setStyleSheet(f"font-size: 20px; font-weight: 800; color: {color_hex}; margin: 2px 0px;")
+        lbl_v.setStyleSheet(f"font-size: 26px; font-weight: 800; color: {color};")
+        bottom.addWidget(lbl_v)
 
+        bottom.addStretch()
+
+        sub_bg = hex_to_rgba(color, 0.08 if is_light else 0.12)
         lbl_s = QLabel(sub)
         lbl_s.setObjectName("card_s")
-        lbl_s.setStyleSheet("font-size: 10px; color: #64748b;")
+        lbl_s.setStyleSheet(f"font-size: 11px; font-weight: 700; color: {color}; background: {sub_bg}; border-radius: 4px; padding: 2px 7px;")
+        bottom.addWidget(lbl_s, alignment=Qt.AlignBottom)
+        layout.addLayout(bottom)
 
-        card_layout.addWidget(lbl_t)
-        card_layout.addWidget(lbl_v)
-        card_layout.addWidget(lbl_s)
         return card
 
     def set_theme(self, theme: str):
@@ -210,44 +253,48 @@ class ContractsView(QWidget):
 
         # Clear button
         if is_light:
-            self.btn_clear.setStyleSheet("background: #e2e8f0; color: #475569; font-weight: bold; border-radius: 6px;")
-            self.lbl_title.setStyleSheet("font-size: 16px; font-weight: 800; color: #0284c7;")
+            self.btn_clear.setStyleSheet("background: #e2e8f0; color: #475569; font-weight: bold; border: 1px solid #cbd5e1; border-radius: 6px;")
+            self.lbl_title.setStyleSheet("font-size: 15px; font-weight: 800; color: #0284c7;")
             self.lbl_subtitle.setStyleSheet("font-size: 11px; color: #64748b;")
             self.lbl_count.setStyleSheet("font-size: 12px; font-weight: 700; color: #475569;")
-            self.lbl_hint.setStyleSheet("font-size: 11px; color: #94a3b8;")
+            self.lbl_hint.setStyleSheet("font-size: 11px; color: #64748b;")
         else:
-            self.btn_clear.setStyleSheet("background: #334155; color: #94a3b8; font-weight: bold; border-radius: 6px;")
-            self.lbl_title.setStyleSheet("font-size: 16px; font-weight: 800; color: #38bdf8;")
+            self.btn_clear.setStyleSheet("background: #334155; color: #cbd5e1; font-weight: bold; border: 1px solid #475569; border-radius: 6px;")
+            self.lbl_title.setStyleSheet("font-size: 15px; font-weight: 800; color: #38bdf8;")
             self.lbl_subtitle.setStyleSheet("font-size: 11px; color: #94a3b8;")
             self.lbl_count.setStyleSheet("font-size: 12px; font-weight: 700; color: #94a3b8;")
             self.lbl_hint.setStyleSheet("font-size: 11px; color: #64748b;")
 
-        # Cards
-        card_bg = "#ffffff" if is_light else "#1e293b"
-        card_border = "#e2e8f0" if is_light else "#334155"
+        # KPI Kartalari
         for card in (self.card_total, self.card_aparat, self.card_ulangan, self.card_bux):
-            card.setStyleSheet(f"""
-                QFrame#contract_kpi_card {{
-                    background-color: {card_bg};
-                    border: 1px solid {card_border};
-                    border-radius: 8px;
-                }}
-            """)
+            if hasattr(card, "set_theme"):
+                card.set_theme(self.current_theme)
+            if hasattr(card, "_kpi_meta"):
+                title, icon, sub, color_spec = card._kpi_meta
+                color = color_spec[1] if is_light else color_spec[0]
+                t_col = "#64748b" if is_light else "#94a3b8"
+                lbl_t = card.findChild(QLabel, "card_t")
+                if lbl_t:
+                    lbl_t.setStyleSheet(f"font-size: 12px; font-weight: 600; color: {t_col};")
+                lbl_v = card.findChild(QLabel, "card_v")
+                if lbl_v:
+                    lbl_v.setStyleSheet(f"font-size: 26px; font-weight: 800; color: {color};")
+                icon_lbl = card.findChild(QLabel, "card_icon")
+                if icon_lbl:
+                    icon_bg = hex_to_rgba(color, 0.10 if is_light else 0.15)
+                    icon_border = hex_to_rgba(color, 0.20 if is_light else 0.30)
+                    icon_lbl.setStyleSheet(f"font-size: 14px; background: {icon_bg}; border: 1px solid {icon_border}; border-radius: 7px;")
+                lbl_s = card.findChild(QLabel, "card_s")
+                if lbl_s:
+                    sub_bg = hex_to_rgba(color, 0.08 if is_light else 0.12)
+                    lbl_s.setStyleSheet(f"font-size: 11px; font-weight: 700; color: {color}; background: {sub_bg}; border-radius: 4px; padding: 2px 7px;")
 
         self.update_pill_selection(self.current_category)
 
     def update_pill_selection(self, selected_cat: str):
         self.current_category = selected_cat
-        is_light = (self.current_theme == "light")
         for cat, btn in self.pill_buttons.items():
             btn.setChecked(cat == selected_cat)
-            if cat == selected_cat:
-                btn.setStyleSheet("background-color: #2563eb; color: white; font-weight: 700; border-radius: 14px; padding: 5px 14px;")
-            else:
-                if is_light:
-                    btn.setStyleSheet("background-color: #f1f5f9; color: #475569; font-weight: 600; border: 1px solid #e2e8f0; border-radius: 14px; padding: 5px 14px;")
-                else:
-                    btn.setStyleSheet("background-color: #1e293b; color: #94a3b8; font-weight: 600; border: 1px solid #334155; border-radius: 14px; padding: 5px 14px;")
 
     def focus_search(self):
         """Ctrl+F bosilganda qidiruv maydoniga o'tish."""
@@ -408,6 +455,31 @@ class ContractsView(QWidget):
         finally:
             self.table.setUpdatesEnabled(True)
 
+    def open_add_dialog(self):
+        """Yangi shartnoma ma'lumotini qo'shish dialogi."""
+        dlg = ContractAddDialog(parent=self, app=self.app)
+        if dlg.exec_() == ContractAddDialog.Accepted:
+            if hasattr(self.app, "refresh_all_views"):
+                self.app.refresh_all_views()
+            self.load_data()
+            if hasattr(self.app, "show_toast"):
+                self.app.show_toast("Yangi shartnoma ma'lumoti muvaffaqiyatli qo'shildi! ✅", "success")
+
+    def open_edit_dialog(self):
+        """Tanlangan shartnoma ma'lumotini tahrirlash dialogi."""
+        row = self.table.currentRow()
+        if row < 0 or row >= len(self.filtered_data):
+            QMessageBox.information(self, "Ma'lumot", "Tahrirlash uchun jadvaldan tashkilotni tanlang.")
+            return
+        item = self.filtered_data[row]
+        dlg = ContractAddDialog(parent=self, app=self.app, item=item)
+        if dlg.exec_() == ContractAddDialog.Accepted:
+            if hasattr(self.app, "refresh_all_views"):
+                self.app.refresh_all_views()
+            self.load_data()
+            if hasattr(self.app, "show_toast"):
+                self.app.show_toast("Shartnoma ma'lumoti yangilandi! ✅", "success")
+
     def show_context_menu(self, pos):
         """O'ng tugma kontekst menyusi."""
         row = self.table.currentRow()
@@ -416,6 +488,15 @@ class ContractsView(QWidget):
 
         item = self.filtered_data[row]
         menu = QMenu(self)
+
+        # Tahrirlash va qo'shish amallari
+        act_edit = menu.addAction("✏ Tahrirlash")
+        act_edit.triggered.connect(self.open_edit_dialog)
+
+        act_add = menu.addAction("➕ Yangi shartnoma qo'shish")
+        act_add.triggered.connect(self.open_add_dialog)
+
+        menu.addSeparator()
 
         bux_tel = str(item.get("bux_tel", "")).strip()
         raxbar_tel = str(item.get("t", "")).strip()
@@ -432,6 +513,32 @@ class ContractsView(QWidget):
         act_inn = menu.addAction(f"🆔 INN nusxalash ({inn})")
         act_inn.setEnabled(bool(inn))
         act_inn.triggered.connect(lambda: self._copy_and_toast(inn, "INN nusxalandi!"))
+
+        menu.addSeparator()
+
+        act_qr_raxbar = menu.addAction("📱 Rahbar QR Kodi (Kontakt)")
+        act_qr_raxbar.setEnabled(bool(raxbar_tel))
+        act_qr_raxbar.triggered.connect(lambda: open_qr_dialog(
+            self.app,
+            item=item,
+            phone=raxbar_tel,
+            org_name=str(item.get("m", "")),
+            person_name=str(item.get("f", "")),
+            role="Rahbar",
+            inn=inn
+        ))
+
+        act_qr_bux = menu.addAction("📱 Buxgalter QR Kodi (Kontakt)")
+        act_qr_bux.setEnabled(bool(bux_tel))
+        act_qr_bux.triggered.connect(lambda: open_qr_dialog(
+            self.app,
+            item=item,
+            phone=bux_tel,
+            org_name=str(item.get("m", "")),
+            person_name="Buxgalter",
+            role="Buxgalter",
+            inn=inn
+        ))
 
         menu.addSeparator()
 

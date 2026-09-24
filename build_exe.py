@@ -100,6 +100,7 @@ def build():
         "ui_qt.app_window",
         "ui_qt.components",
         "ui_qt.components.table_model",
+        "ui_qt.components.widgets",
         "ui_qt.views",
         "ui_qt.views.dashboard_view",
         "ui_qt.views.table_view",
@@ -112,7 +113,9 @@ def build():
         "ui_qt.views.broadcast_view",
         "ui_qt.views.history_view",
         "ui_qt.views.import_dialog",
-        "ui_qt.views.org_edit_dialog"
+        "ui_qt.views.org_edit_dialog",
+        "ui_qt.views.qr_dialog",
+        "ui_qt.views.contract_add_dialog"
     ]
     for h in hidden_imports:
         args.append(f"--hidden-import={h}")

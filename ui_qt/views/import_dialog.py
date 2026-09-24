@@ -55,15 +55,14 @@ class ImportDialog(QDialog):
         file_bg = "#ffffff" if is_light else "#1e293b"
         file_fg = "#0f172a" if is_light else "#f8fafc"
         file_border = "#cbd5e1" if is_light else "#334155"
-        self.lbl_file.setStyleSheet(f"font-size: 11.5px; color: {file_fg}; background: {file_bg}; border: 1px solid {file_border}; padding: 5px 10px; border-radius: 6px;")
+        self.lbl_file.setStyleSheet(f"font-size: 12px; color: {file_fg}; background: {file_bg}; border: 1px solid {file_border}; padding: 6px 10px; border-radius: 6px;")
         file_box.addWidget(self.lbl_file, 1)
 
-        btn_browse = QPushButton("📁 Faylni Tanlash...")
-        btn_browse.setStyleSheet("""
-            background: #2563eb; color: white; font-weight: 700; padding: 5px 12px; border-radius: 6px; font-size: 11.5px;
-        """)
-        btn_browse.clicked.connect(self.browse_file)
-        file_box.addWidget(btn_browse)
+        self.btn_browse = QPushButton("📁 Faylni Tanlash...")
+        self.btn_browse.setProperty("class", "btn_secondary")
+        self.btn_browse.setCursor(Qt.PointingHandCursor)
+        self.btn_browse.clicked.connect(self.browse_file)
+        file_box.addWidget(self.btn_browse)
         layout.addLayout(file_box)
 
         # Oldindan ko'rish jadvali
@@ -80,6 +79,11 @@ class ImportDialog(QDialog):
         self.table_preview.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.table_preview.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
         self.table_preview.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        self.table_preview.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table_preview.setAlternatingRowColors(True)
+        self.table_preview.setSelectionBehavior(QTableWidget.SelectRows)
+        self.table_preview.setSelectionMode(QTableWidget.SingleSelection)
+        self.table_preview.verticalHeader().setVisible(False)
         layout.addWidget(self.table_preview, 1)
 
         # Footer
@@ -92,16 +96,15 @@ class ImportDialog(QDialog):
 
         self.btn_import = QPushButton("✅ Bazaga Saqlash")
         self.btn_import.setEnabled(False)
-        self.btn_import.setStyleSheet("""
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #059669, stop:1 #10b981);
-            color: white; font-weight: 700; padding: 10px 20px; border-radius: 8px;
-        """)
+        self.btn_import.setProperty("class", "btn_primary")
+        self.btn_import.setCursor(Qt.PointingHandCursor)
         self.btn_import.clicked.connect(self.commit_import)
         footer.addWidget(self.btn_import)
 
         self.btn_close = QPushButton("Yopish")
+        self.btn_close.setProperty("class", "btn_secondary")
+        self.btn_close.setCursor(Qt.PointingHandCursor)
         self.btn_close.clicked.connect(self.reject)
-        footer.addWidget(self.btn_close)
 
         layout.addLayout(footer)
 
@@ -115,7 +118,7 @@ class ImportDialog(QDialog):
 
         self.lbl_file.setText(os.path.basename(file_path))
         self.lbl_count.setText("⏳ Fayl o'qilmoqda...")
-        self.btn_choose.setEnabled(False)
+        self.btn_browse.setEnabled(False)
         self.btn_import.setEnabled(False)
 
         def _read_file():
@@ -127,7 +130,7 @@ class ImportDialog(QDialog):
         self._read_worker.start()
 
     def _on_file_loaded(self, res):
-        self.btn_choose.setEnabled(True)
+        self.btn_browse.setEnabled(True)
         items, warnings = res
         self.imported_items = items
         self.lbl_count.setText(f"Topilgan yozuvlar: {len(items)} ta")
@@ -148,7 +151,7 @@ class ImportDialog(QDialog):
             self.table_preview.setUpdatesEnabled(True)
 
     def _on_file_read_error(self, err_msg: str):
-        self.btn_choose.setEnabled(True)
+        self.btn_browse.setEnabled(True)
         self.btn_import.setEnabled(False)
         self.lbl_count.setText("❌ Faylni o'qishda xatolik yuz berdi")
         QMessageBox.critical(self, "Xatolik", f"Faylni o'qishda xatolik yuz berdi:\n{err_msg}")

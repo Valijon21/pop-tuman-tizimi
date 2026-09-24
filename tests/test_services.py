@@ -60,6 +60,19 @@ class TestServices(unittest.TestCase):
         self.assertIsInstance(img, Image.Image)
         self.assertEqual(img.size, (200, 200))
 
+    def test_vcard_qr_service(self):
+        from services.qr_service import generate_vcard_data, generate_vcard_qr_image
+        vcard = generate_vcard_data(name="Karimov Sardor", phone="901234567", org="Chorkesar MFY", title="Rais", inn="301234567")
+        self.assertIn("BEGIN:VCARD", vcard)
+        self.assertIn("FN:Karimov Sardor", vcard)
+        self.assertIn("ORG:Chorkesar MFY", vcard)
+        self.assertIn("TITLE:Rais", vcard)
+        self.assertIn("END:VCARD", vcard)
+
+        img = generate_vcard_qr_image(name="Karimov Sardor", phone="901234567", org="Chorkesar MFY", title="Rais", inn="301234567", size=220)
+        self.assertIsInstance(img, Image.Image)
+        self.assertEqual(img.size, (220, 220))
+
     def test_excel_export(self):
         with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as tmp:
             tmp_path = tmp.name
@@ -162,9 +175,25 @@ class TestServices(unittest.TestCase):
         bot2 = TelegramBotService("dummy_token_456", MockDM())
         self.assertEqual(bot2.token, "dummy_token_456")
 
-        # Test find first
+        # Test command parsing
+        self.assertEqual(TelegramBotService.parse_command("/verif_202701426"), ("/verif", "202701426"))
+        self.assertEqual(TelegramBotService.parse_command("/cabinet_202701426"), ("/cabinet", "202701426"))
+        self.assertEqual(TelegramBotService.parse_command("/verif 202701426"), ("/verif", "202701426"))
+        self.assertEqual(TelegramBotService.parse_command("/verif_202701426@PopTumanBot"), ("/verif", "202701426"))
+
+        # Test find first with INN, command string, and Name
         found = bot1._find_first("203599806")
         self.assertIsNotNone(found)
+        self.assertEqual(found["m"], "Chorkesar MFY")
+
+        found_by_cmd = bot1._find_first("/verif_203599806")
+        self.assertIsNotNone(found_by_cmd)
+        self.assertEqual(found_by_cmd["m"], "Chorkesar MFY")
+
+        found_by_name = bot1._find_first("Chorkesar")
+        self.assertIsNotNone(found_by_name)
+        self.assertEqual(found_by_name["inn"], "203599806")
+
     def test_gsheet_service_helpers(self):
         from services.gsheet_service import extract_sheet_id, is_service_account_available
         # URL orqali ID ajratib olish

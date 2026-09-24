@@ -145,13 +145,13 @@ class OrgEditDialog(QDialog):
         btn_layout.setSpacing(8)
 
         self.btn_cancel = QPushButton("Bekor Qilish")
-        close_bg = "#e2e8f0" if is_light else "#334155"
-        close_fg = "#334155" if is_light else "#f8fafc"
-        self.btn_cancel.setStyleSheet(f"background: {close_bg}; color: {close_fg}; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;")
+        self.btn_cancel.setProperty("class", "btn_secondary")
+        self.btn_cancel.setCursor(Qt.PointingHandCursor)
         self.btn_cancel.clicked.connect(self.reject)
 
         self.btn_save = QPushButton("💾 Saqlash")
-        self.btn_save.setStyleSheet("background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #2563eb, stop:1 #3b82f6); color: white; font-weight: 700; padding: 6px 18px; border-radius: 6px; font-size: 11.5px;")
+        self.btn_save.setProperty("class", "btn_primary")
+        self.btn_save.setCursor(Qt.PointingHandCursor)
         self.btn_save.clicked.connect(self.save)
 
         btn_layout.addStretch()

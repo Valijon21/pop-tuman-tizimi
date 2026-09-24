@@ -80,20 +80,8 @@ class BroadcastView(QDialog):
         lbl_msg.setStyleSheet(f"font-size: 11px; font-weight: 600; color: {'#334155' if is_light else '#cbd5e1'};")
         main_layout.addWidget(lbl_msg)
 
-        msg_bg = "#ffffff" if is_light else "#1e293b"
-        msg_fg = "#0f172a" if is_light else "#f8fafc"
-        msg_border = "#cbd5e1" if is_light else "#334155"
-
         self.txt_message = QTextEdit()
         self.txt_message.setPlaceholderText("Xabar matnini kiriting...")
-        self.txt_message.setStyleSheet(f"""
-            font-size: 11.5px;
-            background-color: {msg_bg};
-            color: {msg_fg};
-            border: 1px solid {msg_border};
-            border-radius: 6px;
-            padding: 6px;
-        """)
         self.txt_message.setMaximumHeight(70)
         self.txt_message.setPlainText(SMS_TEMPLATES.get(self.combo_template.currentText(), ""))
         main_layout.addWidget(self.txt_message)
@@ -110,6 +98,10 @@ class BroadcastView(QDialog):
         self.table_recipients.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
         self.table_recipients.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
         self.table_recipients.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        self.table_recipients.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table_recipients.setAlternatingRowColors(True)
+        self.table_recipients.setSelectionBehavior(QTableWidget.SelectRows)
+        self.table_recipients.verticalHeader().setVisible(False)
         main_layout.addWidget(self.table_recipients, 1)
 
         # Yuborish kanallari va tugmalar
@@ -126,14 +118,14 @@ class BroadcastView(QDialog):
         footer.addStretch()
 
         self.btn_send = QPushButton("🚀 Xabarnomani Yuborish")
-        self.btn_send.setStyleSheet("""
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0284c7, stop:1 #38bdf8);
-            color: white; font-weight: 700; padding: 10px 22px; border-radius: 8px; font-size: 13px;
-        """)
+        self.btn_send.setProperty("class", "btn_primary")
+        self.btn_send.setCursor(Qt.PointingHandCursor)
         self.btn_send.clicked.connect(self.send_broadcast)
         footer.addWidget(self.btn_send)
 
         self.btn_close = QPushButton("Yopish")
+        self.btn_close.setProperty("class", "btn_secondary")
+        self.btn_close.setCursor(Qt.PointingHandCursor)
         self.btn_close.clicked.connect(self.accept)
         footer.addWidget(self.btn_close)
 

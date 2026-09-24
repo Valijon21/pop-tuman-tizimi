@@ -19,7 +19,7 @@ from ui_qt.views.cabinet_dialog import open_cabinet_dialog, copy_cabinet_quick
 from ui_qt.views.verification_dialog import open_verification_dialog, copy_verification_quick
 from services.search_service import SearchService
 from services.excel_service import export_organizations_to_excel
-from services.qr_service import generate_phone_qr_image
+from ui_qt.views.qr_dialog import open_qr_dialog
 from core.logger import logger
 from core.threading_utils import WorkerThread
 
@@ -46,6 +46,21 @@ class TableView(QWidget):
         main_layout.setContentsMargins(14, 10, 14, 10)
         main_layout.setSpacing(8)
 
+        # 0. HEADER (Sarlavha va Subtitr)
+        is_light = (self.current_theme == "light")
+        head_layout = QHBoxLayout()
+        title_box = QVBoxLayout()
+        title_box.setSpacing(2)
+        self.lbl_title = QLabel("🏢 Tashkilotlar Ro'yxati va Boshqaruvi")
+        self.lbl_title.setStyleSheet("font-size: 15px; font-weight: 800; color: #0284c7;" if is_light else "font-size: 15px; font-weight: 800; color: #38bdf8;")
+        self.lbl_subtitle = QLabel("Pop tumani barcha davlat va nodavlat tashkilotlari, rahbarlar, INN va aloqalar reyestri")
+        self.lbl_subtitle.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
+        title_box.addWidget(self.lbl_title)
+        title_box.addWidget(self.lbl_subtitle)
+        head_layout.addLayout(title_box)
+        head_layout.addStretch()
+        main_layout.addLayout(head_layout)
+
         # 1. ASBOBLAR PANELI (TOOLBAR)
         toolbar = QHBoxLayout()
         toolbar.setSpacing(6)
@@ -70,33 +85,28 @@ class TableView(QWidget):
         self.btn_clear.clicked.connect(lambda: self.edit_search.clear())
         toolbar.addWidget(self.btn_clear)
 
-        # Amallar tugmalari (Ixcham va tartibli)
-        def add_tool_btn(txt, cmd, bg_color, min_w=70):
+        # Amallar tugmalari (Ixcham, tartibli va professional Senior uslubi)
+        def add_tool_btn(txt, cmd, css_class="btn_secondary", min_w=65):
             btn = QPushButton(txt)
-            btn.setStyleSheet(f"""
-                QPushButton {{
-                    background-color: {bg_color};
-                    color: white;
-                    font-weight: 700;
-                    padding: 5px 9px;
-                    border-radius: 6px;
-                    min-width: {min_w}px;
-                    font-size: 11.5px;
-                }}
-            """)
+            btn.setProperty("class", css_class)
+            btn.setCursor(Qt.PointingHandCursor)
+            btn.setMinimumWidth(min_w)
             btn.clicked.connect(cmd)
             toolbar.addWidget(btn)
             return btn
 
-        add_tool_btn("➕ Qo'shish", self.open_add_dialog, "#16a34a", 72)
-        add_tool_btn("✏ Tahrir", self.open_edit_dialog, "#f59e0b", 62)
-        add_tool_btn("🔑 Kabinet", self.open_cabinet, "#d97706", 68)
-        add_tool_btn("🛡 Verifikatsiya", self.open_verification, "#0284c7", 82)
-        add_tool_btn("📊 Excel", self.export_excel, "#059669", 60)
+        self.btn_add = add_tool_btn("➕ Qo'shish", self.open_add_dialog, "btn_primary", 76)
+        self.btn_edit = add_tool_btn("✏ Tahrir", self.open_edit_dialog, "btn_warning", 66)
+        self.btn_cabinet = add_tool_btn("🔑 Kabinet", self.open_cabinet, "btn_secondary", 70)
+        self.btn_verif = add_tool_btn("🛡 Verifikatsiya", self.open_verification, "btn_info", 86)
+        self.btn_qr = add_tool_btn("📱 QR Kod", self.open_qr, "btn_purple", 74)
+        self.btn_excel = add_tool_btn("📊 Excel", self.export_excel, "btn_success", 66)
 
         # Qo'shimcha amallar menyu tugmasi
         self.btn_more = QPushButton("⚡ Boshqa ▾")
         self.btn_more.setObjectName("btn_more_actions")
+        self.btn_more.setProperty("class", "btn_secondary")
+        self.btn_more.setCursor(Qt.PointingHandCursor)
         more_menu = QMenu(self)
         act_yettilik = more_menu.addAction("🏘 Mahalla 'Yettiligi' (360° Pasport)")
         act_yettilik.triggered.connect(self.open_yettilik)
@@ -192,30 +202,19 @@ class TableView(QWidget):
         self.current_theme = theme
         is_light = (theme == "light")
 
+        if hasattr(self, "lbl_title"):
+            self.lbl_title.setStyleSheet(f"font-size: 15px; font-weight: 800; color: {'#0284c7' if is_light else '#38bdf8'};")
+        if hasattr(self, "lbl_subtitle"):
+            self.lbl_subtitle.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
+
         # Clear button
         if is_light:
-            self.btn_clear.setStyleSheet("background: #e2e8f0; color: #475569; font-weight: bold; border-radius: 6px; padding: 0px;")
+            self.btn_clear.setStyleSheet("background: #e2e8f0; color: #475569; font-weight: bold; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0px;")
+            self.lbl_count.setStyleSheet("font-size: 12px; font-weight: 700; color: #475569;")
+            self.lbl_hint.setStyleSheet("font-size: 11px; color: #64748b;")
         else:
-            self.btn_clear.setStyleSheet("background: #334155; color: #94a3b8; font-weight: bold; border-radius: 6px; padding: 0px;")
-
-        # Boshqa tugmasi
-        if is_light:
-            self.btn_more.setStyleSheet("""
-                QPushButton { background-color: #e2e8f0; color: #0f172a; font-weight: 700; padding: 5px 9px; border-radius: 6px; min-width: 70px; font-size: 11.5px; }
-                QPushButton:hover { background-color: #cbd5e1; }
-            """)
-        else:
-            self.btn_more.setStyleSheet("""
-                QPushButton { background-color: #334155; color: #f8fafc; font-weight: 700; padding: 5px 9px; border-radius: 6px; min-width: 70px; font-size: 11.5px; }
-                QPushButton:hover { background-color: #475569; }
-            """)
-
-        # Footer yozuvlari
-        if is_light:
-            self.lbl_count.setStyleSheet("font-size: 13px; font-weight: 700; color: #475569;")
-            self.lbl_hint.setStyleSheet("font-size: 11px; color: #94a3b8;")
-        else:
-            self.lbl_count.setStyleSheet("font-size: 13px; font-weight: 700; color: #94a3b8;")
+            self.btn_clear.setStyleSheet("background: #334155; color: #cbd5e1; font-weight: bold; border: 1px solid #475569; border-radius: 6px; padding: 0px;")
+            self.lbl_count.setStyleSheet("font-size: 12px; font-weight: 700; color: #94a3b8;")
             self.lbl_hint.setStyleSheet("font-size: 11px; color: #64748b;")
 
         # Category pills
@@ -227,16 +226,8 @@ class TableView(QWidget):
 
     def update_pill_selection(self, selected_cat: str):
         self.current_category = selected_cat
-        is_light = (self.current_theme == "light")
         for cat, btn in self.pill_buttons.items():
             btn.setChecked(cat == selected_cat)
-            if cat == selected_cat:
-                btn.setStyleSheet("background-color: #2563eb; color: white; font-weight: 700; border-radius: 14px; padding: 6px 16px;")
-            else:
-                if is_light:
-                    btn.setStyleSheet("background-color: #f1f5f9; color: #475569; font-weight: 600; border: 1px solid #e2e8f0; border-radius: 14px; padding: 6px 16px;")
-                else:
-                    btn.setStyleSheet("background-color: #1e293b; color: #94a3b8; font-weight: 600; border: 1px solid #334155; border-radius: 14px; padding: 6px 16px;")
 
     def on_category_clicked(self, cat: str):
         self.update_pill_selection(cat)
@@ -323,6 +314,14 @@ class TableView(QWidget):
         item = self.get_selected_item()
         open_verification_dialog(self.app, item)
 
+    def open_qr(self, item: Optional[Dict[str, Any]] = None):
+        if not item:
+            item = self.get_selected_item()
+        if not item:
+            QMessageBox.information(self, "Ma'lumot", "QR-kod yaratish uchun jadvaldan tashkilotni tanlang.")
+            return
+        open_qr_dialog(self.app, item=item)
+
     def open_yettilik(self):
         item = self.get_selected_item()
         mahalla_name = item.get("m") if item else None
@@ -401,6 +400,9 @@ class TableView(QWidget):
 
         act_broadcast = menu.addAction("📢 Ommaviy Xabarnoma")
         act_broadcast.triggered.connect(self.app.open_broadcast)
+
+        act_qr = menu.addAction("📱 QR Kod (Telefon & Kontakt)")
+        act_qr.triggered.connect(lambda: self.open_qr(item))
 
         menu.addSeparator()
 

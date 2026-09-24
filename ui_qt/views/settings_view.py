@@ -35,11 +35,11 @@ class SettingsView(QWidget):
         # Header
         head = QVBoxLayout()
         head.setSpacing(2)
-        title = QLabel("⚙ Tizim Sozlamalari")
-        title.setStyleSheet("font-size: 15px; font-weight: 800; color: #38bdf8;")
+        self.title_lbl = QLabel("⚙ Tizim Sozlamalari")
+        self.title_lbl.setStyleSheet("font-size: 15px; font-weight: 800; color: #38bdf8;")
         self.sub_lbl = QLabel("Xavfsizlik, SQLite ma'lumotlar bazasi zaxirasi va Telegram Bot sozlamalari")
         self.sub_lbl.setStyleSheet("font-size: 11px; color: #94a3b8;")
-        head.addWidget(title)
+        head.addWidget(self.title_lbl)
         head.addWidget(self.sub_lbl)
         main_layout.addLayout(head)
 
@@ -54,9 +54,9 @@ class SettingsView(QWidget):
         c_layout.setSpacing(12)
 
         # 1. SQLITE BAZA VA ZAXIRA
-        grp_db = QGroupBox("💾 SQLite Ma'lumotlar Bazasi va Zaxira")
-        grp_db.setStyleSheet("QGroupBox { font-size: 14px; font-weight: 700; color: #10b981; }")
-        db_layout = QVBoxLayout(grp_db)
+        self.grp_db = QGroupBox("💾 SQLite Ma'lumotlar Bazasi va Zaxira")
+        self.grp_db.setStyleSheet("QGroupBox { font-size: 14px; font-weight: 700; color: #10b981; }")
+        db_layout = QVBoxLayout(self.grp_db)
         db_layout.setSpacing(12)
 
         self.lbl_db_info = QLabel("Baza joylashuvi: mahalla_tizimi.db")
@@ -65,30 +65,24 @@ class SettingsView(QWidget):
 
         db_btns = QHBoxLayout()
         btn_backup = QPushButton("📦 Zaxira Nusxa Yaratish (Backup)")
-        btn_backup.setStyleSheet("""
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #059669, stop:1 #10b981);
-            color: white; font-weight: 700; padding: 10px 18px; border-radius: 8px;
-        """)
+        btn_backup.setProperty("class", "btn_success")
         btn_backup.clicked.connect(self.create_backup)
         db_btns.addWidget(btn_backup)
 
         btn_restore_db = QPushButton("🔄 Zaxiradan Tiklash (Restore)")
         btn_restore_db.setObjectName("btn_restore_db")
-        btn_restore_db.setStyleSheet("""
-            background: #334155; color: #cbd5e1; font-weight: 700; padding: 10px 18px; border-radius: 8px;
-        """)
+        btn_restore_db.setProperty("class", "btn_secondary")
         btn_restore_db.clicked.connect(self.restore_backup)
         self.btn_restore_db = btn_restore_db
         db_btns.addWidget(btn_restore_db)
         db_btns.addStretch()
 
         db_layout.addLayout(db_btns)
-        c_layout.addWidget(grp_db)
+        c_layout.addWidget(self.grp_db)
 
         # 2. GOOGLE SHEETS BULUTLI SINXRONIZATSIYA
-        grp_gsheet = QGroupBox("☁ Google Sheets Bulutli Sinxronizatsiya")
-        grp_gsheet.setStyleSheet("QGroupBox { font-size: 14px; font-weight: 700; color: #10b981; }")
-        gsheet_layout = QVBoxLayout(grp_gsheet)
+        self.grp_gsheet = QGroupBox("☁ Google Sheets Bulutli Sinxronizatsiya")
+        gsheet_layout = QVBoxLayout(self.grp_gsheet)
         gsheet_layout.setSpacing(10)
 
         gsheet_grid = QGridLayout()
@@ -101,12 +95,12 @@ class SettingsView(QWidget):
 
         gsheet_btns = QHBoxLayout()
         self.btn_gsheet_upload = QPushButton("☁ Bulutga Yuklash (Upload)")
-        self.btn_gsheet_upload.setStyleSheet("background: #10b981; color: white; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
+        self.btn_gsheet_upload.setProperty("class", "btn_success")
         self.btn_gsheet_upload.clicked.connect(self.upload_to_google_sheet)
         gsheet_btns.addWidget(self.btn_gsheet_upload)
 
         self.btn_gsheet_download = QPushButton("📥 Bulutdan Yuklab Olish (Download)")
-        self.btn_gsheet_download.setStyleSheet("background: #0284c7; color: white; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
+        self.btn_gsheet_download.setProperty("class", "btn_primary")
         self.btn_gsheet_download.clicked.connect(self.download_from_google_sheet)
         gsheet_btns.addWidget(self.btn_gsheet_download)
 
@@ -116,12 +110,11 @@ class SettingsView(QWidget):
         gsheet_btns.addStretch()
 
         gsheet_layout.addLayout(gsheet_btns)
-        c_layout.addWidget(grp_gsheet)
+        c_layout.addWidget(self.grp_gsheet)
 
         # 3. TELEGRAM BOT INTEGRATSIYASI
-        grp_tg = QGroupBox("✈ Telegram Bot Integratsiyasi")
-        grp_tg.setStyleSheet("QGroupBox { font-size: 14px; font-weight: 700; color: #0284c7; }")
-        tg_layout = QVBoxLayout(grp_tg)
+        self.grp_tg = QGroupBox("✈ Telegram Bot Integratsiyasi")
+        tg_layout = QVBoxLayout(self.grp_tg)
         tg_layout.setSpacing(10)
 
         tg_grid = QGridLayout()
@@ -134,9 +127,14 @@ class SettingsView(QWidget):
 
         tg_btns = QHBoxLayout()
         btn_save_bot = QPushButton("💾 Tokenni Saqlash")
-        btn_save_bot.setStyleSheet("background: #0284c7; color: white; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
+        btn_save_bot.setProperty("class", "btn_primary")
         btn_save_bot.clicked.connect(self.save_bot_token)
         tg_btns.addWidget(btn_save_bot)
+
+        btn_restart_bot = QPushButton("🔄 Qayta Ishga Tushirish")
+        btn_restart_bot.setProperty("class", "btn_success")
+        btn_restart_bot.clicked.connect(self.restart_bot)
+        tg_btns.addWidget(btn_restart_bot)
 
         self.lbl_bot_status = QLabel("Holat: Sozlanmagan")
         self.lbl_bot_status.setStyleSheet("color: #94a3b8; font-size: 12px; font-weight: 600;")
@@ -144,12 +142,11 @@ class SettingsView(QWidget):
         tg_btns.addStretch()
 
         tg_layout.addLayout(tg_btns)
-        c_layout.addWidget(grp_tg)
+        c_layout.addWidget(self.grp_tg)
 
         # 3. XAVFSIZLIK VA PAROL
-        grp_sec = QGroupBox("🔒 Xavfsizlik va Admin Paroli")
-        grp_sec.setStyleSheet("QGroupBox { font-size: 14px; font-weight: 700; color: #ef4444; }")
-        sec_layout = QGridLayout(grp_sec)
+        self.grp_sec = QGroupBox("🔒 Xavfsizlik va Admin Paroli")
+        sec_layout = QGridLayout(self.grp_sec)
         sec_layout.setSpacing(10)
 
         sec_layout.addWidget(QLabel("Yangi Admin Paroli:"), 0, 0)
@@ -159,16 +156,16 @@ class SettingsView(QWidget):
         sec_layout.addWidget(self.edit_new_pass, 0, 1)
 
         btn_pass = QPushButton("🔑 Parolni Yangilash")
-        btn_pass.setStyleSheet("background: #dc2626; color: white; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
+        btn_pass.setProperty("class", "btn_danger")
         btn_pass.clicked.connect(self.update_password)
         sec_layout.addWidget(btn_pass, 0, 2)
 
-        c_layout.addWidget(grp_sec)
+        c_layout.addWidget(self.grp_sec)
 
         # 4. KO'RINISH VA SHRIFT
-        grp_ui = QGroupBox("🎨 Interfeys Sozlamalari")
-        grp_ui.setStyleSheet("QGroupBox { font-size: 14px; font-weight: 700; color: #f59e0b; }")
-        ui_layout = QHBoxLayout(grp_ui)
+        self.grp_ui = QGroupBox("🎨 Interfeys Sozlamalari")
+        self.grp_ui.setStyleSheet("QGroupBox { font-size: 14px; font-weight: 700; color: #f59e0b; }")
+        ui_layout = QHBoxLayout(self.grp_ui)
 
         ui_layout.addWidget(QLabel("Mavzu:"))
         self.combo_theme = QComboBox()
@@ -179,13 +176,13 @@ class SettingsView(QWidget):
         ui_layout.addSpacing(20)
         ui_layout.addWidget(QLabel("Shrift O'lchami:"))
         self.spin_font = QSpinBox()
-        self.spin_font.setRange(11, 22)
-        self.spin_font.setValue(13)
+        self.spin_font.setRange(10, 18)
+        self.spin_font.setValue(12)
         self.spin_font.valueChanged.connect(self.on_font_changed)
         ui_layout.addWidget(self.spin_font)
 
         ui_layout.addStretch()
-        c_layout.addWidget(grp_ui)
+        c_layout.addWidget(self.grp_ui)
 
         c_layout.addStretch()
         scroll.setWidget(container)
@@ -194,13 +191,15 @@ class SettingsView(QWidget):
     def set_theme(self, theme: str):
         """Sozlamalar sahifasidagi inline stillarni mavzuga moslashtirish."""
         is_light = (theme == "light")
+
+        # Sarlavha rangi
+        self.title_lbl.setStyleSheet(
+            f"font-size: 15px; font-weight: 800; color: {'#0284c7' if is_light else '#38bdf8'};"
+        )
         self.sub_lbl.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
         self.lbl_db_info.setStyleSheet(f"color: {'#64748b' if is_light else '#94a3b8'}; font-size: 12px;")
         self.lbl_bot_status.setStyleSheet(f"color: {'#64748b' if is_light else '#94a3b8'}; font-size: 12px; font-weight: 600;")
-        if is_light:
-            self.btn_restore_db.setStyleSheet("background: #e2e8f0; color: #334155; font-weight: 700; padding: 10px 18px; border-radius: 8px;")
-        else:
-            self.btn_restore_db.setStyleSheet("background: #334155; color: #cbd5e1; font-weight: 700; padding: 10px 18px; border-radius: 8px;")
+        self.lbl_gsheet_status.setStyleSheet(f"color: {'#64748b' if is_light else '#94a3b8'}; font-size: 12px; font-weight: 600;")
 
         if hasattr(self, "combo_theme"):
             self.combo_theme.blockSignals(True)
@@ -213,12 +212,20 @@ class SettingsView(QWidget):
             return
 
         settings = self.app.data_manager.settings
-        # Bot token
+        # Bot token va holati
         token = settings.get("telegram_bot_token", "")
         self.edit_bot_token.setText(token)
+        bot_running = bool(getattr(self.app, "bot_service", None) and self.app.bot_service.running)
         if token:
-            self.lbl_bot_status.setText("Holat: Token sozlangan 🟢")
-            self.lbl_bot_status.setStyleSheet("color: #10b981; font-weight: 700;")
+            if bot_running:
+                self.lbl_bot_status.setText("Holat: Bot faol (Fonda ishlamoqda) 🟢")
+                self.lbl_bot_status.setStyleSheet("color: #10b981; font-weight: 700;")
+            else:
+                self.lbl_bot_status.setText("Holat: Token bor, lekin bot to'xtatilgan 🟡")
+                self.lbl_bot_status.setStyleSheet("color: #f59e0b; font-weight: 700;")
+        else:
+            self.lbl_bot_status.setText("Holat: Token kiritilmagan ⚪")
+            self.lbl_bot_status.setStyleSheet("color: #94a3b8; font-size: 12px; font-weight: 600;")
 
         # Google Sheets sozlamalari
         sheet_name = settings.get("google_sheet_name", "")
@@ -234,7 +241,9 @@ class SettingsView(QWidget):
 
         # Shrift
         font_size = settings.get("font_size", 13)
+        self.spin_font.blockSignals(True)
         self.spin_font.setValue(font_size)
+        self.spin_font.blockSignals(False)
 
         # SQLite hajmi
         db_path = getattr(self.app.data_manager.sqlite, "db_path", "mahalla_tizimi.db")
@@ -283,9 +292,26 @@ class SettingsView(QWidget):
         token = self.edit_bot_token.text().strip()
         self.app.data_manager.settings["telegram_bot_token"] = token
         self.app.data_manager.save_settings()
-        self.lbl_bot_status.setText("Holat: Token saqlandi 🟢" if token else "Holat: Token o'chirildi ⚪")
+
+        # Botni yangi token bilan yangilash
+        if hasattr(self.app, "stop_background_bot"):
+            self.app.stop_background_bot()
+        if token and hasattr(self.app, "start_background_bot"):
+            self.app.start_background_bot()
+
+        self.load_settings()
         if hasattr(self.app, "show_toast"):
-            self.app.show_toast("Telegram token saqlandi!", "success")
+            self.app.show_toast("Telegram token saqlandi va bot yangilandi!", "success")
+
+    def restart_bot(self):
+        """Telegram botni qo'lda qayta ishga tushirish."""
+        if hasattr(self.app, "stop_background_bot"):
+            self.app.stop_background_bot()
+        if hasattr(self.app, "start_background_bot"):
+            self.app.start_background_bot()
+        self.load_settings()
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast("Telegram bot qayta ishga tushirildi! 🔄", "success")
 
     def update_password(self):
         new_pwd = self.edit_new_pass.text().strip()
@@ -309,6 +335,8 @@ class SettingsView(QWidget):
         if self.app and hasattr(self.app, "data_manager"):
             self.app.data_manager.settings["font_size"] = val
             self.app.data_manager.save_settings()
+        if self.app and hasattr(self.app, "update_font_size"):
+            self.app.update_font_size(val)
 
     def upload_to_google_sheet(self):
         sheet_name = self.edit_sheet_id.text().strip()

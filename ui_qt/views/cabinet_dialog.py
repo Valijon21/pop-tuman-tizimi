@@ -13,6 +13,7 @@ from PyQt5.QtCore import Qt
 from services.cabinet_service import build_cabinet_access_text
 from ui_qt.styles import get_stylesheet
 from core.logger import logger
+from core.threading_utils import WorkerThread
 
 class CabinetDialog(QDialog):
     """Kabinetga dostup shablon oynasi."""
@@ -92,29 +93,18 @@ class CabinetDialog(QDialog):
         btn_layout.setSpacing(8)
 
         self.btn_copy = QPushButton("📋 Nusxalash")
-        self.btn_copy.setStyleSheet("""
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #d97706, stop:1 #f59e0b);
-                color: white; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;
-            }
-            QPushButton:hover { background-color: #b45309; }
-        """)
+        self.btn_copy.setProperty("class", "btn_primary")
+        self.btn_copy.setCursor(Qt.PointingHandCursor)
         self.btn_copy.clicked.connect(self.copy_to_clipboard)
 
         self.btn_telegram = QPushButton("✈ Telegramga Yuborish")
-        self.btn_telegram.setStyleSheet("""
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0284c7, stop:1 #38bdf8);
-                color: white; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;
-            }
-            QPushButton:hover { background-color: #0369a1; }
-        """)
+        self.btn_telegram.setProperty("class", "btn_info")
+        self.btn_telegram.setCursor(Qt.PointingHandCursor)
         self.btn_telegram.clicked.connect(self.send_to_telegram)
 
         self.btn_close = QPushButton("Yopish")
-        close_bg = "#e2e8f0" if is_light else "#334155"
-        close_fg = "#334155" if is_light else "#f8fafc"
-        self.btn_close.setStyleSheet(f"background: {close_bg}; color: {close_fg}; font-weight: 700; padding: 6px 14px; border-radius: 6px; font-size: 11.5px;")
+        self.btn_close.setProperty("class", "btn_secondary")
+        self.btn_close.setCursor(Qt.PointingHandCursor)
         self.btn_close.clicked.connect(self.accept)
 
         btn_layout.addWidget(self.btn_copy)
@@ -156,24 +146,47 @@ class CabinetDialog(QDialog):
         if not text.strip():
             return
 
-        try:
+        self.btn_telegram.setEnabled(False)
+        self.btn_telegram.setText("⏳ Yuborilmoqda...")
+
+        def _task():
             from services.telegram_bot import TelegramBotService
             token = ""
             if self.app and hasattr(self.app, "data_manager"):
                 token = self.app.data_manager.settings.get("telegram_bot_token", "")
-            if token:
-                dm = getattr(self.app, "data_manager", None)
-                bot = TelegramBotService(dm, token)
-                res = bot.broadcast_message(text)
-                sent = res.get("sent", 0)
-                if sent > 0:
-                    QMessageBox.information(self, "Telegram", f"Xabar {sent} ta Telegram bot obunachisiga yuborildi! ✈")
-                else:
-                    QMessageBox.warning(self, "Telegram", "Bot obunachilari mavjud emas. Avval botga /start bosing.")
-            else:
-                QMessageBox.information(self, "Telegram", "Telegram bot tokeni sozlanmagan. Sozlamalar menyusida botni ulang.")
-        except Exception as e:
-            QMessageBox.critical(self, "Xatolik", f"Telegram yuborishda xatolik: {e}")
+            if not token:
+                return {"error": "token_missing"}
+            
+            dm = getattr(self.app, "data_manager", None)
+            bot = TelegramBotService(dm, token)
+            return bot.broadcast_message(text)
+
+        self._worker = WorkerThread(_task, parent=self)
+        self._worker.result_ready.connect(self._on_telegram_done)
+        self._worker.error_occurred.connect(self._on_telegram_err)
+        self._worker.start()
+
+    def _on_telegram_done(self, res: Any):
+        self.btn_telegram.setEnabled(True)
+        self.btn_telegram.setText("✈ Telegramga Yuborish")
+        
+        if isinstance(res, dict) and res.get("error") == "token_missing":
+            QMessageBox.information(self, "Telegram", "Telegram bot tokeni sozlanmagan. Sozlamalar menyusida botni ulang.")
+            return
+
+        sent = res.get("sent", 0) if isinstance(res, dict) else 0
+        if sent > 0:
+            if hasattr(self.app, "show_toast"):
+                self.app.show_toast(f"Xabar {sent} ta obunachiga yuborildi! ✈", "success")
+            QMessageBox.information(self, "Telegram", f"Xabar {sent} ta Telegram bot obunachisiga yuborildi! ✈")
+        else:
+            QMessageBox.warning(self, "Telegram", "Bot obunachilari mavjud emas. Avval botga /start bosing.")
+
+    def _on_telegram_err(self, err_msg: str):
+        self.btn_telegram.setEnabled(True)
+        self.btn_telegram.setText("✈ Telegramga Yuborish")
+        logger.error(f"[TELEGRAM] Yuborishda xatolik: {err_msg}")
+        QMessageBox.critical(self, "Xatolik", f"Telegram yuborishda xatolik:\n{err_msg}")
 
 def copy_cabinet_quick(app: Any, item: Optional[Dict[str, Any]] = None) -> None:
     """Oynani ochmasdan tezkor nusxalash."""

@@ -66,6 +66,8 @@ class TestQtArchitecture(unittest.TestCase):
         from ui_qt.views.settings_view import SettingsView
         from ui_qt.views.dashboard_view import DashboardView
         from ui_qt.views.table_view import TableView
+        from ui_qt.views.contract_add_dialog import ContractAddDialog
+        from ui_qt.views.qr_dialog import QRDialog
         from ui_qt.app_window import MainWindow
 
         self.assertIsNotNone(OrgEditDialog)
@@ -80,6 +82,8 @@ class TestQtArchitecture(unittest.TestCase):
         self.assertIsNotNone(SettingsView)
         self.assertIsNotNone(DashboardView)
         self.assertIsNotNone(TableView)
+        self.assertIsNotNone(ContractAddDialog)
+        self.assertIsNotNone(QRDialog)
         self.assertIsNotNone(MainWindow)
 
     def test_cabinet_quick_copy(self):
@@ -210,6 +214,55 @@ class TestQtArchitecture(unittest.TestCase):
 
         win.close()
 
+    def test_dashboard_stat_cards_layout_and_styling(self):
+        """Dashboard statistika kartalari balandligi, ikonka o'lchamlari va ranglari to'g'ri ekanligini tekshirish."""
+        from ui_qt.views.dashboard_view import DashboardView
+        from PyQt5.QtWidgets import QLabel
+
+        class MockApp:
+            current_theme = "dark"
+            data = [
+                {"s": "Mahalla (MFY)", "m": "Chorkesar MFY", "f": "Yondashev X.", "t": "+998901234567", "inn": "203599806"},
+                {"s": "Maktab", "m": "22-sonli Maktab", "f": "Dehqanova A.", "t": "+998912345678", "inn": "206907205"},
+                {"s": "Bog'cha (MTT)", "m": "1-MTT", "f": "Karimova", "t": "+998901112233", "inn": "201111222"},
+                {"s": "Tibbiyot", "m": "1-Shifoxona", "f": "Aliyev", "t": "+998902223344", "inn": "203333444"},
+                {"s": "Boshqa", "m": "Kutubxona", "f": "Valiyev", "t": "+998903334455", "inn": "205555666"},
+            ]
+            def filter_by_category(self, cat): pass
+
+        mock_app = MockApp()
+        view = DashboardView(app=mock_app)
+
+        # 6 ta karta mavjudligini tekshirish
+        self.assertEqual(view.cards_grid.count(), 6)
+
+        # Har bir kartaning balandligi va ichki ikonkasini tekshirish
+        for i in range(view.cards_grid.count()):
+            card = view.cards_grid.itemAt(i).widget()
+            self.assertIsNotNone(card)
+            self.assertGreaterEqual(card.minimumHeight(), 85)
+
+            # Ikonkani topish (o'ng yuqoridagi 30x30 squircle)
+            labels = card.findChildren(QLabel)
+            icon_lbl = next(l for l in labels if l.width() == 30 and l.height() == 30)
+            self.assertIsNotNone(icon_lbl)
+            self.assertEqual(icon_lbl.width(), 30)
+            self.assertEqual(icon_lbl.height(), 30)
+            # Rang formati rgba bo'lishi kerak, noto'g'ri #hex22 emas
+            self.assertIn("rgba(", icon_lbl.styleSheet())
+            self.assertNotIn("22;", icon_lbl.styleSheet())
+
+        # Light mavzuga o'tkazganda ham to'g'ri ishlashi
+        view.set_theme("light")
+        self.assertEqual(view.cards_grid.count(), 6)
+        card_light = view.cards_grid.itemAt(0).widget()
+        self.assertGreaterEqual(card_light.minimumHeight(), 85)
+        labels_light = card_light.findChildren(QLabel)
+        icon_light = next(l for l in labels_light if l.width() == 30 and l.height() == 30)
+        self.assertEqual(icon_light.width(), 30)
+        self.assertIn("rgba(", icon_light.styleSheet())
+        self.assertNotIn("22;", icon_light.styleSheet())
+
     def test_dialogs_light_theme(self):
         """Barcha dialoglar Light rejimida to'g'ri ochilishi va stillari o'rnatilishini tekshirish."""
         from ui_qt.views.mahalla_passport_view import MahallaPassportView
@@ -301,5 +354,57 @@ class TestQtArchitecture(unittest.TestCase):
 
         win.close()
 
+    def test_qr_dialog_view(self):
+        """QR kod oynasi (Tel va vCard rejimlarida) to'g'ri yaratilishini tekshirish."""
+        from ui_qt.views.qr_dialog import QRDialog
+        sample_item = {
+            "m": "Chorkesar MFY",
+            "f": "Karimov Sardor",
+            "s": "Mahalla Raisi",
+            "t": "+998901234567",
+            "inn": "301234567"
+        }
+        dlg = QRDialog(phone="+998901234567", item=sample_item)
+        self.assertEqual(dlg.current_mode, "tel")
+        self.assertIsNotNone(dlg.current_pil_img)
+        self.assertIsNotNone(dlg.lbl_qr_image.pixmap())
+
+        # vCard rejimiga o'tkazish
+        dlg.rad_vcard.setChecked(True)
+        self.assertEqual(dlg.current_mode, "vcard")
+        self.assertIsNotNone(dlg.current_pil_img)
+
+        dlg.close()
+
+    def test_contract_add_dialog(self):
+        """Shartnoma qo'shish/tahrirlash dialogi yaratilishi va ma'lumot yuklanishini tekshirish."""
+        from ui_qt.views.contract_add_dialog import ContractAddDialog
+        # 1. Yangi qo'shish rejimi
+        dlg_add = ContractAddDialog()
+        self.assertIsNotNone(dlg_add)
+        self.assertFalse(dlg_add.is_edit)
+        dlg_add.close()
+
+        # 2. Tahrirlash rejimi
+        sample_contract = {
+            "id": 999,
+            "organization_name": "Test Tashkilot",
+            "inn": "123456789",
+            "contract_number": "SH-2024/01",
+            "apparat_count": 5,
+            "connected_count": 3,
+            "accountant_phone": "+998901234567",
+            "notes": "Test shartnoma"
+        }
+        dlg_edit = ContractAddDialog(item=sample_contract)
+        self.assertIsNotNone(dlg_edit)
+        self.assertTrue(dlg_edit.is_edit)
+        self.assertEqual(dlg_edit.edit_inn.text(), "123456789")
+        self.assertEqual(dlg_edit.edit_name.text(), "Test Tashkilot")
+        self.assertEqual(dlg_edit.spin_aparat.value(), 5)
+        self.assertEqual(dlg_edit.spin_ulangan.value(), 3)
+        dlg_edit.close()
+
 if __name__ == "__main__":
     unittest.main()
+

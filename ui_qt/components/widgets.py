@@ -15,6 +15,7 @@ from PyQt5.QtGui import (
     QPainter, QColor, QPen, QBrush, QFont, QPaintEvent,
     QMouseEvent, QPainterPath
 )
+from ui_qt.styles import hex_to_rgba
 
 class ClickableCard(QFrame):
     """
@@ -60,10 +61,10 @@ class ClickableCard(QFrame):
         border = self.hover_color if is_hover else self.border_color
         bg = self.hover_bg if is_hover else self.bg_color
         self.setStyleSheet(f"""
-            QFrame.clickable_card {{
+            QFrame[class="clickable_card"] {{
                 background-color: {bg};
                 border: 1px solid {border};
-                border-radius: 8px;
+                border-radius: 10px;
             }}
         """)
 
@@ -313,7 +314,8 @@ class CategoryLegend(QWidget):
 
             # Foiz belgisi
             lbl_pct = QLabel(f"{pct:.1f}%")
-            lbl_pct.setStyleSheet(f"font-size: 10px; font-weight: 700; color: {col_hex}; background: {col_hex}15; border-radius: 4px; padding: 2px 5px;")
+            bg_tint = hex_to_rgba(col_hex, 0.12)
+            lbl_pct.setStyleSheet(f"font-size: 10px; font-weight: 700; color: {col_hex}; background-color: {bg_tint}; border-radius: 4px; padding: 2px 6px;")
             row_layout.addWidget(lbl_pct)
 
             row_card.clicked.connect(lambda c=cat_name: self.category_selected.emit(c))
@@ -366,9 +368,9 @@ class CategoryBarChart(QWidget):
 
             top_row = QHBoxLayout()
             lbl_n = QLabel(cat_name)
-            lbl_n.setStyleSheet(f"font-size: 10.5px; color: {lbl_name_color}; font-weight: 600;")
+            lbl_n.setStyleSheet(f"font-size: 11px; color: {lbl_name_color}; font-weight: 600;")
             lbl_v = QLabel(f"{count} ta")
-            lbl_v.setStyleSheet(f"font-size: 10.5px; color: {col_hex}; font-weight: 700;")
+            lbl_v.setStyleSheet(f"font-size: 11px; color: {col_hex}; font-weight: 700;")
             top_row.addWidget(lbl_n)
             top_row.addStretch()
             top_row.addWidget(lbl_v)

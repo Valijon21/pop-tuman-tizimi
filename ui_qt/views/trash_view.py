@@ -39,18 +39,14 @@ class TrashView(QWidget):
 
         # Amallar
         self.btn_restore = QPushButton("♻ Qayta Tiklash")
-        self.btn_restore.setStyleSheet("""
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #059669, stop:1 #10b981);
-            color: white; font-weight: 700; padding: 5px 12px; border-radius: 6px; font-size: 11.5px;
-        """)
+        self.btn_restore.setProperty("class", "btn_success")
+        self.btn_restore.setCursor(Qt.PointingHandCursor)
         self.btn_restore.clicked.connect(self.restore_selected)
         head.addWidget(self.btn_restore)
 
         self.btn_perm_delete = QPushButton("🗑 Butunlay O'chirish")
-        self.btn_perm_delete.setStyleSheet("""
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #dc2626, stop:1 #ef4444);
-            color: white; font-weight: 700; padding: 5px 12px; border-radius: 6px; font-size: 11.5px;
-        """)
+        self.btn_perm_delete.setProperty("class", "btn_danger")
+        self.btn_perm_delete.setCursor(Qt.PointingHandCursor)
         self.btn_perm_delete.clicked.connect(self.perm_delete_selected)
         head.addWidget(self.btn_perm_delete)
 
@@ -66,17 +62,24 @@ class TrashView(QWidget):
         self.table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeToContents)
         self.table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        self.table.setAlternatingRowColors(True)
+        self.table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.table.setSelectionMode(QTableWidget.SingleSelection)
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table.verticalHeader().setVisible(False)
         layout.addWidget(self.table, 1)
 
         # Footer
         footer = QHBoxLayout()
         self.lbl_count = QLabel("Chiqindidagi yozuvlar: 0 ta")
-        self.lbl_count.setStyleSheet("font-size: 13px; color: #94a3b8; font-weight: 600;")
+        self.lbl_count.setStyleSheet("font-size: 12px; color: #94a3b8; font-weight: 600;")
         footer.addWidget(self.lbl_count)
 
         footer.addStretch()
         self.btn_empty = QPushButton("🧹 Barcha Chiqindini Bo'shatish")
-        self.btn_empty.setStyleSheet("background: #334155; color: #ef4444; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
+        self.btn_empty.setProperty("class", "btn_secondary")
+        self.btn_empty.setCursor(Qt.PointingHandCursor)
+        self.btn_empty.setStyleSheet("color: #ef4444; font-weight: 700; padding: 6px 14px;")
         self.btn_empty.clicked.connect(self.empty_trash)
         footer.addWidget(self.btn_empty)
 
@@ -85,12 +88,9 @@ class TrashView(QWidget):
     def set_theme(self, theme: str):
         """Chiqindi qutisi sahifasini tanlangan mavzuga moslashtirish."""
         is_light = (theme == "light")
+        self.title_lbl.setStyleSheet(f"font-size: 15px; font-weight: 800; color: {'#dc2626' if is_light else '#ef4444'};")
         self.sub_lbl.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
-        self.lbl_count.setStyleSheet(f"font-size: 13px; color: {'#475569' if is_light else '#94a3b8'}; font-weight: 600;")
-        if is_light:
-            self.btn_empty.setStyleSheet("background: #e2e8f0; color: #ef4444; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
-        else:
-            self.btn_empty.setStyleSheet("background: #334155; color: #ef4444; font-weight: 700; padding: 8px 16px; border-radius: 8px;")
+        self.lbl_count.setStyleSheet(f"font-size: 12px; color: {'#475569' if is_light else '#94a3b8'}; font-weight: 700;")
 
     def load_trash(self):
         """Chiqindi ro'yxatini yuklash."""

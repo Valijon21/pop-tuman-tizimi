@@ -56,6 +56,8 @@ class HistoryView(QDialog):
         filter_box.addWidget(self.txt_search)
 
         btn_refresh = QPushButton("🔄 Yangilash")
+        btn_refresh.setProperty("class", "btn_primary")
+        btn_refresh.setCursor(Qt.PointingHandCursor)
         btn_refresh.clicked.connect(self.load_history)
         filter_box.addWidget(btn_refresh)
         layout.addLayout(filter_box)
@@ -73,6 +75,11 @@ class HistoryView(QDialog):
         self.table.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
         self.table.horizontalHeader().setSectionResizeMode(4, QHeaderView.Stretch)
         self.table.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table.setAlternatingRowColors(True)
+        self.table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.table.setSelectionMode(QTableWidget.SingleSelection)
+        self.table.verticalHeader().setVisible(False)
         layout.addWidget(self.table, 1)
 
         # Footer
@@ -83,6 +90,8 @@ class HistoryView(QDialog):
 
         footer.addStretch()
         self.btn_close = QPushButton("Yopish")
+        self.btn_close.setProperty("class", "btn_secondary")
+        self.btn_close.setCursor(Qt.PointingHandCursor)
         self.btn_close.clicked.connect(self.accept)
         footer.addWidget(self.btn_close)
         layout.addLayout(footer)

@@ -29,6 +29,7 @@ from ui_qt.views.broadcast_view import open_broadcast_dialog
 from ui_qt.views.history_view import open_staff_history_dialog
 from ui_qt.views.import_dialog import open_batch_import_dialog
 from ui_qt.views.org_edit_dialog import OrgEditDialog
+from ui_qt.views.qr_dialog import open_qr_dialog
 
 class MainWindow(QMainWindow):
     """Pop Tuman Tizimining Asosiy PyQt5 Oynasi."""
@@ -43,6 +44,7 @@ class MainWindow(QMainWindow):
         self.data_manager = DataManager()
         self.data = self.data_manager.data
         self.current_theme = "dark"
+        self.font_size = int(self.data_manager.settings.get("font_size", 12))
         self._dirty_views = {
             "dashboard": False,
             "table": False,
@@ -57,7 +59,11 @@ class MainWindow(QMainWindow):
 
         # UI tuzilishi
         self.setup_ui()
-        self.apply_theme(self.current_theme)
+        self.apply_theme(self.current_theme, self.font_size)
+
+        # Telegram botni fonda (asinxron) ishga tushirish
+        self.bot_service = None
+        self.start_background_bot()
 
         logger.info(f"[QT] PyQt5 MainWindow yuklandi: {len(self.data)} ta tashkilot")
 
@@ -106,7 +112,7 @@ class MainWindow(QMainWindow):
         self.sidebar_layout.addWidget(sec_main)
 
         self.add_nav_btn("📊 Dashboard", "dashboard", self.show_dashboard)
-        self.add_nav_btn("📋 Tashkilotlar", "table", self.show_table)
+        self.add_nav_btn("🏢 Tashkilotlar", "table", self.show_table)
         self.add_nav_btn("📑 Shartnoma & Ulanish", "contracts", self.show_contracts)
         self.add_nav_btn("🏘 Mahalla 'Yettiligi'", "passport", lambda: self._open_dialog_nav("passport", self.open_yettilik))
         self.add_nav_btn("📜 Kadrlar Tarixi", "history", lambda: self._open_dialog_nav("history", self.open_history))
@@ -133,14 +139,25 @@ class MainWindow(QMainWindow):
 
         # Chiqish tugmasi
         btn_exit = QPushButton("🚪 Chiqish")
-        btn_exit.setProperty("class", "sidebar_btn")
-        btn_exit.setStyleSheet("color: #ef4444; font-weight: 700;")
+        btn_exit.setProperty("class", "sidebar_btn_danger")
         btn_exit.clicked.connect(self.close)
         self.sidebar_layout.addWidget(btn_exit)
 
         self.root_layout.addWidget(self.sidebar)
 
-        # 2. MARKAZIY KONTENT (QStackedWidget)
+        # 2. STATUS BAR (Vidjetlar yuklanishidan oldin yaratiladi)
+        self.status_bar = QStatusBar()
+        self.setStatusBar(self.status_bar)
+
+        self.lbl_status_total = QLabel(f"Jami tashkilotlar: {len(self.data)} ta")
+        self.lbl_status_db = QLabel("Baza: SQLite WAL 🟢")
+        self.lbl_status_user = QLabel("Foydalanuvchi: ADMIN 👑")
+
+        self.status_bar.addWidget(self.lbl_status_total)
+        self.status_bar.addPermanentWidget(self.lbl_status_db)
+        self.status_bar.addPermanentWidget(self.lbl_status_user)
+
+        # 3. MARKAZIY KONTENT (QStackedWidget)
         self.content_stack = QStackedWidget()
         self.content_stack.setObjectName("content_area")
 
@@ -158,18 +175,6 @@ class MainWindow(QMainWindow):
         self.content_stack.addWidget(self.settings_view)  # 4
 
         self.root_layout.addWidget(self.content_stack, 1)
-
-        # 3. STATUS BAR
-        self.status_bar = QStatusBar()
-        self.setStatusBar(self.status_bar)
-
-        self.lbl_status_total = QLabel(f"Jami tashkilotlar: {len(self.data)} ta")
-        self.lbl_status_db = QLabel("Baza: SQLite WAL 🟢")
-        self.lbl_status_user = QLabel("Foydalanuvchi: ADMIN 👑")
-
-        self.status_bar.addWidget(self.lbl_status_total)
-        self.status_bar.addPermanentWidget(self.lbl_status_db)
-        self.status_bar.addPermanentWidget(self.lbl_status_user)
 
         # Dastlabki sahifani ochish
         self.show_dashboard()
@@ -195,31 +200,55 @@ class MainWindow(QMainWindow):
         func()
         self.set_active_nav_btn(self._last_page_key)
 
-    def apply_theme(self, theme: str):
+    def apply_theme(self, theme: str, font_size: Optional[int] = None):
         self.current_theme = theme
-        qss = get_stylesheet(theme)
+        if font_size is not None:
+            self.font_size = int(font_size)
+        qss = get_stylesheet(theme, self.font_size)
         # Barcha top-level dialoglar (QDialog), menyular va oynalar uchun ilova darajasida qo'llash
         app_inst = QApplication.instance()
         if app_inst:
+            from PyQt5.QtGui import QFont
+            app_inst.setFont(QFont("Segoe UI", self.font_size))
             app_inst.setStyleSheet(qss)
         self.setStyleSheet(qss)
+
         # Barcha sahifalarning mavzusini yangilash
         for view_name in ("dashboard_view", "table_view", "contracts_view", "trash_view", "settings_view"):
             view = getattr(self, view_name, None)
-            if view and hasattr(view, "set_theme"):
-                view.set_theme(theme)
-        if theme == "dark":
-            self.btn_theme.setText("☀ Kunduzi Rejim")
-        else:
+            if view:
+                if hasattr(view, "set_theme"):
+                    view.set_theme(theme)
+                if hasattr(view, "set_font_size"):
+                    view.set_font_size(self.font_size)
+
+        is_light = (theme == "light")
+        if is_light:
             self.btn_theme.setText("🌙 Tungi Rejim")
+            if hasattr(self, "lbl_status_total"):
+                self.lbl_status_total.setStyleSheet("color: #475569; font-weight: 600;")
+                self.lbl_status_db.setStyleSheet("color: #059669; font-weight: 700;")
+                self.lbl_status_user.setStyleSheet("color: #0284c7; font-weight: 700;")
+        else:
+            self.btn_theme.setText("☀ Kunduzi Rejim")
+            if hasattr(self, "lbl_status_total"):
+                self.lbl_status_total.setStyleSheet("color: #94a3b8; font-weight: 600;")
+                self.lbl_status_db.setStyleSheet("color: #10b981; font-weight: 700;")
+                self.lbl_status_user.setStyleSheet("color: #38bdf8; font-weight: 700;")
+
+    def update_font_size(self, new_font_size: int):
+        """Sozlamalardan shrift o'lchami o'zgarganda darhol butun tizimda qo'llash."""
+        self.font_size = new_font_size
+        self.apply_theme(self.current_theme, self.font_size)
+        self.show_toast(f"Shrift o'lchami o'zgartirildi: {new_font_size}px", "info")
 
     def toggle_theme(self):
         new_theme = "light" if self.current_theme == "dark" else "dark"
-        self.apply_theme(new_theme)
-        self.show_toast(f"Mavzu o'zgartirildi: {new_theme.capitalize()}", "info")
+        self.apply_theme(new_theme, self.font_size)
+        self.show_toast(f"Mavzu o'zgartirildi: {'Kunduzgi' if new_theme == 'light' else 'Tungi'}", "info")
 
     def set_theme(self, theme: str):
-        self.apply_theme(theme)
+        self.apply_theme(theme, self.font_size)
 
     def show_dashboard(self):
         self.set_active_nav_btn("dashboard")
@@ -284,6 +313,32 @@ class MainWindow(QMainWindow):
     def open_import(self):
         open_batch_import_dialog(self)
 
+    def open_qr(self, item: Optional[Dict[str, Any]] = None, phone: str = "", org_name: str = "", person_name: str = "", role: str = "", inn: str = ""):
+        """QR-kod oynasini ochish."""
+        open_qr_dialog(self, item=item, phone=phone, org_name=org_name, person_name=person_name, role=role, inn=inn)
+
+    def start_background_bot(self):
+        """Telegram botni fon rejimida (asinxron) ishga tushirish."""
+        try:
+            token = self.data_manager.settings.get("telegram_bot_token", "").strip()
+            if token and len(token) > 15:
+                from services.telegram_bot import get_telegram_bot_service
+                self.bot_service = get_telegram_bot_service(self.data_manager, token)
+                if not self.bot_service.running:
+                    self.bot_service.start()
+                    logger.info("[BOT] Telegram bot fon oqimida (asinxron) ishga tushirildi.")
+        except Exception as e:
+            logger.error(f"[BOT] Telegram botni ishga tushirishda xatolik: {e}")
+
+    def stop_background_bot(self):
+        """Telegram botni to'xtatish."""
+        if hasattr(self, "bot_service") and self.bot_service:
+            try:
+                self.bot_service.stop()
+                logger.info("[BOT] Telegram bot to'xtatildi.")
+            except Exception as e:
+                logger.error(f"[BOT] Botni to'xtatishda xatolik: {e}")
+
     def refresh_all_views(self):
         self.data = self.data_manager.data
         self.lbl_status_total.setText(f"Jami tashkilotlar: {len(self.data)} ta")
@@ -310,10 +365,12 @@ class MainWindow(QMainWindow):
 
     def show_toast(self, message: str, toast_type: str = "info"):
         """Status bar orqali chiroyli xabar chiqarish."""
-        self.status_bar.showMessage(f"✨ {message}", 4000)
+        if hasattr(self, "status_bar") and self.status_bar:
+            self.status_bar.showMessage(f"✨ {message}", 4000)
 
     def closeEvent(self, event):
-        """Dastur yopilayotganda avtomatik zaxira nusxa yaratish."""
+        """Dastur yopilayotganda avtomatik zaxira nusxa yaratish va botni to'xtatish."""
+        self.stop_background_bot()
         logger.info("[QT] Dastur yopilmoqda. SQLite avtomatik zaxira nusxa olinmoqda...")
         try:
             self.data_manager.backup_data()
