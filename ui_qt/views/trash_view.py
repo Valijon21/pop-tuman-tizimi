@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem, QHeaderView, QPushButton, QMessageBox
 )
 from PyQt5.QtCore import Qt
+from core.logger import logger
 
 class TrashView(QWidget):
     """Chiqindi qutisi ekrani."""
@@ -93,12 +94,13 @@ class TrashView(QWidget):
         self.lbl_count.setStyleSheet(f"font-size: 12px; color: {'#475569' if is_light else '#94a3b8'}; font-weight: 700;")
 
     def load_trash(self):
-        """Chiqindi ro'yxatini yuklash."""
+        """Chiqindi ro'yxatini yuklash (Yuqori unumdorlik: updatesEnabled(False) va blockSignals(True))."""
         trash = []
         if self.app and hasattr(self.app, "data_manager"):
             trash = getattr(self.app.data_manager, "trash", [])
 
         self.table.setUpdatesEnabled(False)
+        self.table.blockSignals(True)
         try:
             self.table.setRowCount(len(trash))
             for idx, it in enumerate(trash):
@@ -111,9 +113,11 @@ class TrashView(QWidget):
 
             self.lbl_count.setText(f"Chiqindidagi yozuvlar soni: {len(trash)} ta")
         finally:
+            self.table.blockSignals(False)
             self.table.setUpdatesEnabled(True)
 
     def restore_selected(self):
+        """Tanlangan yozuvlarni bir martalik atomik tranzaksiyada bazaga qayta tiklash."""
         selected_rows = sorted(set(idx.row() for idx in self.table.selectedIndexes()), reverse=True)
         if not selected_rows:
             QMessageBox.information(self, "Ma'lumot", "Qayta tiklash uchun jadvaldan qator tanlang.")
@@ -123,10 +127,20 @@ class TrashView(QWidget):
         restored = 0
         for r in selected_rows:
             if 0 <= r < len(trash):
-                item = trash[r]
-                self.app.data_manager.restore_from_trash(item)
+                item = trash.pop(r)
+                if "deleted_at" in item:
+                    del item["deleted_at"]
+                self.app.data_manager.data.append(item)
+                tid = item.get("id")
+                if tid:
+                    try:
+                        self.app.data_manager.sqlite.delete_trash_item(str(tid))
+                    except Exception as e:
+                        logger.error(f"[SQLITE XATO] delete_trash_item: {e}")
                 restored += 1
 
+        self.app.data_manager.save_data()
+        self.app.data_manager.save_trash()
         self.load_trash()
         if hasattr(self.app, "refresh_all_views"):
             self.app.refresh_all_views()
@@ -134,6 +148,7 @@ class TrashView(QWidget):
             self.app.show_toast(f"♻ {restored} ta tashkilot bazaga tiklandi!", "success")
 
     def perm_delete_selected(self):
+        """Tanlangan yozuvlarni bir martalik to'plamli operatsiyada butunlay o'chirish."""
         selected_rows = sorted(set(idx.row() for idx in self.table.selectedIndexes()), reverse=True)
         if not selected_rows:
             QMessageBox.information(self, "Ma'lumot", "O'chirish uchun jadvaldan qator tanlang.")
@@ -148,18 +163,27 @@ class TrashView(QWidget):
             return
 
         trash = self.app.data_manager.trash
+        deleted_count = 0
         for r in selected_rows:
             if 0 <= r < len(trash):
-                item = trash[r]
-                self.app.data_manager.permanent_delete(item)
+                item = trash.pop(r)
+                tid = item.get("id")
+                if tid:
+                    try:
+                        self.app.data_manager.sqlite.delete_trash_item(str(tid))
+                    except Exception as e:
+                        logger.error(f"[SQLITE XATO] delete_trash_item: {e}")
+                deleted_count += 1
 
+        self.app.data_manager.save_trash()
         self.load_trash()
         if hasattr(self.app, "refresh_all_views"):
             self.app.refresh_all_views()
         if hasattr(self.app, "show_toast"):
-            self.app.show_toast("Yozuv butunlay o'chirildi.", "warning")
+            self.app.show_toast(f"🗑 {deleted_count} ta yozuv butunlay o'chirildi.", "warning")
 
     def empty_trash(self):
+        """Chiqindi qutisini ommaviy atomik operatsiya bilan to'liq tozalash (disk va SQLite)."""
         trash = self.app.data_manager.trash
         if not trash:
             return
@@ -172,8 +196,15 @@ class TrashView(QWidget):
         if reply != QMessageBox.Yes:
             return
 
-        while trash:
-            self.app.data_manager.permanent_delete(trash[0])
+        for it in list(trash):
+            tid = it.get("id")
+            if tid:
+                try:
+                    self.app.data_manager.sqlite.delete_trash_item(str(tid))
+                except Exception as e:
+                    logger.error(f"[SQLITE XATO] delete_trash_item: {e}")
+        trash.clear()
+        self.app.data_manager.save_trash()
 
         self.load_trash()
         if hasattr(self.app, "refresh_all_views"):

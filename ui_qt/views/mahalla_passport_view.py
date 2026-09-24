@@ -3,16 +3,20 @@ ui_qt.views.mahalla_passport_view: Mahalla 'Yettiligi' 360° Pasport oynasi (PyQ
 7 ta mas'ul xodimning (Rais, Hokim yordamchisi, Yoshlar yetakchisi, Xotin-qizlar,
 Profilaktika, Soliq inspektori, Ijtimoiy xodim) to'liq pasport kartasi va tezkor amallari.
 """
+import os
+import re
 from typing import Optional, Dict, Any, List
 import pyperclip
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
     QComboBox, QPushButton, QScrollArea, QWidget, QFrame,
-    QMessageBox, QLineEdit
+    QMessageBox, QLineEdit, QFileDialog
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QUrl
+from PyQt5.QtGui import QDesktopServices
 from services.verification_service import build_verification_text
 from services.cabinet_service import build_cabinet_access_text
+from services.pdf_service import export_mahalla_passport_pdf
 from ui_qt.views.qr_dialog import open_qr_dialog
 from ui_qt.styles import get_stylesheet, hex_to_rgba
 from core.logger import logger
@@ -35,6 +39,7 @@ class MahallaPassportView(QDialog):
         self.app = app
         self.selected_mahalla = selected_mahalla
         self.current_theme = getattr(app, "current_theme", "dark")
+        self.current_roles_data: List[Dict[str, Any]] = []
         self.setWindowTitle("🏘 Mahalla 'Yettiligi' 360° Pasport Tizimi")
         self.resize(850, 540)
         self.setMinimumSize(700, 420)
@@ -86,6 +91,13 @@ class MahallaPassportView(QDialog):
         """)
         self.combo_mahalla.currentTextChanged.connect(self.on_mahalla_changed)
         select_box.addWidget(self.combo_mahalla)
+
+        self.btn_export_pdf = QPushButton("📄 A4 PDF Eksport")
+        self.btn_export_pdf.setProperty("class", "btn_success")
+        self.btn_export_pdf.setCursor(Qt.PointingHandCursor)
+        self.btn_export_pdf.setStyleSheet("font-size: 11.5px; font-weight: 700; padding: 4px 10px;")
+        self.btn_export_pdf.clicked.connect(self.export_passport_to_pdf)
+        select_box.addWidget(self.btn_export_pdf)
         header.addLayout(select_box)
 
         main_layout.addLayout(header)
@@ -161,6 +173,8 @@ class MahallaPassportView(QDialog):
 
             filled_count = 0
 
+            self.current_roles_data = []
+
             for idx, (role_key, role_title, icon, color) in enumerate(ROLES_CONFIG):
                 # Rollarga mos xodimni aniqlash
                 role_item = None
@@ -203,6 +217,19 @@ class MahallaPassportView(QDialog):
 
                 if fio:
                     filled_count += 1
+
+                self.current_roles_data.append({
+                    "role_key": role_key,
+                    "role_title": role_title,
+                    "icon": icon,
+                    "color": color,
+                    "f": fio,
+                    "t": phone,
+                    "inn": inn,
+                    "jshr": jshr,
+                    "seriya": seriya,
+                    "item": role_item
+                })
 
                 card = self.create_role_card(
                     mahalla=mahalla_name,
@@ -388,6 +415,41 @@ class MahallaPassportView(QDialog):
             if hasattr(self.app, "refresh_all_views"):
                 self.app.refresh_all_views()
             self.load_passport(self.combo_mahalla.currentText())
+
+    def export_passport_to_pdf(self):
+        """Hozirgi mahalla pasportini rasmiy A4 PDF hujjat ko'rinishida eksport qilish."""
+        mahalla_name = self.combo_mahalla.currentText().strip() or "Mahalla"
+        if not getattr(self, "current_roles_data", None):
+            QMessageBox.warning(self, "Ogohlantirish", "Eksport qilish uchun avval mahallani tanlang.")
+            return
+
+        clean_name = re.sub(r'[\\/*?:"<>|]', "", mahalla_name).replace(" ", "_")
+        default_file = f"{clean_name}_Yettiligi_Pasporti.pdf"
+
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Mahalla Pasportini PDF shaklida saqlash",
+            default_file,
+            "PDF Hujjatlar (*.pdf)"
+        )
+        if not path:
+            return
+
+        if not path.lower().endswith(".pdf"):
+            path += ".pdf"
+
+        ok = export_mahalla_passport_pdf(mahalla_name, self.current_roles_data, path)
+        if ok:
+            reply = QMessageBox.question(
+                self,
+                "Muvaffaqiyatli saqlandi",
+                f"«{mahalla_name}» Mahalla pasporti A4 formatida saqlandi:\n{path}\n\nFaylni hozir ko'rish uchun ochmoqchimisiz?",
+                QMessageBox.Yes | QMessageBox.No
+            )
+            if reply == QMessageBox.Yes:
+                QDesktopServices.openUrl(QUrl.fromLocalFile(os.path.abspath(path)))
+        else:
+            QMessageBox.critical(self, "Xatolik", "PDF faylni shakllantirishda xatolik yuz berdi.")
 
 def open_mahalla_passport(app: Any, mahalla: Optional[str] = None) -> None:
     dlg = MahallaPassportView(parent=app, app=app, selected_mahalla=mahalla)

@@ -405,8 +405,9 @@ class ContractsView(QWidget):
                 self.load_data()
 
     def render_table_rows(self):
-        """Jadval qatorlarini chizish."""
+        """Jadval qatorlarini chizish (Yuqori unumdorlik: updatesEnabled(False) va blockSignals(True))."""
         self.table.setUpdatesEnabled(False)
+        self.table.blockSignals(True)
         try:
             self.table.setRowCount(len(self.filtered_data))
             for r_idx, it in enumerate(self.filtered_data):
@@ -453,6 +454,7 @@ class ContractsView(QWidget):
 
             self.lbl_count.setText(f"Ko'rsatilmoqda: {len(self.filtered_data)} ta tashkilot")
         finally:
+            self.table.blockSignals(False)
             self.table.setUpdatesEnabled(True)
 
     def open_add_dialog(self):

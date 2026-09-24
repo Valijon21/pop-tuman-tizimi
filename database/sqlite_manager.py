@@ -182,16 +182,54 @@ class SQLiteManager:
                             "updated_at": o.get("updated_at") or now
                         } for o in orgs
                     ])
-                    # Faqat ro'yxatdan olib tashlangan yozuvlarni o'chirish (agar kerak bo'lsa)
-                    if len(current_ids) < 900:  # SQLite query parameter limit protection
-                        placeholders = ",".join("?" for _ in current_ids)
-                        cursor.execute(f"DELETE FROM organizations WHERE id NOT IN ({placeholders});", current_ids)
+                    # 2. Xotiradan olib tashlangan yozuvlarni SQLite dan xavfsiz tozalash (Vaqtinchalik jadval yordamida - cheksiz masshtab)
+                    cursor.execute("CREATE TEMP TABLE IF NOT EXISTS _active_ids (id TEXT PRIMARY KEY);")
+                    cursor.execute("DELETE FROM _active_ids;")
+                    current_ids = [(str(o.get("id") or o.get("uuid") or ""),) for o in orgs if (o.get("id") or o.get("uuid"))]
+                    if current_ids:
+                        cursor.executemany("INSERT INTO _active_ids (id) VALUES (?);", current_ids)
+                        cursor.execute("DELETE FROM organizations WHERE id NOT IN (SELECT id FROM _active_ids);")
+                    cursor.execute("DROP TABLE IF EXISTS _active_ids;")
                 else:
                     cursor.execute("DELETE FROM organizations;")
                 conn.commit()
                 logger.debug(f"[SQLITE] {len(orgs)} ta tashkilot xavfsiz saqlandi.")
         except Exception as e:
             logger.error(f"[SQLITE] Tashkilotlarni saqlashda xatolik: {e}")
+
+    def delete_organization(self, org_id: str) -> bool:
+        """Tashkilotni ID si bo'yicha SQLite bazasidan butunlay o'chirish."""
+        if not org_id:
+            return False
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM organizations WHERE id = ?;", (str(org_id),))
+                conn.commit()
+                deleted = cursor.rowcount > 0
+                if deleted:
+                    logger.info(f"[SQLITE] Tashkilot o'chirildi: ID={org_id}")
+                return deleted
+        except Exception as e:
+            logger.error(f"[SQLITE] Tashkilotni o'chirishda xatolik (ID={org_id}): {e}")
+            return False
+
+    def delete_trash_item(self, trash_id: str) -> bool:
+        """Chiqindi elementini ID si bo'yicha SQLite bazasidan butunlay o'chirish."""
+        if not trash_id:
+            return False
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("DELETE FROM trash WHERE id = ?;", (str(trash_id),))
+                conn.commit()
+                deleted = cursor.rowcount > 0
+                if deleted:
+                    logger.info(f"[SQLITE] Chiqindi yozuvi o'chirildi: ID={trash_id}")
+                return deleted
+        except Exception as e:
+            logger.error(f"[SQLITE] Chiqindi yozuvini o'chirishda xatolik (ID={trash_id}): {e}")
+            return False
 
     def insert_or_replace_organization(self, o: Dict[str, Any]) -> None:
         """Bitta tashkilotni qo'shish yoki yangilash."""
@@ -255,14 +293,6 @@ class SQLiteManager:
             logger.error(f"[SQLITE] INN bo'yicha qidirishda xatolik: {e}")
             return None
 
-    def delete_organization(self, org_id: str) -> None:
-        """Tashkilotni ID bo'yicha o'chirish."""
-        try:
-            with self.get_connection() as conn:
-                conn.execute("DELETE FROM organizations WHERE id = ?;", (str(org_id),))
-                conn.commit()
-        except Exception as e:
-            logger.error(f"[SQLITE] Tashkilotni o'chirishda xatolik ({org_id}): {e}")
 
     # ==================== TRASH ====================
 

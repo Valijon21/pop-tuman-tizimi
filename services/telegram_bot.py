@@ -82,9 +82,7 @@ class TelegramBotService:
 
         # Doimiy Keep-Alive aloqasi uchun HTTP sessiya (10x-20x tezlik)
         self.session = None
-        if requests is not None:
-            self.session = requests.Session()
-            self.session.headers.update({"User-Agent": "PopTumanEnterpriseBot/3.0"})
+        self._init_session()
 
         # Parallel xabarlarni qayta ishlash basseyni (8 ta parallel ishchi)
         self._executor = ThreadPoolExecutor(max_workers=8)
@@ -159,8 +157,33 @@ class TelegramBotService:
                 pass
         logger.info("[TELEGRAM BOT] Bot to'xtatildi.")
 
+    def _init_session(self) -> None:
+        """HTTP sessiyani yaratish yoki yangilash (Connection pooling, keep-alive va adapter timeout)."""
+        if requests is None:
+            self.session = None
+            return
+        if self.session is not None:
+            try:
+                self.session.close()
+            except Exception:
+                pass
+        try:
+            self.session = requests.Session()
+            self.session.headers.update({"User-Agent": "PopTumanEnterpriseBot/3.0"})
+            from requests.adapters import HTTPAdapter
+            adapter = HTTPAdapter(pool_connections=10, pool_maxsize=20, max_retries=1)
+            self.session.mount("https://", adapter)
+            self.session.mount("http://", adapter)
+        except Exception as e:
+            logger.debug(f"[TELEGRAM] Sessiya yaratishda ogohlantirish: {e}")
+
+    def _renew_session(self) -> None:
+        """Tarmoq uzilishi yoki xatolikdan so'ng HTTP sessiyani toza qayta ishga tushirish."""
+        logger.debug("[TELEGRAM] HTTP sessiya qayta yangilanmoqda...")
+        self._init_session()
+
     def _api_call(self, method: str, params: Optional[Dict[str, Any]] = None, timeout: int = 15) -> Optional[Dict[str, Any]]:
-        """Telegram API ga HTTP so'rov yuborish (Sessiya, Keep-Alive va batafsil xatolik logi bilan)."""
+        """Telegram API ga HTTP so'rov yuborish (Sessiya, Keep-Alive va xato holatlarini to'g'ri qaytarish bilan)."""
         if not self.is_configured():
             return None
         url = self.base_url + method
@@ -171,8 +194,14 @@ class TelegramBotService:
                 resp = self.session.post(url, data=params, timeout=timeout)
                 if resp.status_code == 200:
                     return resp.json()
+                elif resp.status_code in (409, 429):
+                    try:
+                        return resp.json()
+                    except Exception:
+                        return {"ok": False, "error_code": resp.status_code, "description": resp.text}
                 else:
                     logger.warning(f"[TELEGRAM API SESSION] {method} javob kodi {resp.status_code}: {resp.text}")
+                    return {"ok": False, "error_code": resp.status_code, "description": resp.text}
             except Exception as e:
                 logger.debug(f"[TELEGRAM API SESSION] Tarmoq xatoligi ({method}): {e}")
 
@@ -191,7 +220,13 @@ class TelegramBotService:
                     return json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as he:
             err_body = he.read().decode("utf-8", errors="replace") if hasattr(he, "read") else ""
+            if he.code in (409, 429):
+                try:
+                    return json.loads(err_body)
+                except Exception:
+                    return {"ok": False, "error_code": he.code, "description": err_body}
             logger.error(f"[TELEGRAM API URLLIB] HTTP Xatolik ({method}) {he.code}: {he.reason} | Tafsilot: {err_body}")
+            return {"ok": False, "error_code": he.code, "description": err_body}
         except Exception as e:
             logger.error(f"[TELEGRAM API URLLIB] Xatolik ({method}): {e}")
         return None
@@ -263,12 +298,17 @@ class TelegramBotService:
         return {"sent": sent, "failed": failed, "total": len(self.subscribers)}
 
     def _poll_loop(self) -> None:
-        """Telegramdan yangi xabarlarni tinglash sikli (Long polling - Fast Reactive)."""
+        """Telegramdan yangi xabarlarni tinglash sikli (Eksponentsial orqaga chekinish / Exponential Backoff & Avto-tiklash)."""
+        backoff_delay = 2.0
+        max_backoff = 30.0
+
         while self.running:
             had_updates = False
             try:
                 updates = self._api_call("getUpdates", {"offset": self.last_update_id + 1, "timeout": 20}, timeout=25)
                 if updates and updates.get("ok"):
+                    # Muvaffaqiyatli so'rov - kechikishni dastlabki holatga qaytarish
+                    backoff_delay = 2.0
                     results = updates.get("result", [])
                     if results:
                         had_updates = True
@@ -284,14 +324,39 @@ class TelegramBotService:
                         cq = u.get("callback_query")
                         if cq:
                             self._executor.submit(self._handle_callback_query, cq)
-                elif updates is None:
-                    # 409 Conflict yoki tarmoq uzilishida qisqa tanaffus
-                    time.sleep(2)
-            except Exception as e:
-                logger.debug(f"[TELEGRAM POLL] Siklda xatolik: {e}")
-                time.sleep(1)
 
-            if not had_updates:
+                elif updates and updates.get("error_code") == 409:
+                    # 409 Conflict: boshqa bot nusxasi getUpdates yubormoqda
+                    logger.warning(
+                        f"[TELEGRAM 409 CONFLICT] Boshqa bot nusxasi getUpdates so'ramoqda. "
+                        f"{backoff_delay:.1f} soniya kutib qayta uriniladi..."
+                    )
+                    time.sleep(backoff_delay)
+                    backoff_delay = min(backoff_delay * 1.5, max_backoff)
+                    self._renew_session()
+
+                elif updates and updates.get("error_code") == 429:
+                    # 429 Too Many Requests (Rate limit)
+                    retry_after = 5
+                    if isinstance(updates.get("parameters"), dict):
+                        retry_after = updates["parameters"].get("retry_after", 5)
+                    logger.warning(f"[TELEGRAM 429 RATE LIMIT] Telegram cheklovi: {retry_after}s kutilmoqda...")
+                    time.sleep(retry_after)
+
+                else:
+                    # Tarmoq xatosi yoki javob yo'qligi
+                    time.sleep(backoff_delay)
+                    backoff_delay = min(backoff_delay * 1.5, max_backoff)
+                    if backoff_delay >= 6.0:
+                        self._renew_session()
+
+            except Exception as e:
+                logger.warning(f"[TELEGRAM POLL] Siklda kutilmagan xatolik: {e}. {backoff_delay:.1f}s kutilmoqda...")
+                time.sleep(backoff_delay)
+                backoff_delay = min(backoff_delay * 1.5, max_backoff)
+                self._renew_session()
+
+            if not had_updates and self.running:
                 time.sleep(0.1)
 
     # ─────────────────────────────────────────────────────────────────────────────

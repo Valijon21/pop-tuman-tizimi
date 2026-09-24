@@ -294,6 +294,11 @@ class DataManager:
             self.data.remove(target)
             target["deleted_at"] = time.strftime("%Y-%m-%d %H:%M:%S")
             self.trash.append(target)
+            if target_id:
+                try:
+                    self.sqlite.delete_organization(str(target_id))
+                except Exception as e:
+                    logger.error(f"[SQLITE XATO] delete_organization: {e}")
             self.save_data()
             self.save_trash()
             logger.info(f"[CHIQINDI] Yozuv chiqindiga ko'chirildi: ID={target_id}, Nomi='{target.get('m')}'")
@@ -310,6 +315,11 @@ class DataManager:
             if "deleted_at" in target:
                 del target["deleted_at"]
             self.data.append(target)
+            if target_id:
+                try:
+                    self.sqlite.delete_trash_item(str(target_id))
+                except Exception as e:
+                    logger.error(f"[SQLITE XATO] delete_trash_item: {e}")
             self.save_data()
             self.save_trash()
             logger.info(f"[TIKLASH] Yozuv bazaga tiklandi: ID={target_id}, Nomi='{target.get('m')}'")
@@ -323,6 +333,11 @@ class DataManager:
         target = next((x for x in self.trash if x.get("id") and x.get("id") == target_id), None) if target_id else (item if item in self.trash else None)
         if target:
             self.trash.remove(target)
+            if target_id:
+                try:
+                    self.sqlite.delete_trash_item(str(target_id))
+                except Exception as e:
+                    logger.error(f"[SQLITE XATO] delete_trash_item: {e}")
             self.save_trash()
             logger.info(f"[BUTUNLAY O'CHIRISH] Yozuv bazadan to'liq o'chirildi: ID={target_id}, Nomi='{target.get('m')}'")
             return True

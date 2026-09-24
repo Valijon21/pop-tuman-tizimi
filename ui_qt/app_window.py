@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (
     QLabel, QPushButton, QStackedWidget, QStatusBar, QMessageBox,
     QApplication, QGraphicsDropShadowEffect
 )
-from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QPoint
+from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QPoint, QLockFile
 from PyQt5.QtGui import QIcon, QPixmap, QColor
 
 from core.config import APP_TITLE, ICON_PATH, DEFAULT_WINDOW_SIZE, MIN_WINDOW_SIZE
@@ -379,7 +379,7 @@ class MainWindow(QMainWindow):
         event.accept()
 
 def run_qt_app():
-    """PyQt5 ilovasini ishga tushirish (High-DPI qo'llab-quvvatlash bilan)."""
+    """PyQt5 ilovasini ishga tushirish (High-DPI va Yagona Nusxa / Single Instance himoyasi bilan)."""
     # High-DPI masshtab
     if hasattr(Qt, "AA_EnableHighDpiScaling"):
         QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
@@ -389,6 +389,35 @@ def run_qt_app():
     app = QApplication(sys.argv)
     app.setApplicationName("Pop Tuman Tizimi")
 
-    window = MainWindow()
-    window.show()
-    return app.exec_()
+    # Yagona nusxa (Single Instance Guard) tekshiruvi:
+    # Bir vaqtning o'zida bir nechta dastur ochilishini, DB konfliktini va Telegram Bot 409 xatosini oldini olish
+    import tempfile
+    lock_path = os.path.join(tempfile.gettempdir(), "pop_tuman_tizimi.lock")
+    lock_file = QLockFile(lock_path)
+    lock_file.setStaleLockTime(5000)
+
+    if not lock_file.tryLock(100):
+        logger.warning(f"[SINGLE INSTANCE] Dastur allaqachon ishga tushirilgan! Qulflangan fayl: {lock_path}")
+        if os.environ.get("QT_QPA_PLATFORM") != "offscreen":
+            QMessageBox.warning(
+                None,
+                "Dastur allaqachon ochiq",
+                "⚠️ Pop Tuman Tizimi dasturining boshqa nusxasi allaqachon ishlab turibdi.\n\n"
+                "Iltimos, ochiq turgan dastur oynasidan foydalaning."
+            )
+        return 0
+
+    # app obyektiga qulfni biriktirib qo'yish (Garbage collection o'chirib yubormasligi uchun)
+    app._lock_file = lock_file
+
+    try:
+        window = MainWindow()
+        window.show()
+        ret = app.exec_()
+    finally:
+        try:
+            lock_file.unlock()
+        except Exception:
+            pass
+
+    return ret
