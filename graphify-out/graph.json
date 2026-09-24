@@ -87,8 +87,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "core_logger",
-      "community": 29,
-      "community_name": "settings_view.py",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "logger.py"
     },
     {
@@ -98,8 +98,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "core_logger_setup_logger",
-      "community": 29,
-      "community_name": "settings_view.py",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "setup_logger()"
     },
     {
@@ -109,8 +109,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "logger",
-      "community": 29,
-      "community_name": "settings_view.py",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "logger"
     },
     {
@@ -131,8 +131,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "core_logger_rationale_1",
-      "community": 29,
-      "community_name": "settings_view.py",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "pop tuman tashkilotlari va inn tizimi professional aylanuvchi log tizimi va glob"
     },
     {
@@ -142,8 +142,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "core_logger_rationale_16",
-      "community": 29,
-      "community_name": "settings_view.py",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "aylanuvchi fayl log tizimini sozlash (5mb chegara va 5 ta arxiv nusxasi)."
     },
     {
@@ -362,8 +362,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "core_threading_utils",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 26,
+      "community_name": "sanitize_text",
       "norm_label": "threading_utils.py"
     },
     {
@@ -439,8 +439,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "core_threading_utils_rationale_1",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 26,
+      "community_name": "sanitize_text",
       "norm_label": "core.threading_utils: asinxron fon oqimlari (qthread) va vazifalar boshqaruvi. u"
     },
     {
@@ -483,8 +483,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "core_validators_sanitize_text",
-      "community": 6,
-      "community_name": "UI Views Test Suite",
+      "community": 35,
+      "community_name": "validate_inn",
       "norm_label": "sanitize_text()"
     },
     {
@@ -582,8 +582,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "core_validators_rationale_9",
-      "community": 6,
-      "community_name": "UI Views Test Suite",
+      "community": 35,
+      "community_name": "validate_inn",
       "norm_label": "matndagi ortiqcha bo'shliqlar va boshqaruv belgilarini tozalash."
     },
     {
@@ -692,8 +692,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_data_manager",
-      "community": 23,
-      "community_name": "import_organizations_from_file",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "data_manager.py"
     },
     {
@@ -703,8 +703,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "database_data_manager_datamanager",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "datamanager"
     },
     {
@@ -714,8 +714,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_init",
-      "community": 55,
-      "community_name": ".__init__",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".__init__()"
     },
     {
@@ -725,8 +725,8 @@
       "source_location": "L129",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_ensure_backup_dir",
-      "community": 55,
-      "community_name": ".__init__",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".ensure_backup_dir()"
     },
     {
@@ -736,8 +736,8 @@
       "source_location": "L137",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_load_json",
-      "community": 53,
-      "community_name": "Any",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".load_json()"
     },
     {
@@ -747,8 +747,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "database_data_manager_py_any",
-      "community": 53,
-      "community_name": "Any",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "any"
     },
     {
@@ -758,8 +758,8 @@
       "source_location": "L159",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_save_json",
-      "community": 55,
-      "community_name": ".__init__",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".save_json()"
     },
     {
@@ -769,8 +769,8 @@
       "source_location": "L175",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_load_data",
-      "community": 53,
-      "community_name": "Any",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".load_data()"
     },
     {
@@ -780,8 +780,8 @@
       "source_location": "L184",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_add_organization",
-      "community": 57,
-      "community_name": ".add_organization",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".add_organization()"
     },
     {
@@ -791,8 +791,8 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_update_organization",
-      "community": 57,
-      "community_name": ".add_organization",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".update_organization()"
     },
     {
@@ -802,8 +802,8 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_get_organization_model",
-      "community": 53,
-      "community_name": "Any",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".get_organization_model()"
     },
     {
@@ -813,8 +813,8 @@
       "source_location": "L239",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_save_data",
-      "community": 54,
-      "community_name": ".save_data",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".save_data()"
     },
     {
@@ -824,8 +824,8 @@
       "source_location": "L246",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_save_trash",
-      "community": 54,
-      "community_name": ".save_data",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".save_trash()"
     },
     {
@@ -835,8 +835,8 @@
       "source_location": "L253",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_save_categories",
-      "community": 55,
-      "community_name": ".__init__",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".save_categories()"
     },
     {
@@ -846,8 +846,8 @@
       "source_location": "L256",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_save_settings",
-      "community": 55,
-      "community_name": ".__init__",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".save_settings()"
     },
     {
@@ -857,8 +857,8 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_log_activity",
-      "community": 57,
-      "community_name": ".add_organization",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".log_activity()"
     },
     {
@@ -868,8 +868,8 @@
       "source_location": "L278",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_add_staff_history",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".add_staff_history()"
     },
     {
@@ -879,8 +879,8 @@
       "source_location": "L285",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_get_staff_history",
-      "community": 53,
-      "community_name": "Any",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".get_staff_history()"
     },
     {
@@ -890,8 +890,8 @@
       "source_location": "L289",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_move_to_trash",
-      "community": 54,
-      "community_name": ".save_data",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".move_to_trash()"
     },
     {
@@ -901,8 +901,8 @@
       "source_location": "L309",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_restore_from_trash",
-      "community": 54,
-      "community_name": ".save_data",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".restore_from_trash()"
     },
     {
@@ -912,8 +912,8 @@
       "source_location": "L330",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_permanent_delete",
-      "community": 54,
-      "community_name": ".save_data",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".permanent_delete()"
     },
     {
@@ -923,8 +923,8 @@
       "source_location": "L347",
       "_origin": "ast",
       "id": "database_data_manager_datamanager_backup_data",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".backup_data()"
     },
     {
@@ -934,8 +934,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "database_data_manager_rationale_17",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "ma'lumotlar omborini xavfsiz boshqarish (persistence layer, sqlite + json dual-s"
     },
     {
@@ -945,8 +945,8 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "database_data_manager_rationale_130",
-      "community": 55,
-      "community_name": ".__init__",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "zaxira nusxalar papkasi mavjudligini ta'minlash."
     },
     {
@@ -956,8 +956,8 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "database_data_manager_rationale_138",
-      "community": 53,
-      "community_name": "Any",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "fayldan xavfsiz o'qish (buzilgan taqdirda zaxiradan tiklash)."
     },
     {
@@ -967,8 +967,8 @@
       "source_location": "L160",
       "_origin": "ast",
       "id": "database_data_manager_rationale_160",
-      "community": 55,
-      "community_name": ".__init__",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "atomik saqlash: ma'lumot avval .tmp ga to'liq yozilib, keyin xavfsiz almashtiril"
     },
     {
@@ -978,8 +978,8 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "database_data_manager_rationale_176",
-      "community": 53,
-      "community_name": "Any",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "baza ma'lumotlarini (sqlite yoki json) qayta yuklash."
     },
     {
@@ -989,8 +989,8 @@
       "source_location": "L185",
       "_origin": "ast",
       "id": "database_data_manager_rationale_185",
-      "community": 57,
-      "community_name": ".add_organization",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "yangi tashkilot qo'shish (dict yoki organization modeli qabul qiladi)."
     },
     {
@@ -1000,8 +1000,8 @@
       "source_location": "L204",
       "_origin": "ast",
       "id": "database_data_manager_rationale_204",
-      "community": 57,
-      "community_name": ".add_organization",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "mavjud tashkilot ma'lumotlarini yangilash (dict yoki organization modeli qabul q"
     },
     {
@@ -1011,8 +1011,8 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "database_data_manager_rationale_232",
-      "community": 53,
-      "community_name": "Any",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "tashkilotni organization dataclass modeli sifatida olish."
     },
     {
@@ -1022,8 +1022,8 @@
       "source_location": "L260",
       "_origin": "ast",
       "id": "database_data_manager_rationale_260",
-      "community": 57,
-      "community_name": ".add_organization",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "tizimdagi harakatlarni qayd etish (json + sqlite)."
     },
     {
@@ -1033,8 +1033,8 @@
       "source_location": "L282",
       "_origin": "ast",
       "id": "database_data_manager_rationale_282",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "xodim rotatsiyasi/almashinuvini qayd etish."
     },
     {
@@ -1044,8 +1044,8 @@
       "source_location": "L286",
       "_origin": "ast",
       "id": "database_data_manager_rationale_286",
-      "community": 53,
-      "community_name": "Any",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "xodimlar rotatsiyasi tarixini olish."
     },
     {
@@ -1055,8 +1055,8 @@
       "source_location": "L290",
       "_origin": "ast",
       "id": "database_data_manager_rationale_290",
-      "community": 54,
-      "community_name": ".save_data",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "yozuvni chiqindi qutisiga ko'chirish."
     },
     {
@@ -1066,8 +1066,8 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "database_data_manager_rationale_310",
-      "community": 54,
-      "community_name": ".save_data",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "chiqindi qutisidan asosiy bazaga tiklash."
     },
     {
@@ -1077,20 +1077,20 @@
       "source_location": "L331",
       "_origin": "ast",
       "id": "database_data_manager_rationale_331",
-      "community": 54,
-      "community_name": ".save_data",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": "chiqindi qutisidan butunlay o'chirish."
     },
     {
-      "label": "Ma'lumotlar bazasining zaxira nusxasini yaratish (oxirgi 10 ta nusxa).",
+      "label": "Ma'lumotlar bazasining zaxira nusxasini yaratish (oxirgi 10 ta JSON va 30 ta SQL",
       "file_type": "rationale",
       "source_file": "database/data_manager.py",
       "source_location": "L348",
       "_origin": "ast",
       "id": "database_data_manager_rationale_348",
-      "community": 37,
-      "community_name": "telegram_bot.py",
-      "norm_label": "ma'lumotlar bazasining zaxira nusxasini yaratish (oxirgi 10 ta nusxa)."
+      "community": 25,
+      "community_name": "clean_inn",
+      "norm_label": "ma'lumotlar bazasining zaxira nusxasini yaratish (oxirgi 10 ta json va 30 ta sql"
     },
     {
       "label": "models.py",
@@ -1209,8 +1209,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_sqlite_manager",
-      "community": 52,
-      "community_name": "SQLiteManager",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "sqlite_manager.py"
     },
     {
@@ -1220,7 +1220,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager",
-      "community": 52,
+      "community": 7,
       "community_name": "SQLiteManager",
       "norm_label": "sqlitemanager"
     },
@@ -1231,7 +1231,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_init",
-      "community": 52,
+      "community": 7,
       "community_name": "SQLiteManager",
       "norm_label": ".__init__()"
     },
@@ -1242,8 +1242,8 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_get_connection",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".get_connection()"
     },
     {
@@ -1253,8 +1253,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "connection",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "connection"
     },
     {
@@ -1264,7 +1264,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_init_schema",
-      "community": 52,
+      "community": 7,
       "community_name": "SQLiteManager",
       "norm_label": ".init_schema()"
     },
@@ -1275,8 +1275,8 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_get_all_organizations",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".get_all_organizations()"
     },
     {
@@ -1286,8 +1286,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "database_sqlite_manager_py_any",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "any"
     },
     {
@@ -1297,8 +1297,8 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_save_all_organizations",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".save_all_organizations()"
     },
     {
@@ -1308,7 +1308,7 @@
       "source_location": "L200",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_delete_organization",
-      "community": 52,
+      "community": 7,
       "community_name": "SQLiteManager",
       "norm_label": ".delete_organization()"
     },
@@ -1319,8 +1319,8 @@
       "source_location": "L217",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_delete_trash_item",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".delete_trash_item()"
     },
     {
@@ -1330,8 +1330,8 @@
       "source_location": "L234",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_insert_or_replace_organization",
-      "community": 58,
-      "community_name": ".insert_or_replace_organization",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".insert_or_replace_organization()"
     },
     {
@@ -1341,8 +1341,8 @@
       "source_location": "L263",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_upsert_organization",
-      "community": 58,
-      "community_name": ".insert_or_replace_organization",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".upsert_organization()"
     },
     {
@@ -1352,8 +1352,8 @@
       "source_location": "L267",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_bulk_insert_organizations",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".bulk_insert_organizations()"
     },
     {
@@ -1363,8 +1363,8 @@
       "source_location": "L272",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_get_organization_by_id",
-      "community": 62,
-      "community_name": ".get_organization_by_id",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".get_organization_by_id()"
     },
     {
@@ -1374,8 +1374,8 @@
       "source_location": "L284",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_get_organization_by_inn",
-      "community": 63,
-      "community_name": ".get_organization_by_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".get_organization_by_inn()"
     },
     {
@@ -1385,8 +1385,8 @@
       "source_location": "L299",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_get_all_trash",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".get_all_trash()"
     },
     {
@@ -1396,8 +1396,8 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_save_all_trash",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".save_all_trash()"
     },
     {
@@ -1407,8 +1407,8 @@
       "source_location": "L343",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_add_staff_history",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".add_staff_history()"
     },
     {
@@ -1418,8 +1418,8 @@
       "source_location": "L390",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_get_staff_history",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".get_staff_history()"
     },
     {
@@ -1429,8 +1429,8 @@
       "source_location": "L426",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_log_activity",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".log_activity()"
     },
     {
@@ -1440,8 +1440,8 @@
       "source_location": "L439",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_get_recent_activity",
-      "community": 64,
-      "community_name": ".get_recent_activity",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".get_recent_activity()"
     },
     {
@@ -1451,8 +1451,8 @@
       "source_location": "L452",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_seed_from_json_if_empty",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".seed_from_json_if_empty()"
     },
     {
@@ -1462,8 +1462,8 @@
       "source_location": "L478",
       "_origin": "ast",
       "id": "database_sqlite_manager_sqlitemanager_backup_database",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": ".backup_database()"
     },
     {
@@ -1473,8 +1473,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_1",
-      "community": 52,
-      "community_name": "SQLiteManager",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "pop tuman tashkilotlari va inn tizimi sqlite tranzaksiyaviy ma'lumotlar bazasi d"
     },
     {
@@ -1484,7 +1484,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_17",
-      "community": 52,
+      "community": 7,
       "community_name": "SQLiteManager",
       "norm_label": "sqlite bilan xavfsiz va tranzaksiyaviy ishlash menejeri."
     },
@@ -1495,8 +1495,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_24",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "sqlite ulanishini olish va wal rejimini faollashtirish."
     },
     {
@@ -1506,7 +1506,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_32",
-      "community": 52,
+      "community": 7,
       "community_name": "SQLiteManager",
       "norm_label": "baza jadvallari va indekslarini yaratish."
     },
@@ -1517,8 +1517,8 @@
       "source_location": "L145",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_145",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "barcha faol tashkilotlarni ro'yxat ko'rinishida olish."
     },
     {
@@ -1528,8 +1528,8 @@
       "source_location": "L157",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_157",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "barcha tashkilotlarni atomik tranzaksiya bilan xavfsiz saqlash/yangilash (buzilm"
     },
     {
@@ -1539,7 +1539,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_201",
-      "community": 52,
+      "community": 7,
       "community_name": "SQLiteManager",
       "norm_label": "tashkilotni id si bo'yicha sqlite bazasidan butunlay o'chirish."
     },
@@ -1550,8 +1550,8 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_218",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "chiqindi elementini id si bo'yicha sqlite bazasidan butunlay o'chirish."
     },
     {
@@ -1561,8 +1561,8 @@
       "source_location": "L235",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_235",
-      "community": 58,
-      "community_name": ".insert_or_replace_organization",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "bitta tashkilotni qo'shish yoki yangilash."
     },
     {
@@ -1572,8 +1572,8 @@
       "source_location": "L264",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_264",
-      "community": 58,
-      "community_name": ".insert_or_replace_organization",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "bitta tashkilotni qo'shish yoki yangilash (alias)."
     },
     {
@@ -1583,8 +1583,8 @@
       "source_location": "L268",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_268",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "ommaviy tashkilotlarni saqlash va sonini qaytarish."
     },
     {
@@ -1594,8 +1594,8 @@
       "source_location": "L273",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_273",
-      "community": 62,
-      "community_name": ".get_organization_by_id",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "tashkilotni unikal id si bo'yicha olish."
     },
     {
@@ -1605,8 +1605,8 @@
       "source_location": "L285",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_285",
-      "community": 63,
-      "community_name": ".get_organization_by_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "tashkilotni inn si bo'yicha olish."
     },
     {
@@ -1616,8 +1616,8 @@
       "source_location": "L300",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_300",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "chiqindi qutisidagi barcha yozuvlarni olish."
     },
     {
@@ -1627,8 +1627,8 @@
       "source_location": "L311",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_311",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "chiqindi qutisini to'liq saqlash."
     },
     {
@@ -1638,8 +1638,8 @@
       "source_location": "L362",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_362",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "xodim rotatsiyasi/almashinuvini tarix jadvaliga qo'shish (ko'p qirrali parametrl"
     },
     {
@@ -1649,8 +1649,8 @@
       "source_location": "L391",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_391",
-      "community": 49,
-      "community_name": "Any",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "xodimlar tarixini olish (tashkilot yoki mahalla bo'yicha)."
     },
     {
@@ -1660,8 +1660,8 @@
       "source_location": "L427",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_427",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "tizimdagi harakatni sqlite jurnaliga qayd etish."
     },
     {
@@ -1671,8 +1671,8 @@
       "source_location": "L440",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_440",
-      "community": 64,
-      "community_name": ".get_recent_activity",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "so'nggi faoliyat jurnallarini olish."
     },
     {
@@ -1682,8 +1682,8 @@
       "source_location": "L453",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_453",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "agar sqlite jadvali bo'sh bo'lsa, json fayldan barcha yozuvlarni avtomatik ko'ch"
     },
     {
@@ -1693,8 +1693,8 @@
       "source_location": "L479",
       "_origin": "ast",
       "id": "database_sqlite_manager_rationale_479",
-      "community": 48,
-      "community_name": "clean_inn",
+      "community": 7,
+      "community_name": "SQLiteManager",
       "norm_label": "sqlite bazasini vaqt tamg'asi bilan zaxiralash."
     },
     {
@@ -1990,8 +1990,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_cabinet_service",
-      "community": 30,
-      "community_name": "telegram_bot.py",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "cabinet_service.py"
     },
     {
@@ -2034,8 +2034,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_cabinet_service_rationale_1",
-      "community": 30,
-      "community_name": "telegram_bot.py",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "pop tuman tashkilotlari va inn tizimi kabinet xizmati (cabinet access service) x"
     },
     {
@@ -2144,8 +2144,8 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "services_gsheet_service_extract_sheet_id",
-      "community": 60,
-      "community_name": "extract_sheet_id",
+      "community": 14,
+      "community_name": "Services Package Architecture",
       "norm_label": "extract_sheet_id()"
     },
     {
@@ -2243,8 +2243,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "services_gsheet_service_rationale_10",
-      "community": 60,
-      "community_name": "extract_sheet_id",
+      "community": 14,
+      "community_name": "Services Package Architecture",
       "norm_label": "url yoki matndan google sheet id sini ajratib olish."
     },
     {
@@ -2419,8 +2419,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "services_qr_service_clean_phone_number",
-      "community": 46,
-      "community_name": "export_organizations_to_excel",
+      "community": 22,
+      "community_name": "test_services.py",
       "norm_label": "clean_phone_number()"
     },
     {
@@ -2474,8 +2474,8 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "services_qr_service_rationale_5",
-      "community": 46,
-      "community_name": "export_organizations_to_excel",
+      "community": 22,
+      "community_name": "test_services.py",
       "norm_label": "telefon raqamini tozalash va to'g'ri xalqaro formatga keltirish."
     },
     {
@@ -2518,8 +2518,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_search_service",
-      "community": 3,
-      "community_name": "External Services (Excel, QR, GSheets)",
+      "community": 31,
+      "community_name": "hash_password",
       "norm_label": "search_service.py"
     },
     {
@@ -2540,8 +2540,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "services_search_service_searchservice",
-      "community": 14,
-      "community_name": "Services Package Architecture",
+      "community": 31,
+      "community_name": "hash_password",
       "norm_label": "searchservice"
     },
     {
@@ -2551,8 +2551,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "services_search_service_searchservice_match_category",
-      "community": 14,
-      "community_name": "Services Package Architecture",
+      "community": 31,
+      "community_name": "hash_password",
       "norm_label": ".match_category()"
     },
     {
@@ -2595,8 +2595,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_search_service_rationale_1",
-      "community": 3,
-      "community_name": "External Services (Excel, QR, GSheets)",
+      "community": 31,
+      "community_name": "hash_password",
       "norm_label": "pop tuman tashkilotlari va inn tizimi tezkor qidiruv va filtrlash xizmati (sear"
     },
     {
@@ -2617,8 +2617,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "services_search_service_rationale_18",
-      "community": 14,
-      "community_name": "Services Package Architecture",
+      "community": 31,
+      "community_name": "hash_password",
       "norm_label": "tashkilotlar bazasida tezkor qidiruv va filtrlash xizmati."
     },
     {
@@ -2628,8 +2628,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "services_search_service_rationale_22",
-      "community": 14,
-      "community_name": "Services Package Architecture",
+      "community": 31,
+      "community_name": "hash_password",
       "norm_label": "toifalarni moslashtirish (shu jumladan qisqartmalar va sinonimlar)."
     },
     {
@@ -2661,8 +2661,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_sync_contracts_data",
-      "community": 41,
-      "community_name": "pil_to_qpixmap",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "sync_contracts_data.py"
     },
     {
@@ -2749,8 +2749,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_sync_contracts_data_rationale_1",
-      "community": 41,
-      "community_name": "pil_to_qpixmap",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "services.sync_contracts_data: dataulan.xls faylidagi shartnomalar, apparat xodim"
     },
     {
@@ -2881,8 +2881,8 @@
       "source_location": "L119",
       "_origin": "ast",
       "id": "services_sync_excel_data_excelsyncservice_init",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 25,
+      "community_name": "clean_inn",
       "norm_label": ".__init__()"
     },
     {
@@ -3024,8 +3024,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_telegram_bot",
-      "community": 3,
-      "community_name": "External Services (Excel, QR, GSheets)",
+      "community": 31,
+      "community_name": "hash_password",
       "norm_label": "telegram_bot.py"
     },
     {
@@ -3431,8 +3431,8 @@
       "source_location": "L1211",
       "_origin": "ast",
       "id": "services_telegram_bot_get_telegram_bot_service",
-      "community": 3,
-      "community_name": "External Services (Excel, QR, GSheets)",
+      "community": 1,
+      "community_name": "Core Configuration & Logging",
       "norm_label": "get_telegram_bot_service()"
     },
     {
@@ -3442,8 +3442,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_telegram_bot_rationale_1",
-      "community": 3,
-      "community_name": "External Services (Excel, QR, GSheets)",
+      "community": 31,
+      "community_name": "hash_password",
       "norm_label": "pop tuman tashkilotlari va inn tizimi telegram bot xizmati (telegram bot service"
     },
     {
@@ -3816,8 +3816,8 @@
       "source_location": "L1212",
       "_origin": "ast",
       "id": "services_telegram_bot_rationale_1212",
-      "community": 3,
-      "community_name": "External Services (Excel, QR, GSheets)",
+      "community": 1,
+      "community_name": "Core Configuration & Logging",
       "norm_label": "telegrambotservice uchun yagona namuna (singleton) olish."
     },
     {
@@ -3937,8 +3937,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_data_manager",
-      "community": 6,
-      "community_name": "UI Views Test Suite",
+      "community": 47,
+      "community_name": "TestDataManager",
       "norm_label": "test_data_manager.py"
     },
     {
@@ -4047,8 +4047,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_features_12346",
-      "community": 46,
-      "community_name": "export_organizations_to_excel",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "test_features_12346.py"
     },
     {
@@ -4058,8 +4058,8 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "tests_test_features_12346_testfeatures12346",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 15,
+      "community_name": "Cloud Sync Verification",
       "norm_label": "testfeatures12346"
     },
     {
@@ -4069,8 +4069,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "tests_test_features_12346_testfeatures12346_setup",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 15,
+      "community_name": "Cloud Sync Verification",
       "norm_label": ".setup()"
     },
     {
@@ -4080,8 +4080,8 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "tests_test_features_12346_testfeatures12346_test_task1_sqlite_integrity_and_delete",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 15,
+      "community_name": "Cloud Sync Verification",
       "norm_label": ".test_task1_sqlite_integrity_and_delete()"
     },
     {
@@ -4091,8 +4091,8 @@
       "source_location": "L63",
       "_origin": "ast",
       "id": "tests_test_features_12346_testfeatures12346_test_task2_single_instance_lock",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 15,
+      "community_name": "Cloud Sync Verification",
       "norm_label": ".test_task2_single_instance_lock()"
     },
     {
@@ -4102,8 +4102,8 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "tests_test_features_12346_testfeatures12346_test_task3_telegram_session_and_backoff",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 15,
+      "community_name": "Cloud Sync Verification",
       "norm_label": ".test_task3_telegram_session_and_backoff()"
     },
     {
@@ -4118,10 +4118,21 @@
       "norm_label": ".test_task4_mahalla_passport_a4_pdf_generation()"
     },
     {
-      "label": ".test_task6_table_signals_and_batch_ops()",
+      "label": ".test_task5_auto_backup_scheduler()",
       "file_type": "code",
       "source_file": "tests/test_features_12346.py",
       "source_location": "L111",
+      "_origin": "ast",
+      "id": "tests_test_features_12346_testfeatures12346_test_task5_auto_backup_scheduler",
+      "community": 15,
+      "community_name": "Cloud Sync Verification",
+      "norm_label": ".test_task5_auto_backup_scheduler()"
+    },
+    {
+      "label": ".test_task6_table_signals_and_batch_ops()",
+      "file_type": "code",
+      "source_file": "tests/test_features_12346.py",
+      "source_location": "L153",
       "_origin": "ast",
       "id": "tests_test_features_12346_testfeatures12346_test_task6_table_signals_and_batch_ops",
       "community": 15,
@@ -4135,8 +4146,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_features_12346_rationale_1",
-      "community": 46,
-      "community_name": "export_organizations_to_excel",
+      "community": 33,
+      "community_name": ".__init__",
       "norm_label": "tests.test_features_12346: 1, 2, 3, 4, 6-topshiriqlar bo'yicha maxsus sinov test"
     },
     {
@@ -4146,8 +4157,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "tests_test_features_12346_rationale_38",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 15,
+      "community_name": "Cloud Sync Verification",
       "norm_label": "task 1: sqlite delete_organization va delete_trash_item to'g'ri ishlashi."
     },
     {
@@ -4157,8 +4168,8 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "tests_test_features_12346_rationale_64",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 15,
+      "community_name": "Cloud Sync Verification",
       "norm_label": "task 2: qlockfile orqali ikkinchi instansiyani aniqlash va qulflash."
     },
     {
@@ -4168,8 +4179,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "tests_test_features_12346_rationale_78",
-      "community": 37,
-      "community_name": "telegram_bot.py",
+      "community": 15,
+      "community_name": "Cloud Sync Verification",
       "norm_label": "task 3: telegram bot sessiya boshqaruvi va avto-yangilanishi."
     },
     {
@@ -4184,12 +4195,23 @@
       "norm_label": "task 4: mahalla pasportini a4 pdf formatida to'liq generatsiya qilish."
     },
     {
-      "label": "Task 6: ContractsView va TrashView da signal boshqaruvi va unumdorlik.",
+      "label": "Task 5: Avtomatlashtirilgan fonda davriy zaxira olish (Auto-Backup Scheduler).",
       "file_type": "rationale",
       "source_file": "tests/test_features_12346.py",
       "source_location": "L112",
       "_origin": "ast",
       "id": "tests_test_features_12346_rationale_112",
+      "community": 15,
+      "community_name": "Cloud Sync Verification",
+      "norm_label": "task 5: avtomatlashtirilgan fonda davriy zaxira olish (auto-backup scheduler)."
+    },
+    {
+      "label": "Task 6: ContractsView va TrashView da signal boshqaruvi va unumdorlik.",
+      "file_type": "rationale",
+      "source_file": "tests/test_features_12346.py",
+      "source_location": "L154",
+      "_origin": "ast",
+      "id": "tests_test_features_12346_rationale_154",
       "community": 15,
       "community_name": "Cloud Sync Verification",
       "norm_label": "task 6: contractsview va trashview da signal boshqaruvi va unumdorlik."
@@ -4212,8 +4234,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "tests_test_import_testimportservice",
-      "community": 35,
-      "community_name": "validate_inn",
+      "community": 21,
+      "community_name": "hash_password",
       "norm_label": "testimportservice"
     },
     {
@@ -4223,8 +4245,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "tests_test_import_testimportservice_setup",
-      "community": 35,
-      "community_name": "validate_inn",
+      "community": 21,
+      "community_name": "hash_password",
       "norm_label": ".setup()"
     },
     {
@@ -4234,8 +4256,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "tests_test_import_testimportservice_teardown",
-      "community": 35,
-      "community_name": "validate_inn",
+      "community": 21,
+      "community_name": "hash_password",
       "norm_label": ".teardown()"
     },
     {
@@ -4245,8 +4267,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "tests_test_import_testimportservice_test_import_from_csv",
-      "community": 35,
-      "community_name": "validate_inn",
+      "community": 21,
+      "community_name": "hash_password",
       "norm_label": ".test_import_from_csv()"
     },
     {
@@ -4256,8 +4278,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "tests_test_import_testimportservice_test_import_empty_file",
-      "community": 35,
-      "community_name": "validate_inn",
+      "community": 21,
+      "community_name": "hash_password",
       "norm_label": ".test_import_empty_file()"
     },
     {
@@ -4267,8 +4289,8 @@
       "source_location": "L45",
       "_origin": "ast",
       "id": "tests_test_import_testimportservice_test_import_unsupported_format",
-      "community": 35,
-      "community_name": "validate_inn",
+      "community": 21,
+      "community_name": "hash_password",
       "norm_label": ".test_import_unsupported_format()"
     },
     {
@@ -4278,8 +4300,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "tests_test_import_rationale_8",
-      "community": 35,
-      "community_name": "validate_inn",
+      "community": 21,
+      "community_name": "hash_password",
       "norm_label": "excel va csv fayllardan ommaviy import qilish testlari."
     },
     {
@@ -4289,8 +4311,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "tests_test_import_rationale_20",
-      "community": 35,
-      "community_name": "validate_inn",
+      "community": 21,
+      "community_name": "hash_password",
       "norm_label": "csv fayldan tashkilotlarni aniqlash va import qilish."
     },
     {
@@ -4300,8 +4322,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "tests_test_import_rationale_36",
-      "community": 35,
-      "community_name": "validate_inn",
+      "community": 21,
+      "community_name": "hash_password",
       "norm_label": "bo'sh faylni yuklashda ogohlantirish qaytarish."
     },
     {
@@ -4311,8 +4333,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "tests_test_import_rationale_46",
-      "community": 35,
-      "community_name": "validate_inn",
+      "community": 21,
+      "community_name": "hash_password",
       "norm_label": "noto'g'ri fayl formati xatosi."
     },
     {
@@ -4388,8 +4410,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_qt_views",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": "test_qt_views.py"
     },
     {
@@ -4399,8 +4421,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": "testqtarchitecture"
     },
     {
@@ -4410,8 +4432,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture_test_styles_generation",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": ".test_styles_generation()"
     },
     {
@@ -4432,8 +4454,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture_test_view_imports",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": ".test_view_imports()"
     },
     {
@@ -4443,8 +4465,8 @@
       "source_location": "L89",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture_test_cabinet_quick_copy",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": ".test_cabinet_quick_copy()"
     },
     {
@@ -4454,8 +4476,8 @@
       "source_location": "L103",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture_test_verification_quick_copy",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": ".test_verification_quick_copy()"
     },
     {
@@ -4476,8 +4498,8 @@
       "source_location": "L156",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture_test_org_edit_dialog_instantiation",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": ".test_org_edit_dialog_instantiation()"
     },
     {
@@ -4487,8 +4509,8 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture_test_main_window_instantiation",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": ".test_main_window_instantiation()"
     },
     {
@@ -4498,8 +4520,8 @@
       "source_location": "L188",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture_test_theme_toggle_updates_dashboard",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": ".test_theme_toggle_updates_dashboard()"
     },
     {
@@ -4520,8 +4542,8 @@
       "source_location": "L266",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture_test_dialogs_light_theme",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": ".test_dialogs_light_theme()"
     },
     {
@@ -4542,8 +4564,8 @@
       "source_location": "L357",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture_test_qr_dialog_view",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".test_qr_dialog_view()"
     },
     {
@@ -4553,8 +4575,8 @@
       "source_location": "L379",
       "_origin": "ast",
       "id": "tests_test_qt_views_testqtarchitecture_test_contract_add_dialog",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": ".test_contract_add_dialog()"
     },
     {
@@ -4564,8 +4586,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_qt_views_rationale_1",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": "tests/test_qt_views.py: pyqt5 ui komponentlari va modellarining avtomatlashtiril"
     },
     {
@@ -4575,8 +4597,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "tests_test_qt_views_rationale_16",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": "pyqt5 arxitekturasi, modellari va ko'rinishlarini sinash."
     },
     {
@@ -4597,8 +4619,8 @@
       "source_location": "L267",
       "_origin": "ast",
       "id": "tests_test_qt_views_rationale_267",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": "barcha dialoglar light rejimida to'g'ri ochilishi va stillari o'rnatilishini tek"
     },
     {
@@ -4619,8 +4641,8 @@
       "source_location": "L358",
       "_origin": "ast",
       "id": "tests_test_qt_views_rationale_358",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "qr kod oynasi (tel va vcard rejimlarida) to'g'ri yaratilishini tekshirish."
     },
     {
@@ -4630,8 +4652,8 @@
       "source_location": "L380",
       "_origin": "ast",
       "id": "tests_test_qt_views_rationale_380",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": "shartnoma qo'shish/tahrirlash dialogi yaratilishi va ma'lumot yuklanishini teksh"
     },
     {
@@ -4916,8 +4938,8 @@
       "source_location": "L197",
       "_origin": "ast",
       "id": "tests_test_services_testservices_test_gsheet_service_helpers",
-      "community": 60,
-      "community_name": "extract_sheet_id",
+      "community": 14,
+      "community_name": "Services Package Architecture",
       "norm_label": ".test_gsheet_service_helpers()"
     },
     {
@@ -4927,8 +4949,8 @@
       "source_location": "L209",
       "_origin": "ast",
       "id": "tests_test_services_testservices_test_worker_thread",
-      "community": 14,
-      "community_name": "Services Package Architecture",
+      "community": 17,
+      "community_name": "Organization",
       "norm_label": ".test_worker_thread()"
     },
     {
@@ -4949,7 +4971,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "tests_test_sqlite",
-      "community": 52,
+      "community": 7,
       "community_name": "SQLiteManager",
       "norm_label": "test_sqlite.py"
     },
@@ -5246,8 +5268,8 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "tests_test_ui_ux_deep_testuiuxdeep_test_07_dialogs_instantiation",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".test_07_dialogs_instantiation()"
     },
     {
@@ -5345,8 +5367,8 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "tests_test_ui_ux_deep_rationale_148",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "test all dialogs for clean initialization, styles, and button bindings."
     },
     {
@@ -5444,8 +5466,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "tests_test_validators_testvalidators_test_sanitize_text",
-      "community": 6,
-      "community_name": "UI Views Test Suite",
+      "community": 35,
+      "community_name": "validate_inn",
       "norm_label": ".test_sanitize_text()"
     },
     {
@@ -5510,15 +5532,15 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_app_window",
-      "community": 33,
-      "community_name": ".__init__",
+      "community": 26,
+      "community_name": "sanitize_text",
       "norm_label": "app_window.py"
     },
     {
       "label": "MainWindow",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L34",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow",
       "community": 27,
@@ -5540,7 +5562,7 @@
       "label": ".__init__()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L37",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_init",
       "community": 27,
@@ -5551,7 +5573,7 @@
       "label": ".setup_ui()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L70",
+      "source_location": "L77",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_setup_ui",
       "community": 27,
@@ -5562,7 +5584,7 @@
       "label": ".add_nav_btn()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L182",
+      "source_location": "L189",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_add_nav_btn",
       "community": 27,
@@ -5573,7 +5595,7 @@
       "label": ".set_active_nav_btn()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L191",
+      "source_location": "L198",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_set_active_nav_btn",
       "community": 27,
@@ -5584,7 +5606,7 @@
       "label": "._open_dialog_nav()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L198",
+      "source_location": "L205",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_open_dialog_nav",
       "community": 27,
@@ -5595,7 +5617,7 @@
       "label": ".apply_theme()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L203",
+      "source_location": "L210",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_apply_theme",
       "community": 27,
@@ -5606,7 +5628,7 @@
       "label": ".update_font_size()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L239",
+      "source_location": "L246",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_update_font_size",
       "community": 27,
@@ -5617,7 +5639,7 @@
       "label": ".toggle_theme()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L245",
+      "source_location": "L252",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_toggle_theme",
       "community": 27,
@@ -5628,7 +5650,7 @@
       "label": ".set_theme()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L250",
+      "source_location": "L257",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_set_theme",
       "community": 27,
@@ -5639,7 +5661,7 @@
       "label": ".show_dashboard()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L253",
+      "source_location": "L260",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_show_dashboard",
       "community": 27,
@@ -5650,7 +5672,7 @@
       "label": ".show_table()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L260",
+      "source_location": "L267",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_show_table",
       "community": 27,
@@ -5661,7 +5683,7 @@
       "label": ".show_contracts()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L267",
+      "source_location": "L274",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_show_contracts",
       "community": 27,
@@ -5672,7 +5694,7 @@
       "label": ".show_trash()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L274",
+      "source_location": "L281",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_show_trash",
       "community": 27,
@@ -5683,7 +5705,7 @@
       "label": ".show_settings()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L281",
+      "source_location": "L288",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_show_settings",
       "community": 27,
@@ -5694,7 +5716,7 @@
       "label": ".filter_by_category()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L288",
+      "source_location": "L295",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_filter_by_category",
       "community": 27,
@@ -5705,7 +5727,7 @@
       "label": ".open_add_dialog()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L292",
+      "source_location": "L299",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_open_add_dialog",
       "community": 27,
@@ -5716,18 +5738,18 @@
       "label": ".open_yettilik()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L298",
+      "source_location": "L305",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_open_yettilik",
-      "community": 61,
-      "community_name": "open_mahalla_passport",
+      "community": 39,
+      "community_name": "sync_contracts_data.py",
       "norm_label": ".open_yettilik()"
     },
     {
       "label": ".open_cabinet()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L301",
+      "source_location": "L308",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_open_cabinet",
       "community": 27,
@@ -5749,7 +5771,7 @@
       "label": ".open_verification()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L304",
+      "source_location": "L311",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_open_verification",
       "community": 27,
@@ -5760,7 +5782,7 @@
       "label": ".open_broadcast()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L307",
+      "source_location": "L314",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_open_broadcast",
       "community": 27,
@@ -5771,29 +5793,29 @@
       "label": ".open_history()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L310",
+      "source_location": "L317",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_open_history",
-      "community": 2,
-      "community_name": "Data Validation & Formatting",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": ".open_history()"
     },
     {
       "label": ".open_import()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L313",
+      "source_location": "L320",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_open_import",
-      "community": 2,
-      "community_name": "Data Validation & Formatting",
+      "community": 34,
+      "community_name": "DataManager",
       "norm_label": ".open_import()"
     },
     {
       "label": ".open_qr()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L316",
+      "source_location": "L323",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_open_qr",
       "community": 27,
@@ -5804,7 +5826,7 @@
       "label": ".start_background_bot()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L320",
+      "source_location": "L327",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_start_background_bot",
       "community": 27,
@@ -5815,7 +5837,7 @@
       "label": ".stop_background_bot()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L333",
+      "source_location": "L340",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_stop_background_bot",
       "community": 27,
@@ -5826,7 +5848,7 @@
       "label": ".refresh_all_views()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L342",
+      "source_location": "L349",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_refresh_all_views",
       "community": 27,
@@ -5837,7 +5859,7 @@
       "label": ".show_toast()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L366",
+      "source_location": "L373",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_show_toast",
       "community": 27,
@@ -5845,10 +5867,54 @@
       "norm_label": ".show_toast()"
     },
     {
+      "label": ".setup_auto_backup()",
+      "file_type": "code",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L382",
+      "_origin": "ast",
+      "id": "ui_qt_app_window_mainwindow_setup_auto_backup",
+      "community": 27,
+      "community_name": "MainWindow",
+      "norm_label": ".setup_auto_backup()"
+    },
+    {
+      "label": ".restart_backup_timer()",
+      "file_type": "code",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L387",
+      "_origin": "ast",
+      "id": "ui_qt_app_window_mainwindow_restart_backup_timer",
+      "community": 27,
+      "community_name": "MainWindow",
+      "norm_label": ".restart_backup_timer()"
+    },
+    {
+      "label": ".trigger_auto_backup()",
+      "file_type": "code",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L403",
+      "_origin": "ast",
+      "id": "ui_qt_app_window_mainwindow_trigger_auto_backup",
+      "community": 27,
+      "community_name": "MainWindow",
+      "norm_label": ".trigger_auto_backup()"
+    },
+    {
+      "label": "._on_auto_backup_done()",
+      "file_type": "code",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L417",
+      "_origin": "ast",
+      "id": "ui_qt_app_window_mainwindow_on_auto_backup_done",
+      "community": 27,
+      "community_name": "MainWindow",
+      "norm_label": "._on_auto_backup_done()"
+    },
+    {
       "label": ".closeEvent()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L371",
+      "source_location": "L430",
       "_origin": "ast",
       "id": "ui_qt_app_window_mainwindow_closeevent",
       "community": 27,
@@ -5859,7 +5925,7 @@
       "label": "run_qt_app()",
       "file_type": "code",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L381",
+      "source_location": "L447",
       "_origin": "ast",
       "id": "ui_qt_app_window_run_qt_app",
       "community": 0,
@@ -5873,17 +5939,17 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_app_window_rationale_1",
-      "community": 33,
-      "community_name": ".__init__",
+      "community": 26,
+      "community_name": "sanitize_text",
       "norm_label": "ui_qt.app_window: pop tumani tashkilotlari va inn tizimi asosiy pyqt5 oynasi (cl"
     },
     {
       "label": "Pop Tuman Tizimining Asosiy PyQt5 Oynasi.",
       "file_type": "rationale",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L35",
+      "source_location": "L37",
       "_origin": "ast",
-      "id": "ui_qt_app_window_rationale_35",
+      "id": "ui_qt_app_window_rationale_37",
       "community": 27,
       "community_name": "MainWindow",
       "norm_label": "pop tuman tizimining asosiy pyqt5 oynasi."
@@ -5892,9 +5958,9 @@
       "label": "Dialog ochuvchi sidebar tugmalari uchun: checked holatni to'g'ri boshqarish.",
       "file_type": "rationale",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L199",
+      "source_location": "L206",
       "_origin": "ast",
-      "id": "ui_qt_app_window_rationale_199",
+      "id": "ui_qt_app_window_rationale_206",
       "community": 27,
       "community_name": "MainWindow",
       "norm_label": "dialog ochuvchi sidebar tugmalari uchun: checked holatni to'g'ri boshqarish."
@@ -5903,9 +5969,9 @@
       "label": "Sozlamalardan shrift o'lchami o'zgarganda darhol butun tizimda qo'llash.",
       "file_type": "rationale",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L240",
+      "source_location": "L247",
       "_origin": "ast",
-      "id": "ui_qt_app_window_rationale_240",
+      "id": "ui_qt_app_window_rationale_247",
       "community": 27,
       "community_name": "MainWindow",
       "norm_label": "sozlamalardan shrift o'lchami o'zgarganda darhol butun tizimda qo'llash."
@@ -5914,9 +5980,9 @@
       "label": "QR-kod oynasini ochish.",
       "file_type": "rationale",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L317",
+      "source_location": "L324",
       "_origin": "ast",
-      "id": "ui_qt_app_window_rationale_317",
+      "id": "ui_qt_app_window_rationale_324",
       "community": 27,
       "community_name": "MainWindow",
       "norm_label": "qr-kod oynasini ochish."
@@ -5925,9 +5991,9 @@
       "label": "Telegram botni fon rejimida (asinxron) ishga tushirish.",
       "file_type": "rationale",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L321",
+      "source_location": "L328",
       "_origin": "ast",
-      "id": "ui_qt_app_window_rationale_321",
+      "id": "ui_qt_app_window_rationale_328",
       "community": 27,
       "community_name": "MainWindow",
       "norm_label": "telegram botni fon rejimida (asinxron) ishga tushirish."
@@ -5936,9 +6002,9 @@
       "label": "Telegram botni to'xtatish.",
       "file_type": "rationale",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L334",
+      "source_location": "L341",
       "_origin": "ast",
-      "id": "ui_qt_app_window_rationale_334",
+      "id": "ui_qt_app_window_rationale_341",
       "community": 27,
       "community_name": "MainWindow",
       "norm_label": "telegram botni to'xtatish."
@@ -5947,20 +6013,53 @@
       "label": "Status bar orqali chiroyli xabar chiqarish.",
       "file_type": "rationale",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L367",
+      "source_location": "L374",
       "_origin": "ast",
-      "id": "ui_qt_app_window_rationale_367",
+      "id": "ui_qt_app_window_rationale_374",
       "community": 27,
       "community_name": "MainWindow",
       "norm_label": "status bar orqali chiroyli xabar chiqarish."
     },
     {
+      "label": "Avtomatlashtirilgan davriy zaxira olish taymerini sozlash.",
+      "file_type": "rationale",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L383",
+      "_origin": "ast",
+      "id": "ui_qt_app_window_rationale_383",
+      "community": 27,
+      "community_name": "MainWindow",
+      "norm_label": "avtomatlashtirilgan davriy zaxira olish taymerini sozlash."
+    },
+    {
+      "label": "Zaxiralash taymerini sozlamalar asosida qayta ishga tushirish.",
+      "file_type": "rationale",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L388",
+      "_origin": "ast",
+      "id": "ui_qt_app_window_rationale_388",
+      "community": 27,
+      "community_name": "MainWindow",
+      "norm_label": "zaxiralash taymerini sozlamalar asosida qayta ishga tushirish."
+    },
+    {
+      "label": "Fonda asinxron avtomatik zaxira nusxa yaratish (UI qotmaydi).",
+      "file_type": "rationale",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L404",
+      "_origin": "ast",
+      "id": "ui_qt_app_window_rationale_404",
+      "community": 27,
+      "community_name": "MainWindow",
+      "norm_label": "fonda asinxron avtomatik zaxira nusxa yaratish (ui qotmaydi)."
+    },
+    {
       "label": "Dastur yopilayotganda avtomatik zaxira nusxa yaratish va botni to'xtatish.",
       "file_type": "rationale",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L372",
+      "source_location": "L431",
       "_origin": "ast",
-      "id": "ui_qt_app_window_rationale_372",
+      "id": "ui_qt_app_window_rationale_431",
       "community": 27,
       "community_name": "MainWindow",
       "norm_label": "dastur yopilayotganda avtomatik zaxira nusxa yaratish va botni to'xtatish."
@@ -5969,9 +6068,9 @@
       "label": "PyQt5 ilovasini ishga tushirish (High-DPI va Yagona Nusxa / Single Instance himo",
       "file_type": "rationale",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L382",
+      "source_location": "L448",
       "_origin": "ast",
-      "id": "ui_qt_app_window_rationale_382",
+      "id": "ui_qt_app_window_rationale_448",
       "community": 0,
       "community_name": "UI App Core & Event Handlers",
       "norm_label": "pyqt5 ilovasini ishga tushirish (high-dpi va yagona nusxa / single instance himo"
@@ -6225,8 +6324,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_components_widgets",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 32,
+      "community_name": "VerificationDialog",
       "norm_label": "widgets.py"
     },
     {
@@ -6247,8 +6346,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "qframe",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 39,
+      "community_name": "sync_contracts_data.py",
       "norm_label": "qframe"
     },
     {
@@ -6555,8 +6654,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_components_widgets_rationale_1",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 32,
+      "community_name": "VerificationDialog",
       "norm_label": "ui_qt.components.widgets: yuqori sifatli (senior-grade) maxsus qt komponentlari."
     },
     {
@@ -6632,8 +6731,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "ui_qt_styles_hex_to_rgba",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 32,
+      "community_name": "VerificationDialog",
       "norm_label": "hex_to_rgba()"
     },
     {
@@ -6665,8 +6764,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "ui_qt_styles_rationale_11",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 32,
+      "community_name": "VerificationDialog",
       "norm_label": "hex rang kodini (#rrggbb) to'g'ri qt css rgba(r, g, b, alpha) formatiga o'tkazad"
     },
     {
@@ -6709,8 +6808,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_broadcast_view",
-      "community": 33,
-      "community_name": ".__init__",
+      "community": 26,
+      "community_name": "sanitize_text",
       "norm_label": "broadcast_view.py"
     },
     {
@@ -6830,8 +6929,8 @@
       "source_location": "L253",
       "_origin": "ast",
       "id": "ui_qt_views_broadcast_view_open_broadcast_dialog",
-      "community": 33,
-      "community_name": ".__init__",
+      "community": 26,
+      "community_name": "sanitize_text",
       "norm_label": "open_broadcast_dialog()"
     },
     {
@@ -6841,8 +6940,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_broadcast_view_rationale_1",
-      "community": 33,
-      "community_name": ".__init__",
+      "community": 26,
+      "community_name": "sanitize_text",
       "norm_label": "ui_qt.views.broadcast_view: ommaviy xabarnoma (sms & telegram) dialogi (pyqt5)."
     },
     {
@@ -6874,8 +6973,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "cabinet_dialog.py"
     },
     {
@@ -6885,8 +6984,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_cabinetdialog",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "cabinetdialog"
     },
     {
@@ -6896,8 +6995,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_py_qdialog",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "qdialog"
     },
     {
@@ -6907,8 +7006,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_cabinetdialog_init",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".__init__()"
     },
     {
@@ -6918,8 +7017,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_py_any",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "any"
     },
     {
@@ -6929,8 +7028,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_cabinetdialog_setup_ui",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".setup_ui()"
     },
     {
@@ -6940,8 +7039,8 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_cabinetdialog_load_item",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".load_item()"
     },
     {
@@ -6962,8 +7061,8 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_cabinetdialog_copy_to_clipboard",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".copy_to_clipboard()"
     },
     {
@@ -6973,8 +7072,8 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_cabinetdialog_send_to_telegram",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".send_to_telegram()"
     },
     {
@@ -6984,8 +7083,8 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_cabinetdialog_on_telegram_done",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "._on_telegram_done()"
     },
     {
@@ -6995,8 +7094,8 @@
       "source_location": "L185",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_cabinetdialog_on_telegram_err",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "._on_telegram_err()"
     },
     {
@@ -7006,8 +7105,8 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_copy_cabinet_quick",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": "copy_cabinet_quick()"
     },
     {
@@ -7028,8 +7127,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_rationale_1",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "ui_qt.views.cabinet_dialog: 'kabinetga dostup' shablonini generatsiya qilish, bi"
     },
     {
@@ -7039,8 +7138,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_rationale_19",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "kabinetga dostup shablon oynasi."
     },
     {
@@ -7050,8 +7149,8 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_rationale_117",
-      "community": 5,
-      "community_name": "import_organizations_from_file",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "tanlangan tashkilot ma'lumotlarini yuklash."
     },
     {
@@ -7061,8 +7160,8 @@
       "source_location": "L192",
       "_origin": "ast",
       "id": "ui_qt_views_cabinet_dialog_rationale_192",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 2,
+      "community_name": "Data Validation & Formatting",
       "norm_label": "oynani ochmasdan tezkor nusxalash."
     },
     {
@@ -7083,8 +7182,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_contractadddialog",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "contractadddialog"
     },
     {
@@ -7094,8 +7193,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_py_qdialog",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "qdialog"
     },
     {
@@ -7105,8 +7204,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_contractadddialog_init",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": ".__init__()"
     },
     {
@@ -7116,8 +7215,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_py_any",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "any"
     },
     {
@@ -7127,8 +7226,8 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_contractadddialog_setup_ui",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": ".setup_ui()"
     },
     {
@@ -7138,8 +7237,8 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_contractadddialog_make_label",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "._make_label()"
     },
     {
@@ -7149,8 +7248,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "qlabel",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "qlabel"
     },
     {
@@ -7160,8 +7259,8 @@
       "source_location": "L194",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_contractadddialog_load_data",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": ".load_data()"
     },
     {
@@ -7171,8 +7270,8 @@
       "source_location": "L221",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_contractadddialog_save",
-      "community": 42,
-      "community_name": ".test_07_dialogs_instantiation",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": ".save()"
     },
     {
@@ -7193,8 +7292,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_rationale_18",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "shartnoma va ulanish ma'lumotlarini qo'shish yoki tahrirlash oynasi."
     },
     {
@@ -7204,8 +7303,8 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_rationale_187",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "forma label yaratish (mavzuga mos rang bilan)."
     },
     {
@@ -7215,8 +7314,8 @@
       "source_location": "L195",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_rationale_195",
-      "community": 50,
-      "community_name": "QLabel",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "mavjud ma'lumotlarni formaga yuklash (tahrirlash rejimi)."
     },
     {
@@ -7226,8 +7325,8 @@
       "source_location": "L222",
       "_origin": "ast",
       "id": "ui_qt_views_contract_add_dialog_rationale_222",
-      "community": 42,
-      "community_name": ".test_07_dialogs_instantiation",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "ma'lumotlarni validatsiya qilish va saqlash."
     },
     {
@@ -7237,8 +7336,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_contracts_view",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "contracts_view.py"
     },
     {
@@ -7292,8 +7391,8 @@
       "source_location": "L186",
       "_origin": "ast",
       "id": "ui_qt_views_contracts_view_contractsview_create_kpi_card",
-      "community": 56,
-      "community_name": "._create_kpi_card",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "._create_kpi_card()"
     },
     {
@@ -7303,8 +7402,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_contracts_view_py_any",
-      "community": 56,
-      "community_name": "._create_kpi_card",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "any"
     },
     {
@@ -7468,8 +7567,8 @@
       "source_location": "L485",
       "_origin": "ast",
       "id": "ui_qt_views_contracts_view_contractsview_show_context_menu",
-      "community": 56,
-      "community_name": "._create_kpi_card",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": ".show_context_menu()"
     },
     {
@@ -7479,8 +7578,8 @@
       "source_location": "L555",
       "_origin": "ast",
       "id": "ui_qt_views_contracts_view_contractsview_copy_and_toast",
-      "community": 56,
-      "community_name": "._create_kpi_card",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "._copy_and_toast()"
     },
     {
@@ -7490,8 +7589,8 @@
       "source_location": "L561",
       "_origin": "ast",
       "id": "ui_qt_views_contracts_view_contractsview_copy_entire_row",
-      "community": 56,
-      "community_name": "._create_kpi_card",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "._copy_entire_row()"
     },
     {
@@ -7512,8 +7611,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_contracts_view_rationale_1",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "ui_qt.views.contracts_view: shartnoma va ulanishlar monitoringi ekrani (pyqt5)."
     },
     {
@@ -7534,8 +7633,8 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "ui_qt_views_contracts_view_rationale_187",
-      "community": 56,
-      "community_name": "._create_kpi_card",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "senior-darajadagi muvozanatli 2x2 kpi statistika kartochkasi."
     },
     {
@@ -7666,8 +7765,8 @@
       "source_location": "L486",
       "_origin": "ast",
       "id": "ui_qt_views_contracts_view_rationale_486",
-      "community": 56,
-      "community_name": "._create_kpi_card",
+      "community": 24,
+      "community_name": "TestImportService",
       "norm_label": "o'ng tugma kontekst menyusi."
     },
     {
@@ -7688,8 +7787,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_dashboard_view",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 32,
+      "community_name": "VerificationDialog",
       "norm_label": "dashboard_view.py"
     },
     {
@@ -7809,8 +7908,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_dashboard_view_rationale_1",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 32,
+      "community_name": "VerificationDialog",
       "norm_label": "ui_qt.views.dashboard_view: asosiy boshqaruv paneli (dashboard) (pyqt5). senior-"
     },
     {
@@ -7875,8 +7974,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_historyview",
-      "community": 31,
-      "community_name": "hash_password",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": "historyview"
     },
     {
@@ -7886,8 +7985,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_py_qdialog",
-      "community": 31,
-      "community_name": "hash_password",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": "qdialog"
     },
     {
@@ -7897,8 +7996,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_historyview_init",
-      "community": 31,
-      "community_name": "hash_password",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": ".__init__()"
     },
     {
@@ -7908,8 +8007,8 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_historyview_setup_ui",
-      "community": 31,
-      "community_name": "hash_password",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": ".setup_ui()"
     },
     {
@@ -7919,8 +8018,8 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_historyview_load_history",
-      "community": 31,
-      "community_name": "hash_password",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": ".load_history()"
     },
     {
@@ -7930,8 +8029,8 @@
       "source_location": "L110",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_historyview_display_records",
-      "community": 31,
-      "community_name": "hash_password",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": ".display_records()"
     },
     {
@@ -7941,8 +8040,8 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_historyview_filter_table",
-      "community": 31,
-      "community_name": "hash_password",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": ".filter_table()"
     },
     {
@@ -7952,8 +8051,8 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_open_staff_history_dialog",
-      "community": 2,
-      "community_name": "Data Validation & Formatting",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": "open_staff_history_dialog()"
     },
     {
@@ -7963,8 +8062,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_py_any",
-      "community": 2,
-      "community_name": "Data Validation & Formatting",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": "any"
     },
     {
@@ -7985,8 +8084,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_rationale_16",
-      "community": 31,
-      "community_name": "hash_password",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": "kadrlar tarixi dialog oynasi."
     },
     {
@@ -7996,8 +8095,8 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "ui_qt_views_history_view_rationale_100",
-      "community": 31,
-      "community_name": "hash_password",
+      "community": 51,
+      "community_name": "BroadcastView",
       "norm_label": "sqlite dan tarix yozuvlarini yuklash."
     },
     {
@@ -8150,8 +8249,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_mahalla_passport_view",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "mahalla_passport_view.py"
     },
     {
@@ -8293,8 +8392,8 @@
       "source_location": "L454",
       "_origin": "ast",
       "id": "ui_qt_views_mahalla_passport_view_open_mahalla_passport",
-      "community": 61,
-      "community_name": "open_mahalla_passport",
+      "community": 39,
+      "community_name": "sync_contracts_data.py",
       "norm_label": "open_mahalla_passport()"
     },
     {
@@ -8304,8 +8403,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_mahalla_passport_view_py_any",
-      "community": 61,
-      "community_name": "open_mahalla_passport",
+      "community": 39,
+      "community_name": "sync_contracts_data.py",
       "norm_label": "any"
     },
     {
@@ -8315,8 +8414,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_mahalla_passport_view_rationale_1",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "ui_qt.views.mahalla_passport_view: mahalla 'yettiligi' 360\u00b0 pasport oynasi (pyqt"
     },
     {
@@ -8447,8 +8546,8 @@
       "source_location": "L181",
       "_origin": "ast",
       "id": "ui_qt_views_org_edit_dialog_orgeditdialog_save",
-      "community": 4,
-      "community_name": "Data Persistence & Backup Manager",
+      "community": 42,
+      "community_name": ".test_07_dialogs_instantiation",
       "norm_label": ".save()"
     },
     {
@@ -8491,8 +8590,8 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "ui_qt_views_org_edit_dialog_rationale_182",
-      "community": 4,
-      "community_name": "Data Persistence & Backup Manager",
+      "community": 42,
+      "community_name": ".test_07_dialogs_instantiation",
       "norm_label": "ma'lumotlarni validatsiya qilish va saqlash."
     },
     {
@@ -8502,8 +8601,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "qr_dialog.py"
     },
     {
@@ -8513,8 +8612,8 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_pil_to_qpixmap",
-      "community": 59,
-      "community_name": "pil_to_qpixmap",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "pil_to_qpixmap()"
     },
     {
@@ -8524,8 +8623,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_py_image",
-      "community": 59,
-      "community_name": "pil_to_qpixmap",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "image"
     },
     {
@@ -8535,8 +8634,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "qpixmap",
-      "community": 59,
-      "community_name": "pil_to_qpixmap",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "qpixmap"
     },
     {
@@ -8546,8 +8645,8 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_qrdialog",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "qrdialog"
     },
     {
@@ -8557,8 +8656,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_py_qdialog",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "qdialog"
     },
     {
@@ -8568,8 +8667,8 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_qrdialog_init",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".__init__()"
     },
     {
@@ -8579,8 +8678,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_py_any",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "any"
     },
     {
@@ -8590,8 +8689,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_qrdialog_setup_ui",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".setup_ui()"
     },
     {
@@ -8601,8 +8700,8 @@
       "source_location": "L209",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_qrdialog_on_mode_toggled",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "._on_mode_toggled()"
     },
     {
@@ -8612,8 +8711,8 @@
       "source_location": "L213",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_qrdialog_update_qr",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".update_qr()"
     },
     {
@@ -8623,8 +8722,8 @@
       "source_location": "L239",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_qrdialog_copy_phone",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": ".copy_phone()"
     },
     {
@@ -8645,8 +8744,8 @@
       "source_location": "L286",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_open_qr_dialog",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "open_qr_dialog()"
     },
     {
@@ -8656,8 +8755,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_rationale_1",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "ui_qt.views.qr_dialog: telefon raqami va tashkilot ma'lumotlari uchun zamonaviy"
     },
     {
@@ -8667,8 +8766,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_rationale_27",
-      "community": 59,
-      "community_name": "pil_to_qpixmap",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "pil image ob'ektini pyqt5 qpixmap tasviriga xotirada tezkor aylantirish."
     },
     {
@@ -8678,8 +8777,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_rationale_36",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "telefon raqami va tashkilot kontakti uchun professional qr-kod dialogi."
     },
     {
@@ -8689,8 +8788,8 @@
       "source_location": "L214",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_rationale_214",
-      "community": 21,
-      "community_name": "hash_password",
+      "community": 8,
+      "community_name": "settings_view.py",
       "norm_label": "qr kod tasvirini joriy rejim bo'yicha qayta chizish."
     },
     {
@@ -8711,8 +8810,8 @@
       "source_location": "L295",
       "_origin": "ast",
       "id": "ui_qt_views_qr_dialog_rationale_295",
-      "community": 26,
-      "community_name": "sanitize_text",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "ilova oynasida qr dialogini xavfsiz ochish."
     },
     {
@@ -8774,7 +8873,7 @@
       "label": ".set_theme()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L191",
+      "source_location": "L235",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_set_theme",
       "community": 38,
@@ -8785,7 +8884,7 @@
       "label": ".load_settings()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L209",
+      "source_location": "L263",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_load_settings",
       "community": 38,
@@ -8793,10 +8892,54 @@
       "norm_label": ".load_settings()"
     },
     {
+      "label": ".on_auto_backup_toggled()",
+      "file_type": "code",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L330",
+      "_origin": "ast",
+      "id": "ui_qt_views_settings_view_settingsview_on_auto_backup_toggled",
+      "community": 38,
+      "community_name": "build_verification_text",
+      "norm_label": ".on_auto_backup_toggled()"
+    },
+    {
+      "label": ".on_backup_interval_changed()",
+      "file_type": "code",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L342",
+      "_origin": "ast",
+      "id": "ui_qt_views_settings_view_settingsview_on_backup_interval_changed",
+      "community": 38,
+      "community_name": "build_verification_text",
+      "norm_label": ".on_backup_interval_changed()"
+    },
+    {
+      "label": ".trigger_manual_auto_backup()",
+      "file_type": "code",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L355",
+      "_origin": "ast",
+      "id": "ui_qt_views_settings_view_settingsview_trigger_manual_auto_backup",
+      "community": 38,
+      "community_name": "build_verification_text",
+      "norm_label": ".trigger_manual_auto_backup()"
+    },
+    {
+      "label": ".update_last_backup_display()",
+      "file_type": "code",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L362",
+      "_origin": "ast",
+      "id": "ui_qt_views_settings_view_settingsview_update_last_backup_display",
+      "community": 38,
+      "community_name": "build_verification_text",
+      "norm_label": ".update_last_backup_display()"
+    },
+    {
       "label": ".create_backup()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L254",
+      "source_location": "L367",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_create_backup",
       "community": 38,
@@ -8807,7 +8950,7 @@
       "label": ".restore_backup()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L263",
+      "source_location": "L376",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_restore_backup",
       "community": 38,
@@ -8818,7 +8961,7 @@
       "label": ".save_bot_token()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L291",
+      "source_location": "L404",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_save_bot_token",
       "community": 38,
@@ -8829,7 +8972,7 @@
       "label": ".restart_bot()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L306",
+      "source_location": "L419",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_restart_bot",
       "community": 38,
@@ -8840,7 +8983,7 @@
       "label": ".update_password()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L316",
+      "source_location": "L429",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_update_password",
       "community": 38,
@@ -8851,7 +8994,7 @@
       "label": ".on_theme_changed()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L329",
+      "source_location": "L442",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_on_theme_changed",
       "community": 38,
@@ -8862,7 +9005,7 @@
       "label": ".on_font_changed()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L334",
+      "source_location": "L447",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_on_font_changed",
       "community": 38,
@@ -8873,7 +9016,7 @@
       "label": ".upload_to_google_sheet()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L341",
+      "source_location": "L454",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_upload_to_google_sheet",
       "community": 38,
@@ -8884,7 +9027,7 @@
       "label": "._on_gsheet_upload_done()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L378",
+      "source_location": "L491",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_on_gsheet_upload_done",
       "community": 38,
@@ -8895,7 +9038,7 @@
       "label": ".download_from_google_sheet()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L397",
+      "source_location": "L510",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_download_from_google_sheet",
       "community": 38,
@@ -8906,7 +9049,7 @@
       "label": "._on_gsheet_download_done()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L434",
+      "source_location": "L547",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_on_gsheet_download_done",
       "community": 38,
@@ -8917,7 +9060,7 @@
       "label": "._on_gsheet_error()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L457",
+      "source_location": "L570",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_settingsview_on_gsheet_error",
       "community": 38,
@@ -8928,7 +9071,7 @@
       "label": "render_settings()",
       "file_type": "code",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L465",
+      "source_location": "L578",
       "_origin": "ast",
       "id": "ui_qt_views_settings_view_render_settings",
       "community": 38,
@@ -8972,9 +9115,9 @@
       "label": "Sozlamalar sahifasidagi inline stillarni mavzuga moslashtirish.",
       "file_type": "rationale",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L192",
+      "source_location": "L236",
       "_origin": "ast",
-      "id": "ui_qt_views_settings_view_rationale_192",
+      "id": "ui_qt_views_settings_view_rationale_236",
       "community": 38,
       "community_name": "build_verification_text",
       "norm_label": "sozlamalar sahifasidagi inline stillarni mavzuga moslashtirish."
@@ -8983,20 +9126,64 @@
       "label": "Mavjud sozlamalarni yuklash.",
       "file_type": "rationale",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L210",
+      "source_location": "L264",
       "_origin": "ast",
-      "id": "ui_qt_views_settings_view_rationale_210",
+      "id": "ui_qt_views_settings_view_rationale_264",
       "community": 38,
       "community_name": "build_verification_text",
       "norm_label": "mavjud sozlamalarni yuklash."
     },
     {
+      "label": "Avtomatik zaxira yoqilgan/o'chirilganda sozlamani yangilash.",
+      "file_type": "rationale",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L331",
+      "_origin": "ast",
+      "id": "ui_qt_views_settings_view_rationale_331",
+      "community": 38,
+      "community_name": "build_verification_text",
+      "norm_label": "avtomatik zaxira yoqilgan/o'chirilganda sozlamani yangilash."
+    },
+    {
+      "label": "Zaxiralash vaqt oralig'i o'zgarganda.",
+      "file_type": "rationale",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L343",
+      "_origin": "ast",
+      "id": "ui_qt_views_settings_view_rationale_343",
+      "community": 38,
+      "community_name": "build_verification_text",
+      "norm_label": "zaxiralash vaqt oralig'i o'zgarganda."
+    },
+    {
+      "label": "Fonda zaxiralashni hoziroq sinab ko'rish.",
+      "file_type": "rationale",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L356",
+      "_origin": "ast",
+      "id": "ui_qt_views_settings_view_rationale_356",
+      "community": 38,
+      "community_name": "build_verification_text",
+      "norm_label": "fonda zaxiralashni hoziroq sinab ko'rish."
+    },
+    {
+      "label": "MainWindow dan chaqiriladigan oxirgi zaxira vaqti ko'rsatkichi.",
+      "file_type": "rationale",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L363",
+      "_origin": "ast",
+      "id": "ui_qt_views_settings_view_rationale_363",
+      "community": 38,
+      "community_name": "build_verification_text",
+      "norm_label": "mainwindow dan chaqiriladigan oxirgi zaxira vaqti ko'rsatkichi."
+    },
+    {
       "label": "Telegram botni qo'lda qayta ishga tushirish.",
       "file_type": "rationale",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L307",
+      "source_location": "L420",
       "_origin": "ast",
-      "id": "ui_qt_views_settings_view_rationale_307",
+      "id": "ui_qt_views_settings_view_rationale_420",
       "community": 38,
       "community_name": "build_verification_text",
       "norm_label": "telegram botni qo'lda qayta ishga tushirish."
@@ -9008,8 +9195,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_table_view",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "table_view.py"
     },
     {
@@ -9360,8 +9547,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_table_view_rationale_1",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 5,
+      "community_name": "import_organizations_from_file",
       "norm_label": "ui_qt.views.table_view: asosiy tashkilotlar jadvali (table view) (pyqt5). senior"
     },
     {
@@ -9657,8 +9844,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 26,
+      "community_name": "sanitize_text",
       "norm_label": "verification_dialog.py"
     },
     {
@@ -9668,8 +9855,8 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_verificationdialog",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": "verificationdialog"
     },
     {
@@ -9679,8 +9866,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_py_qdialog",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": "qdialog"
     },
     {
@@ -9690,8 +9877,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_verificationdialog_init",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": ".__init__()"
     },
     {
@@ -9701,8 +9888,8 @@
       "source_location": "",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_py_any",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": "any"
     },
     {
@@ -9712,8 +9899,8 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_verificationdialog_setup_ui",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": ".setup_ui()"
     },
     {
@@ -9723,8 +9910,8 @@
       "source_location": "L116",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_verificationdialog_load_item",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": ".load_item()"
     },
     {
@@ -9745,8 +9932,8 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_verificationdialog_copy_to_clipboard",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": ".copy_to_clipboard()"
     },
     {
@@ -9756,8 +9943,8 @@
       "source_location": "L144",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_verificationdialog_send_to_telegram",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 17,
+      "community_name": "Organization",
       "norm_label": ".send_to_telegram()"
     },
     {
@@ -9767,8 +9954,8 @@
       "source_location": "L169",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_verificationdialog_on_telegram_done",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": "._on_telegram_done()"
     },
     {
@@ -9778,8 +9965,8 @@
       "source_location": "L185",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_verificationdialog_on_telegram_err",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": "._on_telegram_err()"
     },
     {
@@ -9789,8 +9976,8 @@
       "source_location": "L191",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_copy_verification_quick",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": "copy_verification_quick()"
     },
     {
@@ -9800,8 +9987,8 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_open_verification_dialog",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": "open_verification_dialog()"
     },
     {
@@ -9811,8 +9998,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_rationale_1",
-      "community": 17,
-      "community_name": "Organization",
+      "community": 26,
+      "community_name": "sanitize_text",
       "norm_label": "ui_qt.views.verification_dialog: 'verifikatsiya so'rovi' shablonini generatsiya"
     },
     {
@@ -9822,8 +10009,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_rationale_19",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": "verifikatsiya so'rovi shablon oynasi."
     },
     {
@@ -9833,8 +10020,8 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_rationale_117",
-      "community": 32,
-      "community_name": "VerificationDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": "tanlangan tashkilot ma'lumotlarini yuklash."
     },
     {
@@ -9844,8 +10031,8 @@
       "source_location": "L192",
       "_origin": "ast",
       "id": "ui_qt_views_verification_dialog_rationale_192",
-      "community": 40,
-      "community_name": "OrgEditDialog",
+      "community": 36,
+      "community_name": "extract_sheet_id",
       "norm_label": "oynani ochmasdan tezkor nusxalash."
     },
     {
@@ -10176,7 +10363,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -10329,7 +10516,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L17",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -10833,7 +11020,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L324",
+      "source_location": "L437",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview_update_password",
@@ -11147,6 +11334,18 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window",
+      "target": "core_threading_utils",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/broadcast_view.py",
       "source_location": "L16",
       "weight": 1.0,
@@ -11309,6 +11508,41 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window",
+      "target": "core_threading_utils_workerthread",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L19",
+      "weight": 0.8,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_mainwindow",
+      "target": "core_threading_utils_workerthread",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L412",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_mainwindow_trigger_auto_backup",
+      "target": "core_threading_utils_workerthread"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/broadcast_view.py",
       "source_location": "L16",
       "weight": 1.0,
@@ -11439,7 +11673,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L429",
+      "source_location": "L542",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview_download_from_google_sheet",
@@ -11451,7 +11685,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L373",
+      "source_location": "L486",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview_upload_to_google_sheet",
@@ -12460,7 +12694,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L18",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -12889,7 +13123,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L18",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -12900,7 +13134,7 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L18",
+      "source_location": "L20",
       "weight": 0.8,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -12913,7 +13147,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L44",
+      "source_location": "L46",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_init",
@@ -15843,7 +16077,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L404",
+      "source_location": "L517",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview_download_from_google_sheet",
@@ -15855,7 +16089,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L235",
+      "source_location": "L289",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview_load_settings",
@@ -15867,7 +16101,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L348",
+      "source_location": "L461",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview_upload_to_google_sheet",
@@ -19737,7 +19971,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L325",
+      "source_location": "L332",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -19750,7 +19984,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L326",
+      "source_location": "L333",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_start_background_bot",
@@ -20208,6 +20442,18 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_features_12346.py",
+      "source_location": "L123",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_test_features_12346",
+      "target": "ui_qt_views_settings_view_settingsview",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -20305,6 +20551,17 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "tests_test_features_12346_testfeatures12346",
+      "target": "tests_test_features_12346_testfeatures12346_test_task5_auto_backup_scheduler",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_features_12346.py",
+      "source_location": "L153",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_test_features_12346_testfeatures12346",
       "target": "tests_test_features_12346_testfeatures12346_test_task6_table_signals_and_batch_ops",
       "confidence_score": 1.0
     },
@@ -20317,6 +20574,17 @@
       "_origin": "ast",
       "source": "tests_test_features_12346_testfeatures12346",
       "target": "ui_qt_views_contracts_view_contractsview",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests/test_features_12346.py",
+      "source_location": "L123",
+      "weight": 0.8,
+      "_origin": "ast",
+      "source": "tests_test_features_12346_testfeatures12346",
+      "target": "ui_qt_views_settings_view_settingsview",
       "confidence_score": 0.5
     },
     {
@@ -20382,6 +20650,29 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "tests_test_features_12346_rationale_112",
+      "target": "tests_test_features_12346_testfeatures12346_test_task5_auto_backup_scheduler",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/test_features_12346.py",
+      "source_location": "L133",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_test_features_12346_testfeatures12346_test_task5_auto_backup_scheduler",
+      "target": "ui_qt_views_settings_view_settingsview"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_features_12346.py",
+      "source_location": "L154",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "tests_test_features_12346_rationale_154",
       "target": "tests_test_features_12346_testfeatures12346_test_task6_table_signals_and_batch_ops",
       "confidence_score": 1.0
     },
@@ -20391,7 +20682,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/test_features_12346.py",
-      "source_location": "L122",
+      "source_location": "L164",
       "weight": 1.0,
       "_origin": "ast",
       "source": "tests_test_features_12346_testfeatures12346_test_task6_table_signals_and_batch_ops",
@@ -20403,7 +20694,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/test_features_12346.py",
-      "source_location": "L128",
+      "source_location": "L170",
       "weight": 1.0,
       "_origin": "ast",
       "source": "tests_test_features_12346_testfeatures12346_test_task6_table_signals_and_batch_ops",
@@ -22975,7 +23266,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L34",
+      "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -22986,7 +23277,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L381",
+      "source_location": "L447",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -22998,7 +23289,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L19",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23010,7 +23301,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L19",
+      "source_location": "L21",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23022,7 +23313,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L28",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23034,7 +23325,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L28",
+      "source_location": "L30",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23046,7 +23337,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L26",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23058,7 +23349,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L26",
+      "source_location": "L28",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23070,7 +23361,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L22",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23082,7 +23373,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L22",
+      "source_location": "L24",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23094,7 +23385,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L20",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23106,7 +23397,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L20",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23118,7 +23409,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L29",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23130,7 +23421,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L29",
+      "source_location": "L31",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23142,7 +23433,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L30",
+      "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23154,7 +23445,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L30",
+      "source_location": "L32",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23166,7 +23457,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L25",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23178,7 +23469,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L25",
+      "source_location": "L27",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23190,7 +23481,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L31",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23202,7 +23493,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L31",
+      "source_location": "L33",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23214,7 +23505,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L32",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23226,7 +23517,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L32",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23238,7 +23529,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L24",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23250,7 +23541,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L24",
+      "source_location": "L26",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23262,7 +23553,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L21",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23274,7 +23565,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L21",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23286,7 +23577,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23298,7 +23589,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23310,7 +23601,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L27",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23322,7 +23613,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L27",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window",
@@ -23344,7 +23635,7 @@
       "relation": "inherits",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L34",
+      "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23355,7 +23646,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L182",
+      "source_location": "L189",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23366,7 +23657,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L203",
+      "source_location": "L210",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23377,7 +23668,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L371",
+      "source_location": "L430",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23388,7 +23679,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L288",
+      "source_location": "L295",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23399,7 +23690,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L37",
+      "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23410,7 +23701,18 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L292",
+      "source_location": "L417",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_mainwindow",
+      "target": "ui_qt_app_window_mainwindow_on_auto_backup_done",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L299",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23421,7 +23723,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L307",
+      "source_location": "L314",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23432,7 +23734,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L301",
+      "source_location": "L308",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23443,7 +23745,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L198",
+      "source_location": "L205",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23454,7 +23756,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L310",
+      "source_location": "L317",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23465,7 +23767,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L313",
+      "source_location": "L320",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23476,7 +23778,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L316",
+      "source_location": "L323",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23487,7 +23789,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L304",
+      "source_location": "L311",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23498,7 +23800,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L298",
+      "source_location": "L305",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23509,7 +23811,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L342",
+      "source_location": "L349",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23520,7 +23822,18 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L191",
+      "source_location": "L387",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_mainwindow",
+      "target": "ui_qt_app_window_mainwindow_restart_backup_timer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L198",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23531,7 +23844,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L250",
+      "source_location": "L257",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23542,7 +23855,18 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L70",
+      "source_location": "L382",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_mainwindow",
+      "target": "ui_qt_app_window_mainwindow_setup_auto_backup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L77",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23553,7 +23877,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L267",
+      "source_location": "L274",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23564,7 +23888,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L253",
+      "source_location": "L260",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23575,7 +23899,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L281",
+      "source_location": "L288",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23586,7 +23910,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L260",
+      "source_location": "L267",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23597,7 +23921,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L366",
+      "source_location": "L373",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23608,7 +23932,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L274",
+      "source_location": "L281",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23619,7 +23943,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L320",
+      "source_location": "L327",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23630,7 +23954,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L333",
+      "source_location": "L340",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23641,7 +23965,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L245",
+      "source_location": "L252",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23652,7 +23976,18 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L239",
+      "source_location": "L403",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_mainwindow",
+      "target": "ui_qt_app_window_mainwindow_trigger_auto_backup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L246",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23663,7 +23998,7 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L22",
+      "source_location": "L24",
       "weight": 0.8,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23674,7 +24009,7 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L20",
+      "source_location": "L22",
       "weight": 0.8,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23685,7 +24020,7 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L31",
+      "source_location": "L33",
       "weight": 0.8,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23696,7 +24031,7 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L24",
+      "source_location": "L26",
       "weight": 0.8,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23707,7 +24042,7 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L21",
+      "source_location": "L23",
       "weight": 0.8,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23718,7 +24053,7 @@
       "relation": "uses",
       "confidence": "INFERRED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 0.8,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow",
@@ -23729,10 +24064,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L35",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_app_window_rationale_35",
+      "source": "ui_qt_app_window_rationale_37",
       "target": "ui_qt_app_window_mainwindow",
       "confidence_score": 1.0
     },
@@ -23741,7 +24076,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L414",
+      "source_location": "L480",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_run_qt_app",
@@ -23753,7 +24088,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L62",
+      "source_location": "L64",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_init",
@@ -23765,7 +24100,19 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L61",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_mainwindow_init",
+      "target": "ui_qt_app_window_mainwindow_setup_auto_backup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_init",
@@ -23777,7 +24124,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L66",
+      "source_location": "L68",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_init",
@@ -23790,7 +24137,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L80",
+      "source_location": "L87",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23802,7 +24149,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L88",
+      "source_location": "L95",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23814,7 +24161,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L89",
+      "source_location": "L96",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23825,7 +24172,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L114",
+      "source_location": "L121",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23837,7 +24184,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L117",
+      "source_location": "L124",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23849,7 +24196,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L180",
+      "source_location": "L187",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23862,7 +24209,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L167",
+      "source_location": "L174",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23874,7 +24221,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L165",
+      "source_location": "L172",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23886,7 +24233,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L169",
+      "source_location": "L176",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23898,7 +24245,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L166",
+      "source_location": "L173",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23910,7 +24257,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L168",
+      "source_location": "L175",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_setup_ui",
@@ -23921,7 +24268,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L201",
+      "source_location": "L208",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_dialog_nav",
@@ -23933,7 +24280,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L268",
+      "source_location": "L275",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_show_contracts",
@@ -23945,7 +24292,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L254",
+      "source_location": "L261",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_show_dashboard",
@@ -23957,7 +24304,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L282",
+      "source_location": "L289",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_show_settings",
@@ -23969,7 +24316,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L261",
+      "source_location": "L268",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_show_table",
@@ -23981,7 +24328,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L275",
+      "source_location": "L282",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_show_trash",
@@ -23992,10 +24339,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L199",
+      "source_location": "L206",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_app_window_rationale_199",
+      "source": "ui_qt_app_window_rationale_206",
       "target": "ui_qt_app_window_mainwindow_open_dialog_nav",
       "confidence_score": 1.0
     },
@@ -24004,7 +24351,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L221",
+      "source_location": "L228",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_apply_theme",
@@ -24017,7 +24364,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L207",
+      "source_location": "L214",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_apply_theme",
@@ -24028,7 +24375,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L247",
+      "source_location": "L254",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_toggle_theme",
@@ -24040,7 +24387,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L242",
+      "source_location": "L249",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_update_font_size",
@@ -24052,7 +24399,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L243",
+      "source_location": "L250",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_update_font_size",
@@ -24063,10 +24410,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L240",
+      "source_location": "L247",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_app_window_rationale_240",
+      "source": "ui_qt_app_window_rationale_247",
       "target": "ui_qt_app_window_mainwindow_update_font_size",
       "confidence_score": 1.0
     },
@@ -24075,7 +24422,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L248",
+      "source_location": "L255",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_toggle_theme",
@@ -24087,7 +24434,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L289",
+      "source_location": "L296",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_filter_by_category",
@@ -24099,7 +24446,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L295",
+      "source_location": "L302",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_add_dialog",
@@ -24111,7 +24458,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L296",
+      "source_location": "L303",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_add_dialog",
@@ -24124,7 +24471,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L293",
+      "source_location": "L300",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_add_dialog",
@@ -24136,7 +24483,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L299",
+      "source_location": "L306",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_yettilik",
@@ -24147,7 +24494,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L301",
+      "source_location": "L308",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_cabinet",
@@ -24160,7 +24507,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L302",
+      "source_location": "L309",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_cabinet",
@@ -24168,10 +24515,22 @@
     },
     {
       "relation": "references",
+      "context": "parameter_type",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L417",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_mainwindow_on_auto_backup_done",
+      "target": "ui_qt_app_window_py_any",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L316",
+      "source_location": "L323",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_qr",
@@ -24183,7 +24542,7 @@
       "context": "generic_arg",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L304",
+      "source_location": "L311",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_verification",
@@ -24196,7 +24555,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L305",
+      "source_location": "L312",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_verification",
@@ -24208,7 +24567,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L308",
+      "source_location": "L315",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_broadcast",
@@ -24220,7 +24579,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L311",
+      "source_location": "L318",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_history",
@@ -24244,7 +24603,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L314",
+      "source_location": "L321",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_import",
@@ -24268,7 +24627,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L318",
+      "source_location": "L325",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_open_qr",
@@ -24278,10 +24637,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L317",
+      "source_location": "L324",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_app_window_rationale_317",
+      "source": "ui_qt_app_window_rationale_324",
       "target": "ui_qt_app_window_mainwindow_open_qr",
       "confidence_score": 1.0
     },
@@ -24289,10 +24648,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L321",
+      "source_location": "L328",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_app_window_rationale_321",
+      "source": "ui_qt_app_window_rationale_328",
       "target": "ui_qt_app_window_mainwindow_start_background_bot",
       "confidence_score": 1.0
     },
@@ -24301,7 +24660,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L373",
+      "source_location": "L439",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_app_window_mainwindow_closeevent",
@@ -24312,21 +24671,22 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L334",
+      "source_location": "L341",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_app_window_rationale_334",
+      "source": "ui_qt_app_window_rationale_341",
       "target": "ui_qt_app_window_mainwindow_stop_background_bot",
       "confidence_score": 1.0
     },
     {
-      "relation": "rationale_for",
+      "relation": "calls",
+      "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L367",
+      "source_location": "L423",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_app_window_rationale_367",
+      "source": "ui_qt_app_window_mainwindow_on_auto_backup_done",
       "target": "ui_qt_app_window_mainwindow_show_toast",
       "confidence_score": 1.0
     },
@@ -24334,10 +24694,78 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L372",
+      "source_location": "L374",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_app_window_rationale_372",
+      "source": "ui_qt_app_window_rationale_374",
+      "target": "ui_qt_app_window_mainwindow_show_toast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L385",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_mainwindow_setup_auto_backup",
+      "target": "ui_qt_app_window_mainwindow_restart_backup_timer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L383",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_rationale_383",
+      "target": "ui_qt_app_window_mainwindow_setup_auto_backup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L388",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_rationale_388",
+      "target": "ui_qt_app_window_mainwindow_restart_backup_timer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L413",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_mainwindow_trigger_auto_backup",
+      "target": "ui_qt_app_window_mainwindow_on_auto_backup_done",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L404",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_rationale_404",
+      "target": "ui_qt_app_window_mainwindow_trigger_auto_backup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/app_window.py",
+      "source_location": "L431",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_app_window_rationale_431",
       "target": "ui_qt_app_window_mainwindow_closeevent",
       "confidence_score": 1.0
     },
@@ -24345,10 +24773,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/app_window.py",
-      "source_location": "L382",
+      "source_location": "L448",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_app_window_rationale_382",
+      "source": "ui_qt_app_window_rationale_448",
       "target": "ui_qt_app_window_run_qt_app",
       "confidence_score": 1.0
     },
@@ -25026,6 +25454,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_qr_dialog_qrdialog_setup_ui",
+      "target": "qframe"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_views_settings_view_settingsview_setup_ui",
       "target": "qframe"
     },
     {
@@ -29506,7 +29946,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L465",
+      "source_location": "L578",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view",
@@ -29551,7 +29991,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L466",
+      "source_location": "L579",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_render_settings",
@@ -29573,7 +30013,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L254",
+      "source_location": "L367",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29584,7 +30024,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L397",
+      "source_location": "L510",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29606,7 +30046,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L209",
+      "source_location": "L263",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29617,7 +30057,29 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L334",
+      "source_location": "L330",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_views_settings_view_settingsview",
+      "target": "ui_qt_views_settings_view_settingsview_on_auto_backup_toggled",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L342",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_views_settings_view_settingsview",
+      "target": "ui_qt_views_settings_view_settingsview_on_backup_interval_changed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L447",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29628,7 +30090,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L434",
+      "source_location": "L547",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29639,7 +30101,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L457",
+      "source_location": "L570",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29650,7 +30112,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L378",
+      "source_location": "L491",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29661,7 +30123,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L329",
+      "source_location": "L442",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29672,7 +30134,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L306",
+      "source_location": "L419",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29683,7 +30145,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L263",
+      "source_location": "L376",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29694,7 +30156,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L291",
+      "source_location": "L404",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29705,7 +30167,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L191",
+      "source_location": "L235",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29727,7 +30189,29 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L316",
+      "source_location": "L355",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_views_settings_view_settingsview",
+      "target": "ui_qt_views_settings_view_settingsview_trigger_manual_auto_backup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L362",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_views_settings_view_settingsview",
+      "target": "ui_qt_views_settings_view_settingsview_update_last_backup_display",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L429",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29738,7 +30222,7 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L341",
+      "source_location": "L454",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview",
@@ -29785,10 +30269,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L192",
+      "source_location": "L236",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_views_settings_view_rationale_192",
+      "source": "ui_qt_views_settings_view_rationale_236",
       "target": "ui_qt_views_settings_view_settingsview_set_theme",
       "confidence_score": 1.0
     },
@@ -29797,7 +30281,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L332",
+      "source_location": "L445",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview_on_theme_changed",
@@ -29808,10 +30292,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L210",
+      "source_location": "L264",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_views_settings_view_rationale_210",
+      "source": "ui_qt_views_settings_view_rationale_264",
       "target": "ui_qt_views_settings_view_settingsview_load_settings",
       "confidence_score": 1.0
     },
@@ -29820,7 +30304,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L312",
+      "source_location": "L425",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview_restart_bot",
@@ -29832,7 +30316,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L302",
+      "source_location": "L415",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_settingsview_save_bot_token",
@@ -29843,10 +30327,66 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L307",
+      "source_location": "L331",
       "weight": 1.0,
       "_origin": "ast",
-      "source": "ui_qt_views_settings_view_rationale_307",
+      "source": "ui_qt_views_settings_view_rationale_331",
+      "target": "ui_qt_views_settings_view_settingsview_on_auto_backup_toggled",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L343",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_views_settings_view_rationale_343",
+      "target": "ui_qt_views_settings_view_settingsview_on_backup_interval_changed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L356",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_views_settings_view_rationale_356",
+      "target": "ui_qt_views_settings_view_settingsview_trigger_manual_auto_backup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L360",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_views_settings_view_settingsview_trigger_manual_auto_backup",
+      "target": "ui_qt_views_settings_view_settingsview_create_backup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L363",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_views_settings_view_rationale_363",
+      "target": "ui_qt_views_settings_view_settingsview_update_last_backup_display",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ui_qt/views/settings_view.py",
+      "source_location": "L420",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "ui_qt_views_settings_view_rationale_420",
       "target": "ui_qt_views_settings_view_settingsview_restart_bot",
       "confidence_score": 1.0
     },
@@ -29855,7 +30395,7 @@
       "context": "parameter_type",
       "confidence": "EXTRACTED",
       "source_file": "ui_qt/views/settings_view.py",
-      "source_location": "L465",
+      "source_location": "L578",
       "weight": 1.0,
       "_origin": "ast",
       "source": "ui_qt_views_settings_view_render_settings",
@@ -31526,5 +32066,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "48570ca19a37ae61f0349bc960bf480b3f763002"
+  "built_at_commit": "3d63d03782a99f435e543dcebfce4538a6e13c43"
 }

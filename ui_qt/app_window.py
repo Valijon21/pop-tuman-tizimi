@@ -4,6 +4,7 @@ Senior darajadagi Fluent UI sidebar navigatsiyasi, yuqori unumdorlik, High-DPI v
 """
 import os
 import sys
+import time
 from typing import Optional, Dict, Any
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, QFrame,
@@ -15,6 +16,7 @@ from PyQt5.QtGui import QIcon, QPixmap, QColor
 
 from core.config import APP_TITLE, ICON_PATH, DEFAULT_WINDOW_SIZE, MIN_WINDOW_SIZE
 from core.logger import logger
+from core.threading_utils import WorkerThread
 from database.data_manager import DataManager
 from ui_qt.styles import get_stylesheet
 from ui_qt.views.dashboard_view import DashboardView
@@ -64,6 +66,11 @@ class MainWindow(QMainWindow):
         # Telegram botni fonda (asinxron) ishga tushirish
         self.bot_service = None
         self.start_background_bot()
+
+        # Avtomatlashtirilgan fonda davriy zaxira (Task 5: Auto-Backup Scheduler)
+        self.backup_timer = QTimer(self)
+        self._backup_worker = None
+        self.setup_auto_backup()
 
         logger.info(f"[QT] PyQt5 MainWindow yuklandi: {len(self.data)} ta tashkilot")
 
@@ -368,8 +375,67 @@ class MainWindow(QMainWindow):
         if hasattr(self, "status_bar") and self.status_bar:
             self.status_bar.showMessage(f"✨ {message}", 4000)
 
+    # ─────────────────────────────────────────────────────────────────────────────
+    # ⏰ AVTOMATIK DAVRIY ZAXIRALASH (TASK 5: AUTO-BACKUP SCHEDULER)
+    # ─────────────────────────────────────────────────────────────────────────────
+
+    def setup_auto_backup(self):
+        """Avtomatlashtirilgan davriy zaxira olish taymerini sozlash."""
+        self.backup_timer.timeout.connect(self.trigger_auto_backup)
+        self.restart_backup_timer()
+
+    def restart_backup_timer(self):
+        """Zaxiralash taymerini sozlamalar asosida qayta ishga tushirish."""
+        settings = self.data_manager.settings
+        enabled = settings.get("auto_backup_enabled", True)
+        interval_mins = int(settings.get("auto_backup_interval_mins", 60))
+
+        if self.backup_timer.isActive():
+            self.backup_timer.stop()
+
+        if enabled and interval_mins > 0:
+            interval_ms = interval_mins * 60 * 1000
+            self.backup_timer.start(interval_ms)
+            logger.info(f"[AUTO-BACKUP] Avto-zaxiralash faol: har {interval_mins} daqiqada.")
+        else:
+            logger.info("[AUTO-BACKUP] Avto-zaxiralash o'chirilgan.")
+
+    def trigger_auto_backup(self, is_manual: bool = False):
+        """Fonda asinxron avtomatik zaxira nusxa yaratish (UI qotmaydi)."""
+        if self._backup_worker and self._backup_worker.isRunning():
+            logger.debug("[AUTO-BACKUP] Oldingi zaxira jarayoni hali davom etmoqda.")
+            return
+
+        def _task():
+            return self.data_manager.backup_data()
+
+        self._backup_worker = WorkerThread(_task, parent=self)
+        self._backup_worker.result_ready.connect(lambda res: self._on_auto_backup_done(res, is_manual))
+        self._backup_worker.error_occurred.connect(lambda err: logger.error(f"[AUTO-BACKUP] Xatolik: {err}"))
+        self._backup_worker.start()
+
+    def _on_auto_backup_done(self, res: Any, is_manual: bool):
+        now_str = (res.get("timestamp") if isinstance(res, dict) else "") or time.strftime("%Y-%m-%d %H:%M:%S")
+        self.data_manager.settings["last_auto_backup"] = now_str
+        self.data_manager.save_settings()
+        logger.info(f"[AUTO-BACKUP] Muvaffaqiyatli yakunlandi: {now_str}")
+        if is_manual:
+            self.show_toast("📦 Zaxira nusxa muvaffaqiyatli yaratildi!", "success")
+        else:
+            self.show_toast(f"⏰ Avtomatik zaxira olindi ({time.strftime('%H:%M')})", "info")
+
+        if hasattr(self, "settings_view") and hasattr(self.settings_view, "update_last_backup_display"):
+            self.settings_view.update_last_backup_display(now_str)
+
     def closeEvent(self, event):
         """Dastur yopilayotganda avtomatik zaxira nusxa yaratish va botni to'xtatish."""
+        if hasattr(self, "backup_timer") and self.backup_timer.isActive():
+            self.backup_timer.stop()
+        if hasattr(self, "_backup_worker") and self._backup_worker and self._backup_worker.isRunning():
+            try:
+                self._backup_worker.wait(1000)
+            except Exception:
+                pass
         self.stop_background_bot()
         logger.info("[QT] Dastur yopilmoqda. SQLite avtomatik zaxira nusxa olinmoqda...")
         try:

@@ -7,7 +7,7 @@ import os
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
     QPushButton, QLineEdit, QComboBox, QSpinBox, QGroupBox,
-    QMessageBox, QFileDialog, QScrollArea, QFrame
+    QMessageBox, QFileDialog, QScrollArea, QFrame, QCheckBox
 )
 from PyQt5.QtCore import Qt
 from core.security import hash_password
@@ -78,6 +78,50 @@ class SettingsView(QWidget):
         db_btns.addStretch()
 
         db_layout.addLayout(db_btns)
+
+        # ⏰ Avtomatik davriy zaxira boshqaruvi (Auto-Backup Scheduler)
+        self.auto_backup_frame = QFrame()
+        self.auto_backup_frame.setStyleSheet("background: rgba(15, 23, 42, 0.4); border: 1px solid #334155; border-radius: 8px; padding: 6px;")
+        auto_layout = QVBoxLayout(self.auto_backup_frame)
+        auto_layout.setContentsMargins(8, 8, 8, 8)
+        auto_layout.setSpacing(8)
+
+        auto_head = QHBoxLayout()
+        self.chk_auto_backup = QCheckBox("Avtomatlashtirilgan davriy zaxira (Auto-Backup Scheduler)")
+        self.chk_auto_backup.setChecked(True)
+        self.chk_auto_backup.setCursor(Qt.PointingHandCursor)
+        self.chk_auto_backup.setStyleSheet("font-size: 11.5px; font-weight: 700; color: #38bdf8;")
+        self.chk_auto_backup.stateChanged.connect(self.on_auto_backup_toggled)
+        auto_head.addWidget(self.chk_auto_backup)
+
+        auto_head.addStretch()
+        lbl_oraliq = QLabel("Oraliq:")
+        lbl_oraliq.setStyleSheet("font-size: 11px; font-weight: 600;")
+        auto_head.addWidget(lbl_oraliq)
+
+        self.combo_backup_interval = QComboBox()
+        self.combo_backup_interval.addItems([
+            "15 daqiqa", "30 daqiqa", "1 soat (Tavsiya)", "2 soat", "6 soat", "12 soat", "24 soat"
+        ])
+        self.combo_backup_interval.currentIndexChanged.connect(self.on_backup_interval_changed)
+        auto_head.addWidget(self.combo_backup_interval)
+        auto_layout.addLayout(auto_head)
+
+        auto_foot = QHBoxLayout()
+        self.lbl_last_backup = QLabel("Oxirgi avto-zaxira: Noma'lum")
+        self.lbl_last_backup.setStyleSheet("color: #94a3b8; font-size: 11px;")
+        auto_foot.addWidget(self.lbl_last_backup)
+        auto_foot.addStretch()
+
+        self.btn_auto_now = QPushButton("⚡ Fonda Sinab Ko'rish")
+        self.btn_auto_now.setProperty("class", "btn_primary")
+        self.btn_auto_now.setCursor(Qt.PointingHandCursor)
+        self.btn_auto_now.setStyleSheet("font-size: 11px; padding: 4px 10px;")
+        self.btn_auto_now.clicked.connect(self.trigger_manual_auto_backup)
+        auto_foot.addWidget(self.btn_auto_now)
+        auto_layout.addLayout(auto_foot)
+
+        db_layout.addWidget(self.auto_backup_frame)
         c_layout.addWidget(self.grp_db)
 
         # 2. GOOGLE SHEETS BULUTLI SINXRONIZATSIYA
@@ -201,6 +245,16 @@ class SettingsView(QWidget):
         self.lbl_bot_status.setStyleSheet(f"color: {'#64748b' if is_light else '#94a3b8'}; font-size: 12px; font-weight: 600;")
         self.lbl_gsheet_status.setStyleSheet(f"color: {'#64748b' if is_light else '#94a3b8'}; font-size: 12px; font-weight: 600;")
 
+        if hasattr(self, "auto_backup_frame"):
+            bg_card = "#f1f5f9" if is_light else "rgba(15, 23, 42, 0.4)"
+            border_card = "#cbd5e1" if is_light else "#334155"
+            self.auto_backup_frame.setStyleSheet(f"background: {bg_card}; border: 1px solid {border_card}; border-radius: 8px; padding: 6px;")
+        if hasattr(self, "chk_auto_backup"):
+            chk_color = "#0284c7" if is_light else "#38bdf8"
+            self.chk_auto_backup.setStyleSheet(f"font-size: 11.5px; font-weight: 700; color: {chk_color};")
+        if hasattr(self, "lbl_last_backup"):
+            self.lbl_last_backup.setStyleSheet(f"color: {'#64748b' if is_light else '#94a3b8'}; font-size: 11px;")
+
         if hasattr(self, "combo_theme"):
             self.combo_theme.blockSignals(True)
             self.combo_theme.setCurrentIndex(0 if theme == "dark" else 1)
@@ -250,6 +304,65 @@ class SettingsView(QWidget):
         if os.path.exists(db_path):
             size_kb = os.path.getsize(db_path) / 1024
             self.lbl_db_info.setText(f"SQLite Baza: {db_path} ({size_kb:.1f} KB) | Rejim: WAL (ACID)")
+
+        # Avtomatik zaxira sozlamalari
+        if hasattr(self, "chk_auto_backup"):
+            auto_en = settings.get("auto_backup_enabled", True)
+            self.chk_auto_backup.blockSignals(True)
+            self.chk_auto_backup.setChecked(bool(auto_en))
+            self.chk_auto_backup.blockSignals(False)
+
+        if hasattr(self, "combo_backup_interval"):
+            mins = int(settings.get("auto_backup_interval_mins", 60))
+            min_map = {15: 0, 30: 1, 60: 2, 120: 3, 360: 4, 720: 5, 1440: 6}
+            idx = min_map.get(mins, 2)
+            self.combo_backup_interval.blockSignals(True)
+            self.combo_backup_interval.setCurrentIndex(idx)
+            self.combo_backup_interval.blockSignals(False)
+
+        if hasattr(self, "lbl_last_backup"):
+            last_bak = settings.get("last_auto_backup", "")
+            if last_bak:
+                self.lbl_last_backup.setText(f"Oxirgi avto-zaxira: {last_bak} ✅")
+            else:
+                self.lbl_last_backup.setText("Oxirgi avto-zaxira: Hali olinmagan")
+
+    def on_auto_backup_toggled(self, state: int):
+        """Avtomatik zaxira yoqilgan/o'chirilganda sozlamani yangilash."""
+        if not self.app or not hasattr(self.app, "data_manager"):
+            return
+        enabled = bool(state == Qt.Checked)
+        self.app.data_manager.settings["auto_backup_enabled"] = enabled
+        self.app.data_manager.save_settings()
+        if hasattr(self.app, "restart_backup_timer"):
+            self.app.restart_backup_timer()
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast(f"Avtomatik zaxira: {'Yoqildi ✅' if enabled else 'O‘chirildi ⏸'}", "info")
+
+    def on_backup_interval_changed(self, idx: int):
+        """Zaxiralash vaqt oralig'i o'zgarganda."""
+        if not self.app or not hasattr(self.app, "data_manager"):
+            return
+        intervals = [15, 30, 60, 120, 360, 720, 1440]
+        mins = intervals[idx] if 0 <= idx < len(intervals) else 60
+        self.app.data_manager.settings["auto_backup_interval_mins"] = mins
+        self.app.data_manager.save_settings()
+        if hasattr(self.app, "restart_backup_timer"):
+            self.app.restart_backup_timer()
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast(f"Zaxiralash oralig'i: har {mins} daqiqaga o'rnatildi", "info")
+
+    def trigger_manual_auto_backup(self):
+        """Fonda zaxiralashni hoziroq sinab ko'rish."""
+        if hasattr(self.app, "trigger_auto_backup"):
+            self.app.trigger_auto_backup(is_manual=True)
+        else:
+            self.create_backup()
+
+    def update_last_backup_display(self, timestamp: str):
+        """MainWindow dan chaqiriladigan oxirgi zaxira vaqti ko'rsatkichi."""
+        if hasattr(self, "lbl_last_backup"):
+            self.lbl_last_backup.setText(f"Oxirgi avto-zaxira: {timestamp} ✅")
 
     def create_backup(self):
         try:

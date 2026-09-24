@@ -108,6 +108,48 @@ class TestFeatures12346(unittest.TestCase):
         self.assertTrue(orgs_ok)
         self.assertTrue(os.path.exists(out_orgs_pdf))
 
+    def test_task5_auto_backup_scheduler(self):
+        """Task 5: Avtomatlashtirilgan fonda davriy zaxira olish (Auto-Backup Scheduler)."""
+        # 1. DataManager.backup_data() ikkala formatda saqlashi va dict qaytarishi
+        res = self.dm.backup_data()
+        self.assertIsInstance(res, dict)
+        self.assertTrue("json" in res and "db" in res and "timestamp" in res)
+        self.assertTrue(os.path.exists(res["json"]), "JSON zaxira fayli yaratilgan bo'lishi kerak")
+        self.assertTrue(os.path.exists(res["db"]), "SQLite .db zaxira fayli yaratilgan bo'lishi kerak")
+        self.assertGreater(os.path.getsize(res["json"]), 0)
+        self.assertGreater(os.path.getsize(res["db"]), 0)
+
+        # 2. SettingsView UI va event boshqaruvi
+        from ui_qt.views.settings_view import SettingsView
+        dummy_app = type("DummyApp", (), {
+            "data": self.dm.data,
+            "data_manager": self.dm,
+            "current_theme": "dark",
+            "show_toast": lambda *a, **k: None,
+            "refresh_all_views": lambda *a, **k: None,
+            "restart_backup_timer": lambda *a, **k: None,
+            "trigger_auto_backup": lambda *a, **k: None
+        })()
+        sview = SettingsView(app=dummy_app)
+        self.assertTrue(hasattr(sview, "chk_auto_backup"))
+        self.assertTrue(hasattr(sview, "combo_backup_interval"))
+        self.assertTrue(hasattr(sview, "lbl_last_backup"))
+
+        # Oraliq o'zgarishi
+        sview.on_backup_interval_changed(1) # 30 daqiqa
+        self.assertEqual(self.dm.settings.get("auto_backup_interval_mins"), 30)
+
+        # Yoqish / o'chirish
+        sview.on_auto_backup_toggled(0) # Unchecked
+        self.assertEqual(self.dm.settings.get("auto_backup_enabled"), False)
+
+        sview.on_auto_backup_toggled(2) # Checked
+        self.assertEqual(self.dm.settings.get("auto_backup_enabled"), True)
+
+        # Oxirgi zaxira matni yangilanishi
+        sview.update_last_backup_display("2026-09-24 23:50:00")
+        self.assertIn("2026-09-24 23:50:00", sview.lbl_last_backup.text())
+
     def test_task6_table_signals_and_batch_ops(self):
         """Task 6: ContractsView va TrashView da signal boshqaruvi va unumdorlik."""
         dummy_app = type("DummyApp", (), {

@@ -344,8 +344,9 @@ class DataManager:
         logger.warning(f"[BUTUNLAY O'CHIRISH] O'chirish uchun yozuv topilmadi: ID={target_id}")
         return False
 
-    def backup_data(self) -> None:
-        """Ma'lumotlar bazasining zaxira nusxasini yaratish (oxirgi 10 ta nusxa)."""
+    def backup_data(self) -> Dict[str, str]:
+        """Ma'lumotlar bazasining zaxira nusxasini yaratish (oxirgi 10 ta JSON va 30 ta SQLite)."""
+        res = {"json": "", "db": "", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}
         if os.path.exists(self.db_file):
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             backup_path = os.path.join(self.backup_dir, f"backup_{timestamp}.json")
@@ -357,11 +358,15 @@ class DataManager:
                     old_b = backups.pop(0)
                     os.remove(old_b)
                     logger.debug(f"[ZAXIRA] Eski zaxira tozalandi: {old_b}")
+                res["json"] = backup_path
             except Exception as e:
                 logger.error(f"[XATO] Zaxira olishda xatolik: {e}")
 
         # SQLite bazasini ham zaxiralash
         try:
-            self.sqlite.backup_database(self.backup_dir)
+            db_bak = self.sqlite.backup_database(self.backup_dir)
+            if db_bak:
+                res["db"] = db_bak
         except Exception as e:
             logger.error(f"[XATO] SQLite zaxira olishda xatolik: {e}")
+        return res
