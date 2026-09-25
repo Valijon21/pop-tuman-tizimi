@@ -45,6 +45,7 @@ class TestUIUXDeep(unittest.TestCase):
             ("Dashboard", self.window.show_dashboard),
             ("Table", self.window.show_table),
             ("Contracts", self.window.show_contracts),
+            ("Apps", self.window.show_apps),
             ("Trash", self.window.show_trash),
             ("Settings", self.window.show_settings),
         ]

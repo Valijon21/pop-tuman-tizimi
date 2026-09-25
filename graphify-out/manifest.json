@@ -1,7 +1,7 @@
 {
   "build_exe.py": {
-    "mtime": 1790311412.5824194,
-    "ast_hash": "f4a815fab0a3e682a29e3beea0482736",
+    "mtime": 1790317927.6558375,
+    "ast_hash": "ed0f2e8323d5a53ac59d6686e49a547c",
     "semantic_hash": ""
   },
   "categories.json": {
@@ -15,8 +15,8 @@
     "semantic_hash": "299698c538ed7b0e630365ede1766c6d"
   },
   "core/config.py": {
-    "mtime": 1790311279.903598,
-    "ast_hash": "c519dd8631ddfdc4b8587385422901d7",
+    "mtime": 1790317700.453398,
+    "ast_hash": "10736bf90cd4bba5f9e40115ff1f6697",
     "semantic_hash": ""
   },
   "core/logger.py": {
@@ -50,7 +50,7 @@
     "semantic_hash": ""
   },
   "mahalla_bazasi.json": {
-    "mtime": 1790314771.168991,
+    "mtime": 1790317976.7863016,
     "ast_hash": "4223b35ed80f61c07f6d09b7d44716cb",
     "semantic_hash": ""
   },
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1790167568.484359,
-    "ast_hash": "2199f05d02ae715be5d743e75e36de44",
+    "mtime": 1790315243.930663,
+    "ast_hash": "e9e509d5e051bb9968b2cdd2c07fe025",
     "semantic_hash": ""
   },
   "requirements.txt": {
@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "tests/test_qt_views.py": {
-    "mtime": 1790308421.2037754,
-    "ast_hash": "1ea225372534b6601bfaad1406420cb8",
+    "mtime": 1790317960.2606962,
+    "ast_hash": "75780f3540ac2e6351f30817668d1283",
     "semantic_hash": ""
   },
   "ui_qt/__init__.py": {
@@ -195,8 +195,8 @@
     "semantic_hash": ""
   },
   "ui_qt/app_window.py": {
-    "mtime": 1790313079.1992962,
-    "ast_hash": "177ba4c8da8fa0e19c1988ae579b1f68",
+    "mtime": 1790317859.108849,
+    "ast_hash": "67f245f1824e240367bb0dd8ae5ebb50",
     "semantic_hash": ""
   },
   "ui_qt/components/__init__.py": {
@@ -310,8 +310,8 @@
     "semantic_hash": ""
   },
   "tests/test_ui_ux_deep.py": {
-    "mtime": 1790266601.598474,
-    "ast_hash": "b8e90036e572fb314fb9d75eabeed9bf",
+    "mtime": 1790317970.4623835,
+    "ast_hash": "c0fdf276da7c02c1ccffbdbe068bf681",
     "semantic_hash": ""
   },
   "services/pdf_service.py": {
@@ -332,6 +332,21 @@
   "popdata_logo.png": {
     "mtime": 1790314732.923304,
     "ast_hash": "e3052c2002707f1b914e0f9ed58a6959",
+    "semantic_hash": ""
+  },
+  "ui_qt/views/apps_view.py": {
+    "mtime": 1790317743.7076948,
+    "ast_hash": "f24704a1a338087f35ae5ded594d3f1a",
+    "semantic_hash": ""
+  },
+  "popdata.PNG": {
+    "mtime": 1790315215.0957923,
+    "ast_hash": "d4ace0917cdbccb2ab148d74ff8b19e5",
+    "semantic_hash": ""
+  },
+  "popdata_logo.PNG": {
+    "mtime": 1790317694.9188466,
+    "ast_hash": "a769caf29094bc8c2f30ebbd8a90bfbc",
     "semantic_hash": ""
   }
 }

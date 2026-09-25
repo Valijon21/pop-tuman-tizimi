@@ -27,6 +27,7 @@ from ui_qt.views.table_view import TableView
 from ui_qt.views.contracts_view import ContractsView
 from ui_qt.views.trash_view import TrashView
 from ui_qt.views.settings_view import SettingsView
+from ui_qt.views.apps_view import AppsView
 from ui_qt.views.mahalla_passport_view import open_mahalla_passport
 from ui_qt.views.cabinet_dialog import open_cabinet_dialog
 from ui_qt.views.verification_dialog import open_verification_dialog
@@ -54,6 +55,7 @@ class MainWindow(QMainWindow):
             "dashboard": False,
             "table": False,
             "contracts": False,
+            "apps": False,
             "trash": True,
             "settings": True
         }
@@ -152,6 +154,7 @@ class MainWindow(QMainWindow):
         self.add_nav_btn("📑 Shartnoma & Ulanish", "contracts", self.show_contracts)
         self.add_nav_btn("🏘 Mahalla 'Yettiligi'", "passport", lambda: self._open_dialog_nav("passport", self.open_yettilik))
         self.add_nav_btn("📜 Kadrlar Tarixi", "history", lambda: self._open_dialog_nav("history", self.open_history))
+        self.add_nav_btn("💻 Dasturlar", "apps", self.show_apps)
         self.add_nav_btn("⚙ Sozlamalar", "settings", self.show_settings)
 
         self.sidebar_layout.addSpacing(10)
@@ -203,12 +206,14 @@ class MainWindow(QMainWindow):
         self.contracts_view = ContractsView(parent=self.content_stack, app=self)
         self.trash_view = TrashView(parent=self.content_stack, app=self)
         self.settings_view = SettingsView(parent=self.content_stack, app=self)
+        self.apps_view = AppsView(parent=self.content_stack, app=self)
 
         self.content_stack.addWidget(self.dashboard_view) # 0
         self.content_stack.addWidget(self.table_view)     # 1
         self.content_stack.addWidget(self.contracts_view) # 2
         self.content_stack.addWidget(self.trash_view)     # 3
         self.content_stack.addWidget(self.settings_view)  # 4
+        self.content_stack.addWidget(self.apps_view)      # 5
 
         self.root_layout.addWidget(self.content_stack, 1)
 
@@ -226,7 +231,7 @@ class MainWindow(QMainWindow):
 
     def set_active_nav_btn(self, active_key: str):
         # Faqat sahifa tugmalari uchun oxirgi sahifani saqlash
-        if active_key in ("dashboard", "table", "contracts", "trash", "settings"):
+        if active_key in ("dashboard", "table", "contracts", "apps", "trash", "settings"):
             self._last_page_key = active_key
         for k, btn in self.nav_buttons.items():
             btn.setChecked(k == active_key)
@@ -250,7 +255,7 @@ class MainWindow(QMainWindow):
         self.setStyleSheet(qss)
 
         # Barcha sahifalarning mavzusini yangilash
-        for view_name in ("dashboard_view", "table_view", "contracts_view", "trash_view", "settings_view"):
+        for view_name in ("dashboard_view", "table_view", "contracts_view", "apps_view", "trash_view", "settings_view"):
             view = getattr(self, view_name, None)
             if view:
                 if hasattr(view, "set_theme"):
@@ -318,6 +323,13 @@ class MainWindow(QMainWindow):
         """Belgilangan amal ('edit' yoki 'settings') uchun xavfsizlik parolini tekshirish."""
         from ui_qt.views.password_dialog import request_password
         return request_password(parent or self, self, action=action)
+
+    def show_apps(self):
+        """Yordamchi va kommunal dasturlar sahifasini ochish (UzCrypto, AnyDesk)."""
+        self.set_active_nav_btn("apps")
+        if hasattr(self, "apps_view") and hasattr(self.apps_view, "refresh_status"):
+            self.apps_view.refresh_status()
+        self.content_stack.setCurrentIndex(5)
 
     def show_settings(self):
         """Sozlamalar sahifasini ochish (773423321v paroli bilan himoyalangan)."""

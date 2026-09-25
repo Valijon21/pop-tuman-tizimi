@@ -127,7 +127,8 @@ def build():
         "ui_qt.views.org_edit_dialog",
         "ui_qt.views.qr_dialog",
         "ui_qt.views.contract_add_dialog",
-        "ui_qt.views.password_dialog"
+        "ui_qt.views.password_dialog",
+        "ui_qt.views.apps_view"
     ]
     for h in hidden_imports:
         args.append(f"--hidden-import={h}")
@@ -151,7 +152,9 @@ def build():
             "popdata.ico",
             "popdata_logo.png",
             "sync_config.json",
-            "service_account.json"
+            "service_account.json",
+            "uzcrypto-2.2.3.41-x32-setup.exe",
+            "AnyDesk.exe"
         ]
         for fname in files_to_copy:
             src = os.path.join(BASE_DIR, fname)

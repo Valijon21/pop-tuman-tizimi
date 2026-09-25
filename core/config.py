@@ -47,6 +47,21 @@ ICON_PATH = os.path.join(BASE_DIR, "popdata.png")
 ICON_ICO_PATH = os.path.join(BASE_DIR, "popdata.ico")
 LOGO_PATH = os.path.join(BASE_DIR, "popdata_logo.png")
 
+# Yordamchi kommunal dasturlar yo'llari (UzCrypto, AnyDesk)
+def get_utility_path(filename: str) -> str:
+    """Yordamchi dastur fayli yo'lini topish (BASE_DIR yoki PyInstaller MEIPASS)."""
+    p1 = os.path.join(BASE_DIR, filename)
+    if os.path.exists(p1):
+        return p1
+    if hasattr(sys, "_MEIPASS"):
+        p2 = os.path.join(getattr(sys, "_MEIPASS"), filename)
+        if os.path.exists(p2):
+            return p2
+    return p1
+
+UZCRYPTO_PATH = get_utility_path("uzcrypto-2.2.3.41-x32-setup.exe")
+ANYDESK_PATH = get_utility_path("AnyDesk.exe")
+
 # Oyna parametrlari
 APP_TITLE = "Pop Tumani Smart Boshqaruv Tizimi (PRO)"
 DEFAULT_WINDOW_SIZE = "1350x800"

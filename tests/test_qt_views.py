@@ -209,9 +209,26 @@ class TestQtArchitecture(unittest.TestCase):
         from ui_qt.app_window import MainWindow
         win = MainWindow()
         self.assertIsNotNone(win)
-        self.assertEqual(win.content_stack.count(), 5)
+        self.assertEqual(win.content_stack.count(), 6)
         self.assertIsNotNone(win.contracts_view)
+        self.assertIsNotNone(win.apps_view)
+        win.show_apps()
+        self.assertEqual(win.content_stack.currentIndex(), 5)
         win.close()
+
+    def test_apps_view(self):
+        """Yordamchi dasturlar (AppsView) sahifasi va tugmalarini sinash."""
+        from ui_qt.views.apps_view import AppsView
+        view = AppsView()
+        self.assertIsNotNone(view)
+        self.assertTrue(hasattr(view, "btn_run_uzcrypto"))
+        self.assertTrue(hasattr(view, "btn_run_anydesk"))
+        self.assertTrue(hasattr(view, "btn_folder_uzcrypto"))
+        self.assertTrue(hasattr(view, "btn_folder_anydesk"))
+        view.refresh_status()
+        view.set_theme("light")
+        view.set_theme("dark")
+        view.close()
     def test_theme_toggle_updates_dashboard(self):
         from ui_qt.app_window import MainWindow
         win = MainWindow()
