@@ -104,41 +104,34 @@ class MainWindow(QMainWindow):
         self.sidebar_layout.setSpacing(2)
 
         # Logo va Sarlavha (Ichki brend logotipi - POP DATA)
-        if os.path.exists(LOGO_PATH):
-            brand_box = QWidget()
-            brand_box.setObjectName("sidebar_brand_box")
-            b_layout = QVBoxLayout(brand_box)
-            b_layout.setContentsMargins(4, 4, 4, 4)
-            b_layout.setSpacing(0)
-            b_layout.setAlignment(Qt.AlignCenter)
+        brand_box = QWidget()
+        brand_box.setObjectName("sidebar_brand_box")
+        b_layout = QVBoxLayout(brand_box)
+        b_layout.setContentsMargins(4, 4, 4, 6)
+        b_layout.setSpacing(3)
+        b_layout.setAlignment(Qt.AlignCenter)
 
+        logo_path = ICON_PATH if os.path.exists(ICON_PATH) else LOGO_PATH
+        if os.path.exists(logo_path):
             logo_lbl = QLabel()
-            pixmap = create_crisp_pixmap(LOGO_PATH, target_width=184, supersample=3.0)
+            pixmap = create_crisp_pixmap(logo_path, target_width=52, target_height=52, supersample=3.0)
             logo_lbl.setPixmap(pixmap)
             logo_lbl.setAlignment(Qt.AlignCenter)
             logo_lbl.setStyleSheet("background: transparent; border: none;")
             b_layout.addWidget(logo_lbl)
 
-            self.sidebar_layout.addWidget(brand_box)
-            self.sidebar_layout.addSpacing(4)
-        elif os.path.exists(ICON_PATH):
-            logo_lbl = QLabel()
-            pixmap = create_crisp_pixmap(ICON_PATH, target_width=42, target_height=42, supersample=3.0)
-            logo_lbl.setPixmap(pixmap)
-            logo_lbl.setAlignment(Qt.AlignCenter)
-            logo_lbl.setStyleSheet("background: transparent; border: none;")
-            self.sidebar_layout.addWidget(logo_lbl)
+        title_lbl = QLabel("POP DATA")
+        title_lbl.setObjectName("sidebar_title")
+        title_lbl.setAlignment(Qt.AlignCenter)
+        b_layout.addWidget(title_lbl)
 
-            title_lbl = QLabel("POP TUMANI")
-            title_lbl.setObjectName("sidebar_title")
-            title_lbl.setAlignment(Qt.AlignCenter)
-            subtitle_lbl = QLabel("SMART TIZIM v2.0")
-            subtitle_lbl.setObjectName("sidebar_subtitle")
-            subtitle_lbl.setAlignment(Qt.AlignCenter)
+        subtitle_lbl = QLabel("ORGANIZATION DATABASE")
+        subtitle_lbl.setObjectName("sidebar_subtitle")
+        subtitle_lbl.setAlignment(Qt.AlignCenter)
+        b_layout.addWidget(subtitle_lbl)
 
-            self.sidebar_layout.addWidget(title_lbl)
-            self.sidebar_layout.addWidget(subtitle_lbl)
-            self.sidebar_layout.addSpacing(8)
+        self.sidebar_layout.addWidget(brand_box)
+        self.sidebar_layout.addSpacing(4)
 
         # Navigatsiya tugmalari guruhi
         self.nav_buttons = {}

@@ -32,6 +32,7 @@ def get_stylesheet(theme: str = "dark", font_size: int = 12) -> str:
     # Shrift o'lchamlari ierarxiyasi (butun son piksellarda)
     fs_micro = max(9, fs - 3)     # 9-10px (Kichik belgilar, yordamchi)
     fs_sub = max(10, fs - 2)      # 10-11px (Subtitrlar, hintlar)
+    fs_sidebar = max(10, fs - 1)  # 11px standart (asosiysi 12px bo'lganda sidebar menyulari uchun nafis)
     fs_caption = max(11, fs - 1)  # 11-12px (Headerlar, toifa pillari)
     fs_base = fs                  # 12-13px (Asosiy matn, inputlar, jadval)
     fs_title_sm = fs + 1          # 13-14px (Kichik sarlavhalar)
@@ -232,8 +233,8 @@ QLabel#sidebar_title {{
     font-size: {fs_title_sm}px;
     font-weight: 800;
     color: {c_sidebar_title};
-    letter-spacing: 0.5px;
-    padding: 2px 0px 1px 0px;
+    letter-spacing: 0.8px;
+    padding: 1px 0px 0px 0px;
 }}
 
 QLabel#sidebar_subtitle {{
@@ -242,6 +243,7 @@ QLabel#sidebar_subtitle {{
     color: {c_sidebar_sub};
     letter-spacing: 0.8px;
     text-transform: uppercase;
+    padding: 0px;
 }}
 
 QLabel#sidebar_section {{
@@ -249,22 +251,22 @@ QLabel#sidebar_section {{
     font-weight: 700;
     color: {c_text_tertiary};
     letter-spacing: 0.8px;
-    padding: 8px 8px 3px 8px;
+    padding: 6px 8px 2px 8px;
     text-transform: uppercase;
 }}
 
 /* Sidebar Tugmalari */
 QPushButton.sidebar_btn {{
     text-align: left;
-    padding: 7px 11px;
+    padding: 6px 10px;
     border: none;
     border-radius: 6px;
     background-color: transparent;
     color: {c_sidebar_btn_text};
-    font-size: {fs_base}px;
+    font-size: {fs_sidebar}px;
     font-weight: 600;
-    margin: 1px 4px;
-    min-height: 20px;
+    margin: 1px 3px;
+    min-height: 18px;
 }}
 
 QPushButton.sidebar_btn:hover {{
@@ -280,15 +282,15 @@ QPushButton.sidebar_btn:checked, QPushButton.sidebar_btn.active {{
 
 QPushButton.sidebar_btn_danger {{
     text-align: left;
-    padding: 7px 11px;
+    padding: 6px 10px;
     border: 1px solid rgba(239, 68, 68, 0.25);
     border-radius: 6px;
     background-color: rgba(239, 68, 68, 0.08);
     color: #ef4444;
-    font-size: {fs_base}px;
+    font-size: {fs_sidebar}px;
     font-weight: 700;
-    margin: 1px 4px;
-    min-height: 20px;
+    margin: 1px 3px;
+    min-height: 18px;
 }}
 
 QPushButton.sidebar_btn_danger:hover {{

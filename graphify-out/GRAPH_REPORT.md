@@ -1,16 +1,16 @@
 # Graph Report - tashkilotlar INN tizim  (2026-09-25)
 
 ## Corpus Check
-- 65 files · ~75,496 words
+- 65 files · ~74,456 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1013 nodes · 2053 edges · 53 communities (40 shown, 13 thin omitted)
+- 1013 nodes · 2053 edges · 54 communities (41 shown, 13 thin omitted)
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 153 edges (avg confidence: 0.64)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `21f5ff79`
+- Built from commit: `e1ec035c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -66,6 +66,7 @@
 - is_service_account_available
 - .add_organization
 - BroadcastView
+- .save_all_organizations
 - .trigger_manual_auto_backup
 
 ## God Nodes (most connected - your core abstractions)
@@ -95,15 +96,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (53 total, 13 thin omitted)
+## Communities (54 total, 13 thin omitted)
 
 ### Community 0 - "UI App Core & Event Handlers"
 Cohesion: 0.27
 Nodes (8): install_global_exception_handler(), Barcha kutilmagan xatoliklarni (Unhandled Exceptions) avtomatik log faylga yozis, main(), Pop Tuman Tashkilotlari va INN Tizimi (v4.0 Pro Enterprise) Asosiy ishga tushiri, Asosiy ilovani ishga tushirish (Entry Point)., Pop Tuman Tashkilotlari va INN Tizimi (PRO) Asosiy kirish nuqtasi (Entry Point A, PyQt5 ilovasini ishga tushirish (High-DPI, AppUserModelID va Yagona Nusxa / Sing, run_qt_app()
 
 ### Community 1 - "Core Configuration & Logging"
-Cohesion: 0.12
-Nodes (9): Any, Barcha faol tashkilotlarni ro'yxat ko'rinishida olish., Barcha tashkilotlarni atomik tranzaksiya bilan xavfsiz saqlash/yangilash (buzilm, Ommaviy tashkilotlarni saqlash va sonini qaytarish., Tashkilotni unikal ID si bo'yicha olish., Tashkilotni INN si bo'yicha olish., Xodimlar tarixini olish (tashkilot yoki mahalla bo'yicha)., So'nggi faoliyat jurnallarini olish. (+1 more)
+Cohesion: 0.15
+Nodes (7): Any, Barcha faol tashkilotlarni ro'yxat ko'rinishida olish., Tashkilotni unikal ID si bo'yicha olish., Tashkilotni INN si bo'yicha olish., Chiqindi qutisini to'liq saqlash., Xodimlar tarixini olish (tashkilot yoki mahalla bo'yicha)., So'nggi faoliyat jurnallarini olish.
 
 ### Community 2 - "Data Validation & Formatting"
 Cohesion: 0.06
@@ -126,8 +127,8 @@ Cohesion: 0.19
 Nodes (7): Organization, Any, Lug'at (dict) dan tozalangan va xavfsiz obyekt yaratish., Obyektni lug'atga aylantirish., Tashkilot ma'lumotlar modeli va validatsiyasi., Organization ma'lumotlar modeli testlari., TestModels
 
 ### Community 7 - "SQLiteManager"
-Cohesion: 0.12
-Nodes (9): Connection, Tashkilotni ID si bo'yicha SQLite bazasidan butunlay o'chirish., Chiqindi elementini ID si bo'yicha SQLite bazasidan butunlay o'chirish., SQLite ulanishini olish va WAL rejimini faollashtirish., Chiqindi qutisidagi barcha yozuvlarni olish., Chiqindi qutisini to'liq saqlash., Xodim rotatsiyasi/almashinuvini tarix jadvaliga qo'shish (ko'p qirrali parametrl, Tizimdagi harakatni SQLite jurnaliga qayd etish. (+1 more)
+Cohesion: 0.13
+Nodes (8): Connection, Tashkilotni ID si bo'yicha SQLite bazasidan butunlay o'chirish., Chiqindi elementini ID si bo'yicha SQLite bazasidan butunlay o'chirish., SQLite ulanishini olish va WAL rejimini faollashtirish., Chiqindi qutisidagi barcha yozuvlarni olish., Xodim rotatsiyasi/almashinuvini tarix jadvaliga qo'shish (ko'p qirrali parametrl, Tizimdagi harakatni SQLite jurnaliga qayd etish., SQLite bazasini vaqt tamg'asi bilan zaxiralash.
 
 ### Community 8 - "settings_view.py"
 Cohesion: 0.06
@@ -248,6 +249,10 @@ Nodes (6): QPixmap, create_crisp_pixmap(), Retina / 4K / High-DPI o'lchamli kris
 ### Community 49 - "is_service_account_available"
 Cohesion: 0.67
 Nodes (3): Aylanuvchi fayl log tizimini sozlash (5MB chegara va 5 ta arxiv nusxasi)., setup_logger(), Logger
+
+### Community 52 - ".save_all_organizations"
+Cohesion: 0.33
+Nodes (3): Barcha tashkilotlarni atomik tranzaksiya bilan xavfsiz saqlash/yangilash (buzilm, Ommaviy tashkilotlarni saqlash va sonini qaytarish., Agar SQLite jadvali bo'sh bo'lsa, JSON fayldan barcha yozuvlarni avtomatik ko'ch
 
 ### Community 54 - ".trigger_manual_auto_backup"
 Cohesion: 0.19

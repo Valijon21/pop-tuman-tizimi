@@ -241,15 +241,6 @@ class AppsView(QWidget):
         h_row.addWidget(self.lbl_uzcrypto_badge)
         layout.addLayout(h_row)
 
-        # Description
-        desc = QLabel(
-            "O'zbekiston Respublikasi Davlat Soliq Qo'mitasi (soliq.uz), Didox (didox.uz), Yagona Portali (my.gov.uz) "
-            "hamda davlat xizmatlarida tashkilotning elektron raqamli imzo (ERI) kalitlari bilan ishlash va hujjatlarni "
-            "tasdiqlash uchun zarur bo'lgan rasmiy kriptografik modul va drayver."
-        )
-        desc.setWordWrap(True)
-        desc.setStyleSheet("color: #cbd5e1; font-size: 11.5px; line-height: 1.4;")
-        layout.addWidget(desc)
 
         # File specs
         spec_box = QFrame()
@@ -351,15 +342,6 @@ class AppsView(QWidget):
         h_row.addWidget(self.lbl_anydesk_badge)
         layout.addLayout(h_row)
 
-        # Description
-        desc = QLabel(
-            "Tizim administratorlari va texnik yordam mutaxassislari bilan tezkor bog'lanish, dastur sozlamalari, "
-            "baza sinxronizatsiyasi yoki yuzaga kelgan nosozliklarni real vaqt rejimida masofadan xavfsiz bartaraf etish "
-            "dasturi. O'rnatish talab etilmaydi, portativ va darhol ishga tushadi."
-        )
-        desc.setWordWrap(True)
-        desc.setStyleSheet("color: #cbd5e1; font-size: 11.5px; line-height: 1.4;")
-        layout.addWidget(desc)
 
         # File specs
         spec_box = QFrame()
