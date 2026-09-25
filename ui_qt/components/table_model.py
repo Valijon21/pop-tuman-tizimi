@@ -25,6 +25,33 @@ class OrganizationTableModel(QAbstractTableModel):
         self._data: List[Dict[str, Any]] = data or []
         self._sort_column: int = -1
         self._sort_order: Qt.SortOrder = Qt.AscendingOrder
+        self.on_izoh_changed = None
+
+    def flags(self, index: QModelIndex) -> Qt.ItemFlags:
+        if not index.isValid():
+            return Qt.NoItemFlags
+        base_flags = Qt.ItemIsEnabled | Qt.ItemIsSelectable
+        if index.column() == 6:  # Izoh ustuni to'g'ridan-to'g'ri tahrirlanuvchan
+            return base_flags | Qt.ItemIsEditable
+        return base_flags
+
+    def setData(self, index: QModelIndex, value: Any, role: int = Qt.EditRole) -> bool:
+        if not index.isValid() or role != Qt.EditRole:
+            return False
+
+        row = index.row()
+        col = index.column()
+        if col == 6 and 0 <= row < len(self._data):
+            new_val = str(value or "").strip()
+            item = self._data[row]
+            old_val = str(item.get("izoh") or "").strip()
+            if new_val != old_val:
+                item["izoh"] = new_val
+                self.dataChanged.emit(index, index, [Qt.DisplayRole, Qt.EditRole])
+                if self.on_izoh_changed and callable(self.on_izoh_changed):
+                    self.on_izoh_changed(item, new_val)
+            return True
+        return False
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
         if parent.isValid():

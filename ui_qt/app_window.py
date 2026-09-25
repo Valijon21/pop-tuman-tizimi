@@ -107,28 +107,18 @@ class MainWindow(QMainWindow):
         brand_box = QWidget()
         brand_box.setObjectName("sidebar_brand_box")
         b_layout = QVBoxLayout(brand_box)
-        b_layout.setContentsMargins(4, 4, 4, 6)
-        b_layout.setSpacing(3)
+        b_layout.setContentsMargins(4, 4, 4, 4)
+        b_layout.setSpacing(0)
         b_layout.setAlignment(Qt.AlignCenter)
 
-        logo_path = ICON_PATH if os.path.exists(ICON_PATH) else LOGO_PATH
+        logo_path = LOGO_PATH if os.path.exists(LOGO_PATH) else ICON_PATH
         if os.path.exists(logo_path):
             logo_lbl = QLabel()
-            pixmap = create_crisp_pixmap(logo_path, target_width=52, target_height=52, supersample=3.0)
+            pixmap = create_crisp_pixmap(logo_path, target_width=138, target_height=138, supersample=3.0)
             logo_lbl.setPixmap(pixmap)
             logo_lbl.setAlignment(Qt.AlignCenter)
             logo_lbl.setStyleSheet("background: transparent; border: none;")
             b_layout.addWidget(logo_lbl)
-
-        title_lbl = QLabel("POP DATA")
-        title_lbl.setObjectName("sidebar_title")
-        title_lbl.setAlignment(Qt.AlignCenter)
-        b_layout.addWidget(title_lbl)
-
-        subtitle_lbl = QLabel("ORGANIZATION DATABASE")
-        subtitle_lbl.setObjectName("sidebar_subtitle")
-        subtitle_lbl.setAlignment(Qt.AlignCenter)
-        b_layout.addWidget(subtitle_lbl)
 
         self.sidebar_layout.addWidget(brand_box)
         self.sidebar_layout.addSpacing(4)

@@ -9,7 +9,8 @@ import pyperclip
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QComboBox, QPushButton, QTableView, QHeaderView, QMenu,
-    QMessageBox, QFileDialog, QFrame, QScrollArea, QShortcut
+    QMessageBox, QFileDialog, QFrame, QScrollArea, QShortcut,
+    QStyledItemDelegate, QApplication
 )
 from PyQt5.QtCore import Qt, QModelIndex, QTimer, QEvent
 from PyQt5.QtGui import QKeySequence
@@ -22,6 +23,59 @@ from services.excel_service import export_organizations_to_excel
 from ui_qt.views.qr_dialog import open_qr_dialog
 from core.logger import logger
 from core.threading_utils import WorkerThread
+
+
+class IzohDelegate(QStyledItemDelegate):
+    """Izoh ustuni uchun maxsus zamonaviy inline muharrir (QLineEdit)."""
+
+    def __init__(self, parent=None, is_light=False):
+        super().__init__(parent)
+        self.is_light = is_light
+
+    def createEditor(self, parent, option, index):
+        editor = QLineEdit(parent)
+        if self.is_light:
+            editor.setStyleSheet("""
+                QLineEdit {
+                    background-color: #ffffff;
+                    color: #0f172a;
+                    border: 2px solid #0284c7;
+                    border-radius: 4px;
+                    padding: 2px 6px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    selection-background-color: #0284c7;
+                    selection-color: #ffffff;
+                }
+            """)
+        else:
+            editor.setStyleSheet("""
+                QLineEdit {
+                    background-color: #1e293b;
+                    color: #38bdf8;
+                    border: 2px solid #38bdf8;
+                    border-radius: 4px;
+                    padding: 2px 6px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    selection-background-color: #2563eb;
+                    selection-color: #ffffff;
+                }
+            """)
+        editor.setClearButtonEnabled(True)
+        return editor
+
+    def setEditorData(self, editor, index):
+        val = index.model().data(index, Qt.DisplayRole)
+        editor.setText(str(val or ""))
+        editor.selectAll()
+
+    def setModelData(self, editor, model, index):
+        model.setData(index, editor.text(), Qt.EditRole)
+
+    def updateEditorGeometry(self, editor, option, index):
+        editor.setGeometry(option.rect)
+
 
 class TableView(QWidget):
     """PyQt5 Tashkilotlar Jadvali Ekrani."""
@@ -154,13 +208,18 @@ class TableView(QWidget):
         # 3. ASOSIY QTABLEVIEW
         self.table_view = QTableView()
         self.table_model = OrganizationTableModel()
+        self.table_model.on_izoh_changed = self.on_inline_izoh_saved
         self.table_view.setModel(self.table_model)
 
         self.table_view.setAlternatingRowColors(True)
-        self.table_view.setSelectionBehavior(QTableView.SelectRows)
-        self.table_view.setSelectionMode(QTableView.SingleSelection)
+        self.table_view.setSelectionBehavior(QTableView.SelectItems)
+        self.table_view.setSelectionMode(QTableView.ExtendedSelection)
         self.table_view.setSortingEnabled(True)
         self.table_view.verticalHeader().setVisible(False)
+
+        # Izoh uchun maxsus inline delegate (ikki marta bosganda yozish va Enter bilan saqlash)
+        self.izoh_delegate = IzohDelegate(self.table_view, is_light=is_light)
+        self.table_view.setItemDelegateForColumn(6, self.izoh_delegate)
 
         # Ustunlar kengligi
         header = self.table_view.horizontalHeader()
@@ -181,6 +240,10 @@ class TableView(QWidget):
         # Klaviaturadan qidiruvga o'tish (Ctrl+F)
         self.shortcut_search = QShortcut(QKeySequence("Ctrl+F"), self)
         self.shortcut_search.activated.connect(self.focus_search)
+
+        # Klaviaturadan katak/matnlarni nusxalash (Ctrl+C)
+        self.shortcut_copy = QShortcut(QKeySequence("Ctrl+C"), self.table_view)
+        self.shortcut_copy.activated.connect(self.copy_selected_cells)
 
         main_layout.addWidget(self.table_view, 1)
 
@@ -220,6 +283,9 @@ class TableView(QWidget):
         # Category pills
         self.update_pill_selection(self.current_category)
 
+        if hasattr(self, "izoh_delegate"):
+            self.izoh_delegate.is_light = is_light
+
     def init_data(self):
         self.update_pill_selection("Barchasi")
         self.filter_data()
@@ -246,11 +312,20 @@ class TableView(QWidget):
             self.filter_data()
 
     def eventFilter(self, source, event):
-        """Jadvalda klaviatura hodisalarini ushlash: Enter (tahrir), Delete (o'chirish)."""
+        """Jadvalda klaviatura hodisalarini ushlash: Enter, Delete, Ctrl+C."""
         if source == self.table_view and event.type() == QEvent.KeyPress:
-            if event.key() in (Qt.Key_Return, Qt.Key_Enter):
-                self.open_edit_dialog()
+            # Ctrl+C or Ctrl+Insert (Kopiya qilish)
+            if event.matches(QKeySequence.Copy) or (event.modifiers() & Qt.ControlModifier and event.key() == Qt.Key_C):
+                self.copy_selected_cells()
                 return True
+            elif event.key() in (Qt.Key_Return, Qt.Key_Enter):
+                idx = self.table_view.currentIndex()
+                if idx.isValid() and idx.column() == 6:
+                    self.table_view.edit(idx)
+                    return True
+                else:
+                    self.open_edit_dialog()
+                    return True
             elif event.key() == Qt.Key_Delete:
                 item = self.get_selected_item()
                 if item:
@@ -278,14 +353,64 @@ class TableView(QWidget):
         self.lbl_count.setText(f"Jami ko'rsatilmoqda: {len(self.filtered_data)} ta tashkilot")
 
     def get_selected_item(self) -> Optional[Dict[str, Any]]:
-        indexes = self.table_view.selectionModel().selectedRows()
+        indexes = self.table_view.selectionModel().selectedIndexes()
         if not indexes:
             return None
         row = indexes[0].row()
         return self.table_model.get_item_by_row(row)
 
     def on_table_double_clicked(self, index: QModelIndex):
-        self.open_edit_dialog()
+        if not index.isValid():
+            return
+        if index.column() == 6:  # Izoh ustuni: to'g'ridan-to'g'ri yozish va Enter bilan saqlash
+            self.table_view.edit(index)
+        else:
+            self.open_edit_dialog()
+
+    def on_inline_izoh_saved(self, item: Dict[str, Any], new_izoh: str):
+        if self.app and hasattr(self.app, "data_manager"):
+            self.app.data_manager.update_organization(item, user="ADMIN")
+            m_name = item.get("m", "Tashkilot")
+            if hasattr(self.app, "status_bar"):
+                self.app.status_bar.showMessage(
+                    f"✅ '{m_name}' tashkiloti izohi saqlandi: \"{new_izoh}\"", 4000
+                )
+
+    def copy_selected_cells(self):
+        """Tanlangan katak(lar) yoki ko'kartirib belgilangan matnlarni buferga nusxalash (Ctrl+C)."""
+        selection = self.table_view.selectionModel().selectedIndexes()
+        if not selection:
+            return
+
+        rows = sorted(list(set(idx.row() for idx in selection)))
+        cols = sorted(list(set(idx.column() for idx in selection)))
+
+        if len(selection) == 1:
+            idx = selection[0]
+            val = self.table_model.data(idx, Qt.DisplayRole)
+            text_to_copy = str(val or "").strip()
+            if text_to_copy == "-":
+                text_to_copy = ""
+        else:
+            lines = []
+            for r in rows:
+                row_vals = []
+                for c in cols:
+                    idx = self.table_model.index(r, c)
+                    val = str(self.table_model.data(idx, Qt.DisplayRole) or "")
+                    if val == "-":
+                        val = ""
+                    row_vals.append(val)
+                lines.append("\t".join(row_vals))
+            text_to_copy = "\n".join(lines)
+
+        if text_to_copy:
+            pyperclip.copy(text_to_copy)
+            if hasattr(self.app, "status_bar"):
+                preview = text_to_copy if len(text_to_copy) <= 35 else text_to_copy[:32] + "..."
+                self.app.status_bar.showMessage(f"📋 Nusxalandi (Ctrl+C): \"{preview}\"", 3000)
+            elif hasattr(self.app, "show_toast"):
+                self.app.show_toast("Matn nusxalandi! 📋", "success")
 
     def open_add_dialog(self):
         if self.app and hasattr(self.app, "check_permission"):
@@ -380,7 +505,25 @@ class TableView(QWidget):
         if not item:
             return
 
+        idx = self.table_view.indexAt(pos)
+        cell_text = ""
+        if idx.isValid():
+            cell_text = str(self.table_model.data(idx, Qt.DisplayRole) or "").strip()
+
         menu = QMenu(self)
+
+        # 0. Tezkor Nusxa olish (Katak matni va butun qator)
+        if cell_text and cell_text != "-":
+            preview = cell_text if len(cell_text) <= 25 else cell_text[:22] + "..."
+            act_copy_cell = menu.addAction(f"📋 Nusxa olish: \"{preview}\" (Ctrl+C)")
+            act_copy_cell.triggered.connect(self.copy_selected_cells)
+        else:
+            act_copy_cell = menu.addAction("📋 Nusxa olish (Ctrl+C)")
+            act_copy_cell.triggered.connect(self.copy_selected_cells)
+
+        act_copy_row = menu.addAction("📑 Butun qatorni nusxalash")
+        act_copy_row.triggered.connect(lambda: self.copy_entire_row(item))
+        menu.addSeparator()
 
         # 1. Asosiy shablonlar
         act_cab = menu.addAction("🔑 Kabinetga dostup (Dialog)")
