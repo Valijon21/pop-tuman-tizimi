@@ -9,7 +9,7 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/GUI-PyQt5%20Fluent-0284c7?style=for-the-badge&logo=qt&logoColor=white" alt="PyQt5">
   <img src="https://img.shields.io/badge/Storage-SQLite%20WAL-10b981?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite WAL">
-  <img src="https://img.shields.io/badge/Tests-85%20Passed%20(100%25)-success?style=for-the-badge&logo=githubactions&logoColor=white" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-92%20Passed%20(100%25)-success?style=for-the-badge&logo=githubactions&logoColor=white" alt="Tests">
   <img src="https://img.shields.io/badge/OS-Windows%2010%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows 10/11">
 </p>
 
@@ -33,7 +33,33 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
   * **Aqlli Toifa Tanlovi (Context Pre-fill):** Agar foydalanuvchi ma'lum bir toifada (masalan, *Bog'cha*, *Maktab*, *Mahalla*) turgan bo'lsa, ochilgan forma avtomatik tarzda ushbu toifani oldindan tanlab beradi.
   * **`+ Toifa` Qo'shish:** Foydalanuvchi istalgan vaqtda yangi toifa (masalan, *Sport*, *Madaniyat*, *Bank*) kiritishi mumkin. U darhol ikkala jadval paneliga pill tugma sifatida qo'shiladi va saqlanadi.
 
-### ⚙️ 2. Professional Dinamik Ustunlar Menejeri (Column Manager)
+### 🛡️ 2. Baza Sifatini Audit Qilish va "Kamchiliklar" Tezkor Filtri (Data Quality Auditor)
+* **Baza Salomatlik Indeksi (Data Health Index: 0–100%):**
+  * Tizim avtomatik ravishda barcha 680+ tashkilot bo'yicha INN (30 ball), Rahbar telefoni (30 ball), Buxgalter aloqasi (20 ball) va Rahbar F.I.SH. (20 ball) to'liqligini tahlil qiladi.
+* **1-Bosishda Tezkor Filtrlar:**
+  * Asosiy jadval va Shartnomalar monitoringida: `🔍 Barchasi`, `⚠️ INN yo'q`, `📞 Tel yo'q`, `💼 Buxgalter yo'q`, `🔗 Ulanmagan (0 ta)`, `🚨 Barcha Kamchiliklar`.
+* **Kamchiliklar bo'yicha Alohida Excel Eksport:**
+  * Barcha nuqsonli tashkilotlar ro'yxatini aniq kamchilik tavsifi bilan birga mas'ullarga tarqatish uchun maxsus `.xlsx` audit hisobotiga saqlash.
+
+### 📜 3. Kadrlar Almashinuvi Vizual Vaqt Chizig'i (Visual Timeline History UI)
+* **Dual-Mode Zamonaviy Interfeys:**
+  * Foydalanuvchi bitta bosish orqali **`[ 🕒 Vaqt Chizig'i ]`** (vizual kartochkalar) va **`[ 📑 Jadval ]`** rejimlari o'rtasida erkin almashadi.
+* **Xronologik Dinamik Kartochkalar & Diff Nishonlari:**
+  * Har bir kadrlar rotatsiyasi uchun binafsha chap aksent chizig'i, yorqin sana/vaqt yorlig'i, lavozim piktogrammasi va xodim almashinuvi (`🔴 Oldingi: Eshmatov ➔ 🟢 Yangi: Toshmatov`).
+* **Kontekst Menyu va Filtr:**
+  * Tashkilotlar va Shartnomalar jadvallarida o'ng tugmani bosib, to'g'ridan-to'g'ri o'sha tashkilotning kadrlar tarixi vaqt chizig'ini ochish. Ism yoki mahalla bo'yicha jonli qidiruv.
+
+### 📥 4. Excel bilan Ikki Tomonlama Aqlli Sinxronizatsiya va Diff Dvigateli (Two-Way Smart Diff & Merge)
+* **Avtomatik Taqqoslash va Klassifikatsiya (Engine):**
+  * Tashqi Excel/CSV fayl yuklanganda, tizim har bir yozuvni mavjud baza bilan INN va normallashtirilgan nom bo'yicha taqqoslaydi.
+  * Har bir qator **`MODIFIED`** (o'zgargan), **`NEW`** (yangi qo'shiladigan) yoki **`UNCHANGED`** (o'zgarishsiz) deb belgilanadi.
+* **Vizual Diff Paneli & Tanlab Sinxronlash (Selective Merge):**
+  * O'zgargan qatorlarda nima yangilanganligi aniq matnda ko'rsatiladi (masalan: *Rahbar: "Ali" ➔ "Vali"*, *Tel: "+99890..." ➔ "+99891..."*).
+  * Foydalanuvchi qaysi tashkilotlarni yangilashni xohlasa, faqat o'shalarni checkbox orqali tanlab bazaga kiritadi.
+* **Xavfsizlik & Avtomatik Kadrlar Audit Yozuvi:**
+  * Sinxronlashdan oldin bazaning avtomatik zaxira nusxasi yaratiladi. Rahbar yoki telefon o'zgarganda kadrlar rotatsiyasi tarixiga avtomatik yoziladi.
+
+### ⚙️ 5. Professional Dinamik Ustunlar Menejeri (Column Manager)
 * **Tashkilotlar va Shartnomalar jadvaliga erkin ustun qo'shish:**
   * **Tizim maydonlari:** Buxgalter tel, Apparat shtat soni, Ulangan apparatlar, Rahbar lavozimi, JSHSHIR, Pasport seriya kabi maydonlarni bitta bosishda yoqish/o'chirish.
   * **Maxsus yangi ustunlar:** Istalgan yangi ustun yaratish (nomi, kengligi va kalitini belgilagan holda, masalan: *Shartnoma sanasi*, *Manzil*, *Email*, *Qo'shimcha izoh*).
@@ -41,30 +67,30 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
 * **Inline Katak Tahrirlash (In-Place Edit):** Jadvaldagi yangi ustunlar yoki izoh ustuniga sichqoncha bilan ikki marta bosib to'g'ridan-to'g'ri o'zgartirish va `Enter` orqali saqlash.
 * **Dinamik Excel Eksport:** Qo'shilgan barcha maxsus ustunlar avtomatik ravishda Excel hisobotiga qo'shiladi.
 
-### 🔍 3. Aqlli Qidiruv va Mos Nomlar Taklifi (Smart Search Engine)
+### 🔍 6. Aqlli Qidiruv va Mos Nomlar Taklifi (Smart Search Engine)
 * **Lotin ⇄ Kirill Transliteratsiyasi:** Qidiruv maydonida so'z qaysi alifboda yozilishidan qat'i nazar (`maktab` yoki `мактаб`, `chorkesar` yoki `чоркесар`) tashkilot bir zumda topiladi.
 * **Mustaqil Ko'p Tokenli Qidiruv:** So'zlar tartibi natijaga xalaqit qilmaydi (`"1 maktab"` = `"maktab 1"`).
 * **Interaktiv Takliflar (`SmartSearchCompleter`):** Qidiruv kiritilishi bilan mos keluvchi nomlar, INNlar va telefonlar chiroyli Fluent popup menyusida oniy taklif etiladi.
 
-### 📑 4. Shartnoma va Ulanishlar Monitoringi
+### 📑 7. Shartnoma va Ulanishlar Monitoringi
 * **Interaktiv Jadval & Dinamik Ustunlar:** `№`, `Tashkilot Nomi`, `INN`, `Toifasi`, `Apparat SHT`, `Ulangan`, `Rahbar Tel`, `Buxgalter Tel` + istalgan maxsus ustunlar.
 * **Professional Raqamli Saralash:** Ustun bosilganda raqamlar matn emas, matematik qiymati bo'yicha to'g'ri tartiblanadi (`NumericTableWidgetItem`).
 * **Kataklar Bo'yicha Erkin Nusxalash:** Istalgan kataklarni belgilab, `Ctrl+C` orqali to'g'ridan-to'g'ri nusxalash imkoniyati (`ExtendedSelection`).
 * **Excel Eksport:** Barcha ma'lumotlarni (yangi qo'shilgan ustunlar bilan birga) bir bosishda `.xlsx` faylga saqlash.
 
-### 🏘 4. Mahalla "Yettiligi" 360° Raqamli Pasporti
+### 🏘 8. Mahalla "Yettiligi" 360° Raqamli Pasporti
 * Pop tumanining 74 ta MFYsi bo'yicha mas'ul rahbarlar: Rais, Hokim yordamchisi, Yoshlar yetakchisi, Xotin-qizlar faoli, Profilaktika inspektori, Soliqchi va Ijtimoiy xodim.
 * Bir bosishda **"Verifikatsiya so'rovi"** va **"Kabinetga dostup"** rasmiy shablonlarini generatsiya qilish va Telegram orqali yuborish.
 
-### 📇 5. Xalqaro Aloqa va QR Standartlari
+### 📇 9. Xalqaro Aloqa va QR Standartlari
 * **Toza E.164 Formati:** Raqamlarda xato prefikslar qo'shilishining oldini oluvchi toza `+998...` standarti.
 * **Universal QR-kodlar:** Android va iOS qurilmalari bilan to'liq mos NTT DoCoMo MeCard va RFC 2426 vCard 3.0 kontakt kartochkalari.
 
-### 💾 6. Dual-Storage & Avtomatik Zaxiralash
+### 💾 10. Dual-Storage & Avtomatik Zaxiralash
 * **ACID Kafolati:** Har bir amal SQLite (WAL rejimida) hamda atomik JSON fayliga birdek yoziladi.
 * **Avto-zaxira (Rolling Backups):** Har 30 daqiqada va dastur yopilganda SQLite (`.db`) va JSON (`.json`) nusxalari avtomatik arxivlanadi.
 
-### 🛠 7. Yordamchi Dasturlar (Tools)
+### 🛠 11. Yordamchi Dasturlar (Tools)
 * **UzCrypto va AnyDesk:** Bitta tugma orqali dastur papkasini ochish yoki dasturni tizim almashish buferiga (clipboard) nusxalash (`Ctrl+V` orqali xohlagan joyga joylash).
 
 ---
@@ -100,8 +126,8 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
 ```text
 pop-tuman-tizimi/
 ├── main.py                     # Asosiy kirish nuqtasi (PyQt5 GUI)
-├── run_tests.py                # Avtomatlashtirilgan test tizimi (85 ta test)
-├── build_exe.py                # Standalone Windows .exe yig'uvchi
+├── run_tests.py                # Avtomatlashtirilgan test tizimi (92 ta test)
+├── build_exe.py                # Standalone Windows .exe yig'uvchi (hozircha ishlatilmaydi)
 ├── mahalla_tizimi.db           # SQLite asosiy bazasi (WAL)
 ├── mahalla_bazasi.json         # Atomik JSON sinxronizatsiya bazasi
 │
@@ -109,9 +135,9 @@ pop-tuman-tizimi/
 ├── database/                   # Ma'lumotlar modeli va SQLite/JSON menejerlari
 ├── services/                   # Aqlli qidiruv, QR, Excel va Telegram servislar
 ├── ui_qt/                      # Fluent interfeys, ko'rinishlar va dialoglar
-│   ├── components/             # SmartCompleter, jadvallar va diagrammalar
-│   └── views/                  # Dashboard, Jadval, Shartnomalar, MFY pasporti
-└── tests/                      # 85 ta to'liq qamrovli avtotestlar to'plami
+│   ├── components/             # SmartCompleter, ColumnManager, kartochkalar
+│   └── views/                  # Dashboard, Table, Contracts, Timeline, Audit, Import
+└── tests/                      # 92 ta to'liq qamrovli avtotestlar to'plami
 ```
 
 ---
@@ -140,15 +166,15 @@ python main.py
 
 ## 🧪 Sifat Nazorati va Testlar
 
-Loyiha barqarorligi va ishonchliligi 75 ta avtomatlashtirilgan test bilan himoyalangan:
+Loyiha barqarorligi va ishonchliligi 92 ta avtomatlashtirilgan test bilan himoyalangan:
 
 ```powershell
 python run_tests.py
 ```
 
 ```text
-Ran 75 tests in ~67s
-OK - BARCHA TESTLAR MUVAFFAQIYATLI O'TDI! (75 ta test)
+Ran 92 tests in ~60s
+OK - BARCHA TESTLAR MUVAFFAQIYATLI O'TDI! (92 ta test)
 ```
 
 ---

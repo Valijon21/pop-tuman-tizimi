@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
     QMenu, QMessageBox, QFileDialog, QFrame, QScrollArea, QShortcut,
-    QSizePolicy
+    QSizePolicy, QComboBox
 )
 from PyQt5.QtCore import Qt, QTimer, QEvent
 from PyQt5.QtGui import QKeySequence, QColor
@@ -152,6 +152,13 @@ class ContractsView(QWidget):
         self.btn_columns.clicked.connect(self.open_column_manager)
         head_layout.addWidget(self.btn_columns)
 
+        self.btn_audit = QPushButton("🛡️ Audit")
+        self.btn_audit.setProperty("class", "btn_secondary")
+        self.btn_audit.setCursor(Qt.PointingHandCursor)
+        self.btn_audit.setToolTip("Baza sifatini audit qilish va kamchiliklar hisoboti")
+        self.btn_audit.clicked.connect(self.open_audit_report)
+        head_layout.addWidget(self.btn_audit)
+
         main_layout.addLayout(head_layout)
 
         # 2. KPI KARTALARI PANELI (4 ta karta)
@@ -192,6 +199,21 @@ class ContractsView(QWidget):
         self.btn_clear.setFixedSize(26, 26)
         self.btn_clear.clicked.connect(lambda: self.edit_search.clear())
         toolbar.addWidget(self.btn_clear)
+
+        # Sifat va Audit filtri (Data Quality Auditor)
+        self.combo_audit = QComboBox()
+        self.combo_audit.setObjectName("combo_contracts_audit")
+        self.combo_audit.addItems([
+            "🔍 Barchasi",
+            "⚠️ INN yo'q",
+            "📞 Buxgalter yo'q",
+            "🔗 Ulanmagan (0 ta)",
+            "🚨 Kamchiliklar",
+        ])
+        self.combo_audit.setToolTip("Baza sifat auditi: kamchilikli shartnomalarni tezkor saralash")
+        self.combo_audit.setFixedWidth(135)
+        self.combo_audit.currentIndexChanged.connect(self.filter_data)
+        toolbar.addWidget(self.combo_audit)
 
         main_layout.addLayout(toolbar)
 
@@ -588,6 +610,26 @@ class ContractsView(QWidget):
                 if not matched:
                     continue
 
+            # Sifat va Audit filtri (Data Quality Auditor)
+            if hasattr(self, "combo_audit"):
+                audit_mode = self.combo_audit.currentText()
+                if "INN yo'q" in audit_mode and inn_val:
+                    continue
+                elif "Buxgalter yo'q" in audit_mode and bux_digits:
+                    continue
+                elif "Ulanmagan" in audit_mode and (it.get("ulangan_soni") or 0) > 0:
+                    continue
+                elif "Kamchiliklar" in audit_mode:
+                    has_defect = (
+                        not inn_val or
+                        not bux_digits or
+                        not raxbar_digits or
+                        not f_norm or
+                        (it.get("ulangan_soni") or 0) == 0
+                    )
+                    if not has_defect:
+                        continue
+
             self.filtered_data.append(it)
 
         self.render_table_rows()
@@ -853,6 +895,11 @@ class ContractsView(QWidget):
         act_cabinet = menu.addAction("🔑 Kabinetga dostup")
         act_cabinet.triggered.connect(lambda: open_cabinet_dialog(self.app, item))
 
+        menu.addSeparator()
+
+        act_history = menu.addAction("📜 Kadrlar Almashinuvi Tarixi (Timeline)")
+        act_history.triggered.connect(lambda: self.open_staff_history(item))
+
         menu.exec_(self.table.viewport().mapToGlobal(pos))
 
     def _copy_and_toast(self, text: str, msg: str):
@@ -918,4 +965,22 @@ class ContractsView(QWidget):
             QMessageBox.information(self, "Muvaffaqiyatli", f"{len(self.filtered_data)} ta tashkilot shartnomalari Excelga saqlandi!")
         except Exception as e:
             QMessageBox.critical(self, "Xatolik", f"Excel saqlashda xatolik: {e}")
+
+    def open_audit_report(self):
+        """Baza sifatini audit qilish dialogini ochish."""
+        from ui_qt.views.audit_report_dialog import open_audit_report_dialog
+        def filter_defects():
+            if hasattr(self, "combo_audit"):
+                idx = self.combo_audit.findText("🚨 Kamchiliklar")
+                if idx >= 0:
+                    self.combo_audit.setCurrentIndex(idx)
+                else:
+                    self.filter_data()
+        open_audit_report_dialog(self.app or self, on_filter_defects=filter_defects)
+
+    def open_staff_history(self, item: Dict[str, Any]):
+        """Tanlangan tashkilot bo'yicha kadrlar tarixi timeline dialogini ochish."""
+        from ui_qt.views.history_view import open_staff_history_dialog
+        mahalla = item.get("m") or ""
+        open_staff_history_dialog(self.app or self, mahalla=mahalla)
 

@@ -148,6 +148,22 @@ class TableView(QWidget):
         self.btn_clear.clicked.connect(lambda: self.edit_search.clear())
         toolbar.addWidget(self.btn_clear)
 
+        # Sifat va Audit filtri (Data Quality Auditor)
+        self.combo_audit = QComboBox()
+        self.combo_audit.setObjectName("combo_audit_filter")
+        self.combo_audit.addItems([
+            "🔍 Barchasi",
+            "⚠️ INN yo'q",
+            "📞 Tel yo'q",
+            "💼 Buxgalter yo'q",
+            "👤 F.I.SH yo'q",
+            "🚨 Kamchiliklar"
+        ])
+        self.combo_audit.setToolTip("Baza sifatini audit qilish: kamchilikli tashkilotlarni saralash")
+        self.combo_audit.setFixedWidth(122)
+        self.combo_audit.currentIndexChanged.connect(self.filter_data)
+        toolbar.addWidget(self.combo_audit)
+
         # Amallar tugmalari (Ixcham, tartibli va professional Senior uslubi)
         def add_tool_btn(txt, cmd, css_class="btn_secondary", min_w=65):
             btn = QPushButton(txt)
@@ -176,8 +192,10 @@ class TableView(QWidget):
         act_yettilik.triggered.connect(self.open_yettilik)
         act_broadcast = more_menu.addAction("📢 Ommaviy Xabarnoma (SMS/Telegram)")
         act_broadcast.triggered.connect(self.open_broadcast)
-        act_history = more_menu.addAction("📜 Kadrlar Almashinuvi Tarixi")
+        act_history = more_menu.addAction("📜 Kadrlar Almashinuvi Tarixi (Timeline)")
         act_history.triggered.connect(lambda: self.app.open_history() if hasattr(self.app, "open_history") else None)
+        act_audit = more_menu.addAction("🛡️ Baza Sifat Auditi (Hisobot)")
+        act_audit.triggered.connect(self.open_audit_report)
         act_import = more_menu.addAction("📥 Excel / CSV Ommaviy Import")
         act_import.triggered.connect(lambda: self.app.open_import() if hasattr(self.app, "open_import") else None)
         more_menu.addSeparator()
@@ -416,8 +434,39 @@ class TableView(QWidget):
             field_type=f_type
         )
 
+        # Sifat va Audit filtri (Data Quality Auditor)
+        if hasattr(self, "combo_audit"):
+            audit_mode = self.combo_audit.currentText()
+            if "INN yo'q" in audit_mode:
+                self.filtered_data = [x for x in self.filtered_data if not str(x.get("inn", "")).strip()]
+            elif "Tel yo'q" in audit_mode:
+                self.filtered_data = [x for x in self.filtered_data if not str(x.get("t", "")).strip()]
+            elif "Buxgalter yo'q" in audit_mode:
+                self.filtered_data = [x for x in self.filtered_data if not str(x.get("bux_tel", "")).strip()]
+            elif "F.I.SH yo'q" in audit_mode:
+                self.filtered_data = [x for x in self.filtered_data if not str(x.get("f", "")).strip()]
+            elif "Kamchiliklar" in audit_mode:
+                self.filtered_data = [
+                    x for x in self.filtered_data
+                    if not str(x.get("inn", "")).strip()
+                    or not str(x.get("t", "")).strip()
+                    or not str(x.get("bux_tel", "")).strip()
+                    or not str(x.get("f", "")).strip()
+                ]
+
         self.table_model.set_data(self.filtered_data)
         self.lbl_count.setText(f"Jami ko'rsatilmoqda: {len(self.filtered_data)} ta tashkilot")
+
+    def open_audit_report(self):
+        """Baza sifatini audit qilish dialogini ochish."""
+        from ui_qt.views.audit_report_dialog import open_audit_report_dialog
+        def filter_defects():
+            idx = self.combo_audit.findText("🚨 Kamchiliklar")
+            if idx >= 0:
+                self.combo_audit.setCurrentIndex(idx)
+            else:
+                self.filter_data()
+        open_audit_report_dialog(self.app or self, on_filter_defects=filter_defects)
 
     def get_selected_item(self) -> Optional[Dict[str, Any]]:
         indexes = self.table_view.selectionModel().selectedIndexes()
