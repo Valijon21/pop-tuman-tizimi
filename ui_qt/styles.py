@@ -670,6 +670,44 @@ QPushButton.pill_btn:checked, QPushButton.pill_btn.active {{
     font-weight: 700;
 }}
 
+/* Filter Pill Tezkor Qo'shish Tugmalari (Tashkilot va Toifa qo'shish) */
+QPushButton.pill_action_btn {{
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0284c7, stop:1 #2563eb);
+    border: 1px solid #38bdf8;
+    border-radius: 13px;
+    padding: 3px 12px;
+    color: #ffffff;
+    font-size: {fs_caption}px;
+    font-weight: 700;
+    min-height: 16px;
+}}
+
+QPushButton.pill_action_btn:hover {{
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #0369a1, stop:1 #1d4ed8);
+    border-color: #60a5fa;
+}}
+
+QPushButton.pill_action_btn:pressed {{
+    background-color: #1e40af;
+}}
+
+QPushButton.pill_add_cat_btn {{
+    background-color: transparent;
+    border: 1px dashed {c_pill_border};
+    border-radius: 13px;
+    padding: 3px 10px;
+    color: {c_pill_fg};
+    font-size: {fs_caption}px;
+    font-weight: 600;
+    min-height: 16px;
+}}
+
+QPushButton.pill_add_cat_btn:hover {{
+    background-color: {c_pill_hover_bg};
+    color: {c_pill_hover_fg};
+    border-color: {c_pill_hover_border};
+}}
+
 /* ========== JADVALLAR (QTableView & QTableWidget) ========== */
 QTableView, QTableWidget {{
     background-color: {c_table_bg};

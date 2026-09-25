@@ -196,38 +196,33 @@ class ContractsView(QWidget):
         main_layout.addLayout(toolbar)
 
         # Kategoriya Pills (Skroll paneli bilan)
-        cat_scroll = QScrollArea()
-        cat_scroll.setWidgetResizable(True)
-        cat_scroll.setFixedHeight(34)
-        cat_scroll.setFrameShape(QFrame.NoFrame)
-        cat_scroll.setStyleSheet("background: transparent;")
+        self.cat_scroll = QScrollArea()
+        self.cat_scroll.setWidgetResizable(True)
+        self.cat_scroll.setFixedHeight(34)
+        self.cat_scroll.setFrameShape(QFrame.NoFrame)
+        self.cat_scroll.setStyleSheet("background: transparent;")
 
-        cat_container = QWidget()
-        self.cat_layout = QHBoxLayout(cat_container)
+        self.cat_container = QWidget()
+        self.cat_layout = QHBoxLayout(self.cat_container)
         self.cat_layout.setContentsMargins(0, 0, 0, 0)
         self.cat_layout.setSpacing(6)
 
         self.pill_buttons: Dict[str, QPushButton] = {}
-        categories = ["Barchasi", "Mahalla", "Maktab", "Bog'cha", "Ta'lim", "Tibbiyot", "Boshqa"]
-        for cat in categories:
-            btn = QPushButton(cat)
-            btn.setProperty("class", "pill_btn")
-            btn.setCheckable(True)
-            btn.clicked.connect(lambda checked, c=cat: self.on_category_clicked(c))
-            self.cat_layout.addWidget(btn)
-            self.pill_buttons[cat] = btn
+        self.setup_category_pills()
 
-        self.cat_layout.addStretch()
-        cat_scroll.setWidget(cat_container)
-        main_layout.addWidget(cat_scroll)
+        self.cat_scroll.setWidget(self.cat_container)
+        main_layout.addWidget(self.cat_scroll)
 
         # 4. ASOSIY JADVAL (QTableWidget - Tartiblangan, dinamik ustunlar bilan)
         self.table = QTableWidget()
         self.setup_table_columns()
 
-        # Klaviaturadan qidiruvga o'tish (Ctrl+F)
+        # Klaviaturadan qidiruvga o'tish (Ctrl+F) va Tashkilot qo'shish (Ctrl+N)
         self.shortcut_search = QShortcut(QKeySequence("Ctrl+F"), self)
         self.shortcut_search.activated.connect(self.focus_search)
+
+        self.shortcut_add = QShortcut(QKeySequence("Ctrl+N"), self)
+        self.shortcut_add.activated.connect(self.open_add_dialog)
 
         main_layout.addWidget(self.table, 1)
 
@@ -420,6 +415,78 @@ class ContractsView(QWidget):
                 return True
         return super().eventFilter(source, event)
 
+    def setup_category_pills(self):
+        """Kategoriya tugmalarini va qo'shish tugmalarini dinamik barpo etish."""
+        # Eski elementlarni tozalash
+        while self.cat_layout.count():
+            item = self.cat_layout.takeAt(0)
+            w = item.widget()
+            if w:
+                w.deleteLater()
+
+        self.pill_buttons = {}
+
+        # Asosiy toifalar ro'yxati
+        base_cats = ["Barchasi", "Mahalla", "Maktab", "Bog'cha", "Ta'lim", "Tibbiyot"]
+        extra_cats = []
+        if self.app and hasattr(self.app, "data_manager") and hasattr(self.app.data_manager, "categories"):
+            for c in self.app.data_manager.categories:
+                c_clean = str(c).strip()
+                if not c_clean:
+                    continue
+                if not any(b.lower() in c_clean.lower() for b in base_cats) and c_clean.lower() != "boshqa":
+                    if c_clean not in extra_cats:
+                        extra_cats.append(c_clean)
+
+        categories = base_cats + extra_cats + ["Boshqa"]
+
+        for cat in categories:
+            btn = QPushButton(cat)
+            btn.setProperty("class", "pill_btn")
+            btn.setCheckable(True)
+            btn.clicked.connect(lambda checked, c=cat: self.on_category_clicked(c))
+            self.cat_layout.addWidget(btn)
+            self.pill_buttons[cat] = btn
+
+        # ── 1. "➕ Tashkilot qo'shish" tugmasi (Aynan toifalar qatorida) ──
+        self.btn_pill_add = QPushButton("➕ Tashkilot qo'shish")
+        self.btn_pill_add.setProperty("class", "pill_action_btn")
+        self.btn_pill_add.setCursor(Qt.PointingHandCursor)
+        self.btn_pill_add.setToolTip("Yangi tashkilot / shartnoma qo'shish (Ctrl+N)")
+        self.btn_pill_add.clicked.connect(lambda: self.open_add_dialog())
+        self.cat_layout.addWidget(self.btn_pill_add)
+
+        # ── 2. "+ Toifa" qo'shish tugmasi ──
+        self.btn_pill_add_cat = QPushButton("+ Toifa")
+        self.btn_pill_add_cat.setProperty("class", "pill_add_cat_btn")
+        self.btn_pill_add_cat.setCursor(Qt.PointingHandCursor)
+        self.btn_pill_add_cat.setToolTip("Yangi tashkilot toifasini kiritish")
+        self.btn_pill_add_cat.clicked.connect(self.open_add_category_dialog)
+        self.cat_layout.addWidget(self.btn_pill_add_cat)
+
+        self.cat_layout.addStretch()
+        self.update_pill_selection(self.current_category)
+
+    def open_add_category_dialog(self):
+        """Yangi toifa qo'shish dialogi."""
+        from PyQt5.QtWidgets import QInputDialog
+        text, ok = QInputDialog.getText(
+            self, "Yangi Toifa Qo'shish",
+            "Yangi tashkilot toifasi nomini kiriting:\n(Masalan: Sport, Madaniyat, Bank)"
+        )
+        if ok and text.strip():
+            new_cat = text.strip()
+            if hasattr(self.app, "data_manager"):
+                if self.app.data_manager.add_category(new_cat):
+                    self.setup_category_pills()
+                    if hasattr(self.app, "refresh_all_views"):
+                        self.app.refresh_all_views()
+                    self.on_category_clicked(new_cat)
+                    if hasattr(self.app, "show_toast"):
+                        self.app.show_toast(f"'{new_cat}' toifasi muvaffaqiyatli qo'shildi! ✅", "success")
+                else:
+                    QMessageBox.information(self, "Ma'lumot", f"'{new_cat}' toifasi allaqachon mavjud.")
+
     def on_category_clicked(self, cat: str):
         self.update_pill_selection(cat)
         self.filter_data()
@@ -439,8 +506,11 @@ class ContractsView(QWidget):
             ulangan = it.get("ulangan_soni")
             inn = str(it.get("inn", "")).strip()
 
-            if (bux or aparat is not None or ulangan is not None) and inn not in seen_inns:
-                seen_inns.add(inn)
+            if bux or aparat is not None or ulangan is not None:
+                if inn:
+                    if inn in seen_inns:
+                        continue
+                    seen_inns.add(inn)
                 contracts.append(it)
 
         # Standart holatda tashkilot nomi bo'yicha saralash
@@ -679,15 +749,20 @@ class ContractsView(QWidget):
             self.table.blockSignals(False)
             self.table.setUpdatesEnabled(True)
 
-    def open_add_dialog(self):
-        """Yangi shartnoma ma'lumotini qo'shish dialogi."""
-        dlg = ContractAddDialog(parent=self, app=self.app)
+    def open_add_dialog(self, prefill_category: Optional[str] = None):
+        """Yangi tashkilot / shartnoma ma'lumotini qo'shish dialogi."""
+        init_item = {"_is_new": True}
+        cat_to_use = prefill_category or (self.current_category if self.current_category != "Barchasi" else None)
+        if cat_to_use:
+            init_item["s"] = cat_to_use
+
+        dlg = ContractAddDialog(parent=self, app=self.app, item=init_item)
         if dlg.exec_() == ContractAddDialog.Accepted:
             if hasattr(self.app, "refresh_all_views"):
                 self.app.refresh_all_views()
             self.load_data()
             if hasattr(self.app, "show_toast"):
-                self.app.show_toast("Yangi shartnoma ma'lumoti muvaffaqiyatli qo'shildi! ✅", "success")
+                self.app.show_toast("Yangi tashkilot muvaffaqiyatli qo'shildi! ✅", "success")
 
     def open_edit_dialog(self):
         """Tanlangan shartnoma ma'lumotini tahrirlash dialogi."""

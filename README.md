@@ -9,7 +9,7 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/GUI-PyQt5%20Fluent-0284c7?style=for-the-badge&logo=qt&logoColor=white" alt="PyQt5">
   <img src="https://img.shields.io/badge/Storage-SQLite%20WAL-10b981?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite WAL">
-  <img src="https://img.shields.io/badge/Tests-80%20Passed%20(100%25)-success?style=for-the-badge&logo=githubactions&logoColor=white" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-85%20Passed%20(100%25)-success?style=for-the-badge&logo=githubactions&logoColor=white" alt="Tests">
   <img src="https://img.shields.io/badge/OS-Windows%2010%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows 10/11">
 </p>
 
@@ -27,7 +27,13 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
 
 ## 🌟 Asosiy Imkoniyatlar
 
-### ⚙️ 1. Professional Dinamik Ustunlar Menejeri (Column Manager)
+### 🏢 1. Toifalar Qatorida Tezkor Tashkilot va Toifa Qo'shish (Quick Add Engine)
+* **Shartnoma va Tashkilotlar qismida oniy qo'shish:**
+  * **`➕ Tashkilot qo'shish`:** Toifalar qatorining o'zida joylashgan premium tugma yoki `Ctrl+N` tezkor tugmasi orqali yangi tashkilot qo'shish oynasini ochish.
+  * **Aqlli Toifa Tanlovi (Context Pre-fill):** Agar foydalanuvchi ma'lum bir toifada (masalan, *Bog'cha*, *Maktab*, *Mahalla*) turgan bo'lsa, ochilgan forma avtomatik tarzda ushbu toifani oldindan tanlab beradi.
+  * **`+ Toifa` Qo'shish:** Foydalanuvchi istalgan vaqtda yangi toifa (masalan, *Sport*, *Madaniyat*, *Bank*) kiritishi mumkin. U darhol ikkala jadval paneliga pill tugma sifatida qo'shiladi va saqlanadi.
+
+### ⚙️ 2. Professional Dinamik Ustunlar Menejeri (Column Manager)
 * **Tashkilotlar va Shartnomalar jadvaliga erkin ustun qo'shish:**
   * **Tizim maydonlari:** Buxgalter tel, Apparat shtat soni, Ulangan apparatlar, Rahbar lavozimi, JSHSHIR, Pasport seriya kabi maydonlarni bitta bosishda yoqish/o'chirish.
   * **Maxsus yangi ustunlar:** Istalgan yangi ustun yaratish (nomi, kengligi va kalitini belgilagan holda, masalan: *Shartnoma sanasi*, *Manzil*, *Email*, *Qo'shimcha izoh*).
@@ -35,12 +41,12 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
 * **Inline Katak Tahrirlash (In-Place Edit):** Jadvaldagi yangi ustunlar yoki izoh ustuniga sichqoncha bilan ikki marta bosib to'g'ridan-to'g'ri o'zgartirish va `Enter` orqali saqlash.
 * **Dinamik Excel Eksport:** Qo'shilgan barcha maxsus ustunlar avtomatik ravishda Excel hisobotiga qo'shiladi.
 
-### 🔍 2. Aqlli Qidiruv va Mos Nomlar Taklifi (Smart Search Engine)
+### 🔍 3. Aqlli Qidiruv va Mos Nomlar Taklifi (Smart Search Engine)
 * **Lotin ⇄ Kirill Transliteratsiyasi:** Qidiruv maydonida so'z qaysi alifboda yozilishidan qat'i nazar (`maktab` yoki `мактаб`, `chorkesar` yoki `чоркесар`) tashkilot bir zumda topiladi.
 * **Mustaqil Ko'p Tokenli Qidiruv:** So'zlar tartibi natijaga xalaqit qilmaydi (`"1 maktab"` = `"maktab 1"`).
 * **Interaktiv Takliflar (`SmartSearchCompleter`):** Qidiruv kiritilishi bilan mos keluvchi nomlar, INNlar va telefonlar chiroyli Fluent popup menyusida oniy taklif etiladi.
 
-### 📑 3. Shartnoma va Ulanishlar Monitoringi
+### 📑 4. Shartnoma va Ulanishlar Monitoringi
 * **Interaktiv Jadval & Dinamik Ustunlar:** `№`, `Tashkilot Nomi`, `INN`, `Toifasi`, `Apparat SHT`, `Ulangan`, `Rahbar Tel`, `Buxgalter Tel` + istalgan maxsus ustunlar.
 * **Professional Raqamli Saralash:** Ustun bosilganda raqamlar matn emas, matematik qiymati bo'yicha to'g'ri tartiblanadi (`NumericTableWidgetItem`).
 * **Kataklar Bo'yicha Erkin Nusxalash:** Istalgan kataklarni belgilab, `Ctrl+C` orqali to'g'ridan-to'g'ri nusxalash imkoniyati (`ExtendedSelection`).
@@ -94,7 +100,7 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
 ```text
 pop-tuman-tizimi/
 ├── main.py                     # Asosiy kirish nuqtasi (PyQt5 GUI)
-├── run_tests.py                # Avtomatlashtirilgan test tizimi (80 ta test)
+├── run_tests.py                # Avtomatlashtirilgan test tizimi (85 ta test)
 ├── build_exe.py                # Standalone Windows .exe yig'uvchi
 ├── mahalla_tizimi.db           # SQLite asosiy bazasi (WAL)
 ├── mahalla_bazasi.json         # Atomik JSON sinxronizatsiya bazasi
@@ -105,7 +111,7 @@ pop-tuman-tizimi/
 ├── ui_qt/                      # Fluent interfeys, ko'rinishlar va dialoglar
 │   ├── components/             # SmartCompleter, jadvallar va diagrammalar
 │   └── views/                  # Dashboard, Jadval, Shartnomalar, MFY pasporti
-└── tests/                      # 80 ta to'liq qamrovli avtotestlar to'plami
+└── tests/                      # 85 ta to'liq qamrovli avtotestlar to'plami
 ```
 
 ---

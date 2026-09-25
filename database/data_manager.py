@@ -253,6 +253,20 @@ class DataManager:
     def save_categories(self) -> None:
         self.save_json(self.categories_file, self.categories)
 
+    def add_category(self, category_name: str) -> bool:
+        """Yangi toifa qo'shish va saqlash."""
+        cat = category_name.strip()
+        if not cat:
+            return False
+        if not hasattr(self, "categories") or self.categories is None:
+            self.categories = []
+        if cat not in self.categories:
+            self.categories.append(cat)
+            self.save_categories()
+            logger.info(f"[TOIFA] Yangi toifa qo'shildi: {cat}")
+            return True
+        return False
+
     def save_settings(self) -> None:
         self.save_json(self.settings_file, self.settings)
 

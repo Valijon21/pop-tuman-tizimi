@@ -40,8 +40,8 @@
     "semantic_hash": "46685c5dbe606afff4a1d8e8cd2a1956"
   },
   "database/data_manager.py": {
-    "mtime": 1790275519.8745866,
-    "ast_hash": "f9831a2c3057b1a1d48a14f2e794248c",
+    "mtime": 1790338229.6474302,
+    "ast_hash": "863d8bafaca96cccca61573f05a95956",
     "semantic_hash": ""
   },
   "database/models.py": {
@@ -50,7 +50,7 @@
     "semantic_hash": ""
   },
   "mahalla_bazasi.json": {
-    "mtime": 1790336604.2041292,
+    "mtime": 1790338491.3937435,
     "ast_hash": "d57068c763bd8b04e0ad92943895814b",
     "semantic_hash": ""
   },
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1790336689.9921095,
-    "ast_hash": "f8f84e301efe4e35ab412b180a4ee5e2",
+    "mtime": 1790338580.382473,
+    "ast_hash": "df8e374a49cb95afff6fa042cb5f3b1f",
     "semantic_hash": ""
   },
   "requirements.txt": {
@@ -195,8 +195,8 @@
     "semantic_hash": ""
   },
   "ui_qt/app_window.py": {
-    "mtime": 1790328477.0814414,
-    "ast_hash": "dc6c19e152ddd772934afa42d20fc0d0",
+    "mtime": 1790338447.9950647,
+    "ast_hash": "d599724ccd8ad09482b8af773f466a54",
     "semantic_hash": ""
   },
   "ui_qt/components/__init__.py": {
@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "ui_qt/styles.py": {
-    "mtime": 1790326184.2806048,
-    "ast_hash": "b697ed74dd90fcf7194e61d04a9d2d82",
+    "mtime": 1790338243.023046,
+    "ast_hash": "fb5f6e49c1d7a5745b197c9412d883ad",
     "semantic_hash": ""
   },
   "ui_qt/views/__init__.py": {
@@ -260,8 +260,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/table_view.py": {
-    "mtime": 1790336432.4526439,
-    "ast_hash": "9c496726d95e188bd2f82a63374b8a6f",
+    "mtime": 1790338412.5118694,
+    "ast_hash": "9bca97dec7c02118f02b1bacb031935b",
     "semantic_hash": ""
   },
   "ui_qt/views/trash_view.py": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/contracts_view.py": {
-    "mtime": 1790336535.0623584,
-    "ast_hash": "0249c3eb9f6fb72ff82407739c7bb3d5",
+    "mtime": 1790338354.845684,
+    "ast_hash": "d2baa02cb2dc0f78578653c35488a3b1",
     "semantic_hash": ""
   },
   "core/threading_utils.py": {
@@ -300,8 +300,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/contract_add_dialog.py": {
-    "mtime": 1790308379.1960447,
-    "ast_hash": "42629115fca0ec25927004d6a5ea5d1a",
+    "mtime": 1790338269.9354157,
+    "ast_hash": "514a7c9746644694c29f4355143725bc",
     "semantic_hash": ""
   },
   "ui_qt/views/qr_dialog.py": {
@@ -362,6 +362,11 @@
   "ui_qt/components/column_manager_dialog.py": {
     "mtime": 1790336344.8236785,
     "ast_hash": "ed5a6d1c1e6be69f614748f00e51a6d4",
+    "semantic_hash": ""
+  },
+  "tests/test_add_org_pills.py": {
+    "mtime": 1790338474.254793,
+    "ast_hash": "75b1c3d18b3c1cebda3e8d0a1b7997ee",
     "semantic_hash": ""
   }
 }

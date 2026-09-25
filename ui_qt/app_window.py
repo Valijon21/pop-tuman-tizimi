@@ -392,6 +392,11 @@ class MainWindow(QMainWindow):
         for k in self._dirty_views:
             self._dirty_views[k] = True
 
+        if hasattr(self.table_view, "setup_category_pills"):
+            self.table_view.setup_category_pills()
+        if hasattr(self.contracts_view, "setup_category_pills"):
+            self.contracts_view.setup_category_pills()
+
         # Hozir ko'rinib turgan sahifani darhol yangilash
         cur_idx = self.content_stack.currentIndex()
         if cur_idx == 0:

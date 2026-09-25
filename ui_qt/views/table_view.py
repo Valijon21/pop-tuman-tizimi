@@ -190,30 +190,22 @@ class TableView(QWidget):
         main_layout.addLayout(toolbar)
 
         # 2. KATEGORIYA PILL-PANELI (Gorizontal skroll bilan)
-        cat_scroll = QScrollArea()
-        cat_scroll.setWidgetResizable(True)
-        cat_scroll.setFixedHeight(34)
-        cat_scroll.setFrameShape(QFrame.NoFrame)
-        cat_scroll.setStyleSheet("background: transparent;")
+        self.cat_scroll = QScrollArea()
+        self.cat_scroll.setWidgetResizable(True)
+        self.cat_scroll.setFixedHeight(34)
+        self.cat_scroll.setFrameShape(QFrame.NoFrame)
+        self.cat_scroll.setStyleSheet("background: transparent;")
 
-        cat_container = QWidget()
-        self.cat_layout = QHBoxLayout(cat_container)
+        self.cat_container = QWidget()
+        self.cat_layout = QHBoxLayout(self.cat_container)
         self.cat_layout.setContentsMargins(0, 0, 0, 0)
         self.cat_layout.setSpacing(6)
 
         self.pill_buttons: Dict[str, QPushButton] = {}
-        categories = ["Barchasi"] + (self.app.data_manager.categories if self.app else [])
-        for cat in categories:
-            btn = QPushButton(cat)
-            btn.setProperty("class", "pill_btn")
-            btn.setCheckable(True)
-            btn.clicked.connect(lambda checked, c=cat: self.on_category_clicked(c))
-            self.cat_layout.addWidget(btn)
-            self.pill_buttons[cat] = btn
+        self.setup_category_pills()
 
-        self.cat_layout.addStretch()
-        cat_scroll.setWidget(cat_container)
-        main_layout.addWidget(cat_scroll)
+        self.cat_scroll.setWidget(self.cat_container)
+        main_layout.addWidget(self.cat_scroll)
 
         # 3. ASOSIY QTABLEVIEW
         self.table_view = QTableView()
@@ -248,6 +240,10 @@ class TableView(QWidget):
         # Klaviaturadan qidiruvga o'tish (Ctrl+F)
         self.shortcut_search = QShortcut(QKeySequence("Ctrl+F"), self)
         self.shortcut_search.activated.connect(self.focus_search)
+
+        # Klaviaturadan yangi tashkilot qo'shish (Ctrl+N)
+        self.shortcut_add = QShortcut(QKeySequence("Ctrl+N"), self)
+        self.shortcut_add.activated.connect(self.open_add_dialog)
 
         # Klaviaturadan katak/matnlarni nusxalash (Ctrl+C)
         self.shortcut_copy = QShortcut(QKeySequence("Ctrl+C"), self.table_view)
@@ -297,7 +293,65 @@ class TableView(QWidget):
         if hasattr(self, "izoh_delegate"):
             self.izoh_delegate.is_light = is_light
 
+    def setup_category_pills(self):
+        """Kategoriya tugmalarini va qo'shish tugmalarini dinamik barpo etish."""
+        while self.cat_layout.count():
+            item = self.cat_layout.takeAt(0)
+            w = item.widget()
+            if w:
+                w.deleteLater()
+
+        self.pill_buttons = {}
+        categories = ["Barchasi"] + (self.app.data_manager.categories if self.app and hasattr(self.app, "data_manager") else [])
+        for cat in categories:
+            btn = QPushButton(cat)
+            btn.setProperty("class", "pill_btn")
+            btn.setCheckable(True)
+            btn.clicked.connect(lambda checked, c=cat: self.on_category_clicked(c))
+            self.cat_layout.addWidget(btn)
+            self.pill_buttons[cat] = btn
+
+        # ── 1. "➕ Tashkilot qo'shish" tugmasi (Aynan toifalar qatorida) ──
+        self.btn_pill_add = QPushButton("➕ Tashkilot qo'shish")
+        self.btn_pill_add.setProperty("class", "pill_action_btn")
+        self.btn_pill_add.setCursor(Qt.PointingHandCursor)
+        self.btn_pill_add.setToolTip("Yangi tashkilot qo'shish (Ctrl+N)")
+        self.btn_pill_add.clicked.connect(lambda: self.open_add_dialog())
+        self.cat_layout.addWidget(self.btn_pill_add)
+
+        # ── 2. "+ Toifa" qo'shish tugmasi ──
+        self.btn_pill_add_cat = QPushButton("+ Toifa")
+        self.btn_pill_add_cat.setProperty("class", "pill_add_cat_btn")
+        self.btn_pill_add_cat.setCursor(Qt.PointingHandCursor)
+        self.btn_pill_add_cat.setToolTip("Yangi tashkilot toifasini kiritish")
+        self.btn_pill_add_cat.clicked.connect(self.open_add_category_dialog)
+        self.cat_layout.addWidget(self.btn_pill_add_cat)
+
+        self.cat_layout.addStretch()
+        self.update_pill_selection(self.current_category)
+
+    def open_add_category_dialog(self):
+        """Yangi toifa qo'shish dialogi."""
+        from PyQt5.QtWidgets import QInputDialog
+        text, ok = QInputDialog.getText(
+            self, "Yangi Toifa Qo'shish",
+            "Yangi tashkilot toifasi nomini kiriting:\n(Masalan: Sport, Madaniyat, Bank)"
+        )
+        if ok and text.strip():
+            new_cat = text.strip()
+            if self.app and hasattr(self.app, "data_manager"):
+                if self.app.data_manager.add_category(new_cat):
+                    self.setup_category_pills()
+                    if hasattr(self.app, "refresh_all_views"):
+                        self.app.refresh_all_views()
+                    self.on_category_clicked(new_cat)
+                    if hasattr(self.app, "show_toast"):
+                        self.app.show_toast(f"'{new_cat}' toifasi muvaffaqiyatli qo'shildi! ✅", "success")
+                else:
+                    QMessageBox.information(self, "Ma'lumot", f"'{new_cat}' toifasi allaqachon mavjud.")
+
     def init_data(self):
+        self.setup_category_pills()
         self.update_pill_selection("Barchasi")
         if hasattr(self, "completer") and self.app and hasattr(self.app, "data"):
             self.completer.update_items(SearchService.get_search_dictionary(self.app.data))
@@ -467,15 +521,22 @@ class TableView(QWidget):
             elif hasattr(self.app, "show_toast"):
                 self.app.show_toast("Matn nusxalandi! 📋", "success")
 
-    def open_add_dialog(self):
+    def open_add_dialog(self, prefill_category: Optional[str] = None):
         if self.app and hasattr(self.app, "check_permission"):
             if not self.app.check_permission("edit", parent=self):
                 return
-        dlg = OrgEditDialog(parent=self, app=self.app)
+        cat_to_use = prefill_category or (self.current_category if self.current_category != "Barchasi" else None)
+        init_item = {"_is_new": True}
+        if cat_to_use:
+            init_item["s"] = cat_to_use
+
+        dlg = OrgEditDialog(parent=self, app=self.app, item=init_item)
         if dlg.exec_() == OrgEditDialog.Accepted:
             self.filter_data()
             if hasattr(self.app, "refresh_all_views"):
                 self.app.refresh_all_views()
+            if hasattr(self.app, "show_toast"):
+                self.app.show_toast("Yangi tashkilot muvaffaqiyatli qo'shildi! ✅", "success")
 
     def open_edit_dialog(self):
         item = self.get_selected_item()

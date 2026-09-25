@@ -21,7 +21,11 @@ class ContractAddDialog(QDialog):
         super().__init__(parent)
         self.app = app
         self.item = item or {}
-        self.is_edit = bool(item and (item.get("id") or item.get("inn") or item.get("m") or item.get("organization_name")))
+        self.is_edit = bool(
+            item and not item.get("_is_new") and (
+                item.get("id") or (item.get("m") and item.get("inn"))
+            )
+        )
         self.current_theme = getattr(app, "current_theme", "dark")
 
         self.setWindowTitle(
@@ -156,6 +160,23 @@ class ContractAddDialog(QDialog):
         form_grid.addWidget(self.edit_izoh, row, 1)
         row += 1
 
+        # Maxsus qo'shilgan dinamik ustunlar
+        self.custom_inputs: Dict[str, QLineEdit] = {}
+        contracts_custom_cols = []
+        if self.app and hasattr(self.app, "data_manager"):
+            contracts_custom_cols = self.app.data_manager.settings.get("contracts_custom_columns", [])
+
+        for c_info in contracts_custom_cols:
+            k = c_info.get("key")
+            if k and k.startswith("col_"):
+                lbl = self._make_label(f"{c_info.get('name')}:")
+                inp = QLineEdit()
+                inp.setPlaceholderText(f"{c_info.get('name')}...")
+                form_grid.addWidget(lbl, row, 0)
+                form_grid.addWidget(inp, row, 1)
+                self.custom_inputs[k] = inp
+                row += 1
+
         scroll.setWidget(form_widget)
         layout.addWidget(scroll, 1)
 
@@ -192,31 +213,38 @@ class ContractAddDialog(QDialog):
         return lbl
 
     def load_data(self):
-        """Mavjud ma'lumotlarni formaga yuklash (tahrirlash rejimi)."""
+        """Mavjud ma'lumotlarni formaga yuklash (tahrirlash yoki oldindan to'ldirish rejimi)."""
         name = self.item.get("m") or self.item.get("organization_name") or ""
         self.edit_name.setText(str(name))
         self.edit_inn.setText(str(self.item.get("inn", "") or ""))
 
         # Toifani tanlash
         cat_val = self.item.get("s") or self.item.get("category") or ""
-        idx = self.combo_category.findText(str(cat_val))
-        if idx >= 0:
-            self.combo_category.setCurrentIndex(idx)
-        else:
-            self.combo_category.setEditText(str(cat_val))
+        if cat_val:
+            idx = self.combo_category.findText(str(cat_val))
+            if idx >= 0:
+                self.combo_category.setCurrentIndex(idx)
+            else:
+                self.combo_category.setEditText(str(cat_val))
 
         # Apparat va ulangan
         aparat = self.item.get("aparat_soni") if "aparat_soni" in self.item else self.item.get("apparat_count")
-        self.spin_aparat.setValue(int(aparat) if aparat is not None else 0)
+        if aparat is not None:
+            self.spin_aparat.setValue(int(aparat))
 
         ulangan = self.item.get("ulangan_soni") if "ulangan_soni" in self.item else self.item.get("connected_count")
-        self.spin_ulangan.setValue(int(ulangan) if ulangan is not None else 0)
+        if ulangan is not None:
+            self.spin_ulangan.setValue(int(ulangan))
 
         # Kontakt ma'lumotlari
         self.edit_fio.setText(str(self.item.get("f") or self.item.get("leader_name") or ""))
         self.edit_phone.setText(str(self.item.get("t") or self.item.get("phone") or ""))
         self.edit_bux_tel.setText(str(self.item.get("bux_tel") or self.item.get("accountant_phone") or ""))
         self.edit_izoh.setPlainText(str(self.item.get("izoh") or self.item.get("notes") or ""))
+
+        # Maxsus dinamik ustunlar qiymatini yuklash
+        for k, inp in getattr(self, "custom_inputs", {}).items():
+            inp.setText(str(self.item.get(k, "") or ""))
 
     def save(self):
         """Ma'lumotlarni validatsiya qilish va saqlash."""
@@ -241,13 +269,13 @@ class ContractAddDialog(QDialog):
                 return
             inn = msg_or_cleaned
 
-        # Apparat va ulangan qiymatlarini olish
-        aparat_val = self.spin_aparat.value() if self.spin_aparat.value() > 0 else None
-        ulangan_val = self.spin_ulangan.value() if self.spin_ulangan.value() > 0 else None
+        # Apparat va ulangan qiymatlarini olish (standart holatda 0 saqlanadi, shunda shartnomalar ro'yxatida ko'rinadi)
+        aparat_val = self.spin_aparat.value()
+        ulangan_val = self.spin_ulangan.value()
 
         # Ma'lumotlarni tayyorlash
         data_to_save = {
-            "s": self.combo_category.currentText().strip(),
+            "s": self.combo_category.currentText().strip() or "Boshqa",
             "m": name,
             "f": self.edit_fio.text().strip(),
             "t": self.edit_phone.text().strip(),
@@ -257,6 +285,10 @@ class ContractAddDialog(QDialog):
             "ulangan_soni": ulangan_val,
             "izoh": self.edit_izoh.toPlainText().strip(),
         }
+
+        # Dinamik ustunlarni qo'shish
+        for k, inp in getattr(self, "custom_inputs", {}).items():
+            data_to_save[k] = inp.text().strip()
 
         if self.is_edit:
             # Mavjud yozuvni yangilash
