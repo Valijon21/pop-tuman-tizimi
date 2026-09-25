@@ -46,6 +46,22 @@ class TestServices(unittest.TestCase):
         res = SearchService.search(self.sample_data, query="Karimov", field_type="Nomi")
         self.assertEqual(len(res), 0)
 
+    def test_smart_cyrillic_and_token_search(self):
+        # 1. Kirill yozuvida qidirish (Чоркесар -> Chorkesar)
+        res_cyrillic = SearchService.search(self.sample_data, query="Чоркесар")
+        self.assertEqual(len(res_cyrillic), 1)
+        self.assertEqual(res_cyrillic[0]["m"], "Chorkesar MFY")
+
+        # 2. Ko'p so'zli tokenli qidiruv (1 maktab -> 1-sonli Maktab)
+        res_tokens = SearchService.search(self.sample_data, query="1 maktab")
+        self.assertEqual(len(res_tokens), 1)
+        self.assertEqual(res_tokens[0]["m"], "1-sonli Maktab")
+
+        # 3. Auto-complete takliflar lug'ati
+        sugg = SearchService.get_search_dictionary(self.sample_data)
+        self.assertIn("Chorkesar MFY", sugg)
+        self.assertTrue(any("301234567" in s for s in sugg))
+
     def test_search_stats(self):
         stats = SearchService.get_stats(self.sample_data)
         self.assertEqual(stats["total"], 3)

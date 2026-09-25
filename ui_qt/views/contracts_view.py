@@ -14,13 +14,32 @@ from PyQt5.QtWidgets import (
     QSizePolicy
 )
 from PyQt5.QtCore import Qt, QTimer, QEvent
-from PyQt5.QtGui import QKeySequence
+from PyQt5.QtGui import QKeySequence, QColor
 from ui_qt.views.cabinet_dialog import open_cabinet_dialog
 from ui_qt.views.contract_add_dialog import ContractAddDialog
 from ui_qt.views.qr_dialog import open_qr_dialog
 from ui_qt.components.widgets import ClickableCard
+from ui_qt.components.smart_completer import attach_smart_completer
+from services.search_service import normalize_text, smart_match_tokens
 from ui_qt.styles import hex_to_rgba
 from core.logger import logger
+
+
+class NumericTableWidgetItem(QTableWidgetItem):
+    """Sonlar, INN va litsenziya ko'rsatkichlarini to'g'ri raqamli tartiblash (sorting) uchun QTableWidgetItem."""
+
+    def __init__(self, text: str, sort_value: Any = None):
+        super().__init__(text)
+        self.sort_value = sort_value if sort_value is not None else text
+
+    def __lt__(self, other):
+        if isinstance(other, NumericTableWidgetItem):
+            try:
+                return float(self.sort_value) < float(other.sort_value)
+            except (ValueError, TypeError):
+                return str(self.sort_value).lower() < str(other.sort_value).lower()
+        return super().__lt__(other)
+
 
 class ContractsView(QWidget):
     """Shartnoma va Ulanishlar Monitoringi Sahifasi."""
@@ -101,6 +120,14 @@ class ContractsView(QWidget):
         self.edit_search.returnPressed.connect(self.filter_data)
         toolbar.addWidget(self.edit_search, 1)
 
+        # Aqlli Auto-complete (Takliflar) tizimini ulash
+        self.completer = attach_smart_completer(
+            self.edit_search,
+            items=[],
+            theme=self.current_theme,
+            on_selected=lambda _: self.filter_data()
+        )
+
         self.btn_clear = QPushButton("✖")
         self.btn_clear.setFixedSize(26, 26)
         self.btn_clear.clicked.connect(lambda: self.edit_search.clear())
@@ -134,12 +161,12 @@ class ContractsView(QWidget):
         cat_scroll.setWidget(cat_container)
         main_layout.addWidget(cat_scroll)
 
-        # 4. ASOSIY JADVAL (QTableWidget)
+        # 4. ASOSIY JADVAL (QTableWidget - Tartiblangan, 9 ustunli va interaktiv sortirovka bilan)
         self.table = QTableWidget()
-        self.table.setColumnCount(8)
+        self.table.setColumnCount(9)
         self.table.setHorizontalHeaderLabels([
             "№", "Tashkilot Nomi", "INN", "Toifasi",
-            "Apparat", "Ulangan", "Rahbar Tel", "Buxgalter Tel"
+            "Apparat SHT", "Ulangan", "Litsenziya Holati", "Rahbar Tel", "Buxgalter Tel"
         ])
 
         header = self.table.horizontalHeader()
@@ -151,10 +178,16 @@ class ContractsView(QWidget):
         header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(7, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(8, QHeaderView.ResizeToContents)
+
+        # Interaktiv ustun bosganda saralash (Sorting)
+        header.setSortIndicatorShown(True)
+        self.table.setSortingEnabled(True)
+        header.sectionClicked.connect(self._on_section_sorted)
 
         self.table.setAlternatingRowColors(True)
-        self.table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.table.setSelectionMode(QTableWidget.SingleSelection)
+        self.table.setSelectionBehavior(QTableWidget.SelectItems)
+        self.table.setSelectionMode(QTableWidget.ExtendedSelection)
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.table.setContextMenuPolicy(Qt.CustomContextMenu)
         self.table.customContextMenuRequested.connect(self.show_context_menu)
@@ -175,7 +208,7 @@ class ContractsView(QWidget):
         footer.addWidget(self.lbl_count)
 
         footer.addStretch()
-        self.lbl_hint = QLabel("💡 O'ng tugma orqali Buxgalter yoki Rahbar raqamini bir zumda nusxalashingiz mumkin")
+        self.lbl_hint = QLabel("💡 Ustun sarlavhasini bosib saralang | Ctrl+C bilan nusxalang | O'ng tugma amallari")
         self.lbl_hint.setStyleSheet("font-size: 11px; color: #64748b;")
         footer.addWidget(self.lbl_hint)
 
@@ -291,6 +324,9 @@ class ContractsView(QWidget):
 
         self.update_pill_selection(self.current_category)
 
+        if hasattr(self, "completer"):
+            self.completer.set_theme(self.current_theme)
+
     def update_pill_selection(self, selected_cat: str):
         self.current_category = selected_cat
         for cat, btn in self.pill_buttons.items():
@@ -308,10 +344,48 @@ class ContractsView(QWidget):
         else:
             self.filter_data()
 
+    def _on_section_sorted(self, logical_index: int):
+        """Ustun bosib saralangandan so'ng № ustunini 1, 2, 3... qilib qayta raqamlash."""
+        self.table.blockSignals(True)
+        self.table.setSortingEnabled(False)
+        try:
+            for r in range(self.table.rowCount()):
+                no_item = self.table.item(r, 0)
+                if no_item:
+                    no_item.setText(str(r + 1))
+        finally:
+            self.table.setSortingEnabled(True)
+            self.table.blockSignals(False)
+
+    def copy_selected_cells(self):
+        """Tanlangan kataklarni Excel kabi Tab va Yangi qator bilan clipboardga nusxalash."""
+        selected_indexes = self.table.selectedIndexes()
+        if not selected_indexes:
+            return
+
+        rows = sorted(list(set(idx.row() for idx in selected_indexes)))
+        cols = sorted(list(set(idx.column() for idx in selected_indexes)))
+
+        text_rows = []
+        for r in rows:
+            row_vals = []
+            for c in cols:
+                item = self.table.item(r, c)
+                row_vals.append(item.text() if item else "")
+            text_rows.append("\t".join(row_vals))
+
+        copied_text = "\n".join(text_rows)
+        pyperclip.copy(copied_text)
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast(f"📋 {len(selected_indexes)} ta katak nusxalandi!", "success")
+
     def eventFilter(self, source, event):
-        """Jadvalda klaviatura hodisalari: Enter (tahrir)."""
+        """Jadvalda klaviatura hodisalari: Enter (tahrir), Ctrl+C (nusxalash)."""
         if source == self.table and event.type() == QEvent.KeyPress:
-            if event.key() in (Qt.Key_Return, Qt.Key_Enter):
+            if event.matches(QKeySequence.Copy) or (event.modifiers() & Qt.ControlModifier and event.key() == Qt.Key_C):
+                self.copy_selected_cells()
+                return True
+            elif event.key() in (Qt.Key_Return, Qt.Key_Enter):
                 self.on_table_double_clicked()
                 return True
         return super().eventFilter(source, event)
@@ -339,9 +413,28 @@ class ContractsView(QWidget):
                 seen_inns.add(inn)
                 contracts.append(it)
 
-        # Agar INN bo'yicha saralangan bo'lsa
-        self.contracts_data = sorted(contracts, key=lambda x: str(x.get("m", "")))
+        # Standart holatda tashkilot nomi bo'yicha saralash
+        self.contracts_data = sorted(contracts, key=lambda x: str(x.get("m", "")).lower())
         self.update_kpis()
+
+        # Auto-complete takliflar lug'atini yangilash
+        if hasattr(self, "completer"):
+            dict_items = []
+            for it in self.contracts_data:
+                m = str(it.get("m", "")).strip()
+                inn = str(it.get("inn", "")).strip()
+                bux = str(it.get("bux_tel", "")).strip()
+                f = str(it.get("f", "")).strip()
+                if m:
+                    dict_items.append(m)
+                if inn:
+                    dict_items.append(f"{inn} — {m}" if m else inn)
+                if bux:
+                    dict_items.append(f"📞 {bux} ({m})")
+                if f:
+                    dict_items.append(f"{f} ({m})")
+            self.completer.update_items(dict_items)
+
         self.filter_data()
 
     def update_kpis(self):
@@ -358,45 +451,66 @@ class ContractsView(QWidget):
 
     def filter_data(self):
         """Qidiruv va toifa bo'yicha ma'lumotlarni filtrlab jadvalga chiqarish."""
-        query = self.edit_search.text().strip().lower()
+        query_raw = self.edit_search.text().strip()
+        query_norm = normalize_text(query_raw)
+        digits_query = "".join(filter(str.isdigit, query_raw))
         cat = self.current_category
 
         self.filtered_data = []
         for it in self.contracts_data:
             s_val = str(it.get("s", ""))
-            m_val = str(it.get("m", "")).lower()
-            inn_val = str(it.get("inn", "")).lower()
-            bux_val = str(it.get("bux_tel", "")).lower()
-            raxbar_val = str(it.get("t", "")).lower()
-            f_val = str(it.get("f", "")).lower()
+            m_norm = normalize_text(it.get("m", ""))
+            inn_val = str(it.get("inn", "")).strip()
+            bux_digits = "".join(filter(str.isdigit, str(it.get("bux_tel", ""))))
+            raxbar_digits = "".join(filter(str.isdigit, str(it.get("t", ""))))
+            f_norm = normalize_text(it.get("f", ""))
 
             # Toifa filtri
             if cat != "Barchasi":
-                if cat == "Mahalla" and "mahalla" not in s_val.lower() and "mfy" not in m_val:
+                if cat == "Mahalla" and "mahalla" not in s_val.lower() and "mfy" not in m_norm:
                     continue
-                elif cat == "Maktab" and "maktab" not in s_val.lower() and "maktab" not in m_val:
+                elif cat == "Maktab" and "maktab" not in s_val.lower() and "maktab" not in m_norm:
                     continue
-                elif cat == "Bog'cha" and "bog'cha" not in s_val.lower() and "mtt" not in m_val:
+                elif cat == "Bog'cha" and "bog'cha" not in s_val.lower() and "mtt" not in m_norm:
                     continue
                 elif cat not in ("Mahalla", "Maktab", "Bog'cha") and cat.lower() not in s_val.lower():
                     continue
 
-            # Qidiruv filtri
-            if query:
-                if (query not in m_val and query not in inn_val and 
-                    query not in bux_val and query not in raxbar_val and 
-                    query not in f_val):
+            # Qidiruv filtri (Aqlli ko'p tokenli va lotin-kirill moslashuvchan)
+            if query_norm:
+                matched = (
+                    smart_match_tokens(query_norm, m_norm) or
+                    smart_match_tokens(query_norm, f_norm) or
+                    (digits_query and digits_query in inn_val) or
+                    (digits_query and digits_query in bux_digits) or
+                    (digits_query and digits_query in raxbar_digits)
+                )
+                if not matched:
                     continue
 
             self.filtered_data.append(it)
 
         self.render_table_rows()
 
+    def _get_item_by_row(self, row: int) -> Optional[Dict[str, Any]]:
+        """Saralash (sorting) hisobga olingan holda jadval qatoridagi elementni aniqlash."""
+        if row < 0 or row >= self.table.rowCount():
+            return None
+        inn_item = self.table.item(row, 2)
+        target_inn = inn_item.text().strip() if inn_item else ""
+        if target_inn:
+            for it in self.filtered_data:
+                if str(it.get("inn", "")).strip() == target_inn:
+                    return it
+        if 0 <= row < len(self.filtered_data):
+            return self.filtered_data[row]
+        return None
+
     def on_table_double_clicked(self):
         """Jadvalda 2 marta bosilganda tahrirlash oynasini ochish."""
         row = self.table.currentRow()
-        if 0 <= row < len(self.filtered_data):
-            item = self.filtered_data[row]
+        item = self._get_item_by_row(row)
+        if item:
             from ui_qt.views.org_edit_dialog import OrgEditDialog
             dlg = OrgEditDialog(parent=self, app=self.app, item=item)
             if dlg.exec_() == OrgEditDialog.Accepted:
@@ -405,23 +519,30 @@ class ContractsView(QWidget):
                 self.load_data()
 
     def render_table_rows(self):
-        """Jadval qatorlarini chizish (Yuqori unumdorlik: updatesEnabled(False) va blockSignals(True))."""
+        """Jadval qatorlarini professional, tartibli va rangli nishonlar bilan chizish."""
         self.table.setUpdatesEnabled(False)
         self.table.blockSignals(True)
+        self.table.setSortingEnabled(False)
+        is_light = (self.current_theme == "light")
+
         try:
             self.table.setRowCount(len(self.filtered_data))
             for r_idx, it in enumerate(self.filtered_data):
                 # 0. №
-                item_no = QTableWidgetItem(str(r_idx + 1))
+                item_no = NumericTableWidgetItem(str(r_idx + 1), sort_value=r_idx + 1)
                 item_no.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(r_idx, 0, item_no)
 
                 # 1. Tashkilot Nomi
-                item_name = QTableWidgetItem(str(it.get("m", "-")))
+                name_str = str(it.get("m", "-")).strip() or "-"
+                item_name = QTableWidgetItem(name_str)
                 self.table.setItem(r_idx, 1, item_name)
 
                 # 2. INN
-                item_inn = QTableWidgetItem(str(it.get("inn", "-")))
+                inn_str = str(it.get("inn", "-")).strip() or "-"
+                inn_digits = "".join(filter(str.isdigit, inn_str))
+                sort_inn = int(inn_digits) if inn_digits.isdigit() else 0
+                item_inn = NumericTableWidgetItem(inn_str, sort_value=sort_inn)
                 item_inn.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(r_idx, 2, item_inn)
 
@@ -430,30 +551,80 @@ class ContractsView(QWidget):
                 item_cat.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(r_idx, 3, item_cat)
 
-                # 4. Apparat Soni
+                # 4. Apparat SHT
                 aparat_val = it.get("aparat_soni")
-                item_aparat = QTableWidgetItem(f"{aparat_val} ta" if aparat_val is not None else "-")
+                item_aparat = NumericTableWidgetItem(
+                    f"{aparat_val} ta" if aparat_val is not None else "—",
+                    sort_value=aparat_val if aparat_val is not None else -1
+                )
                 item_aparat.setTextAlignment(Qt.AlignCenter)
                 self.table.setItem(r_idx, 4, item_aparat)
 
-                # 5. Ulangan Soni
+                # 5. Ulangan
                 ulangan_val = it.get("ulangan_soni")
-                item_ulangan = QTableWidgetItem(f"{ulangan_val} ta" if ulangan_val is not None else "-")
+                item_ulangan = NumericTableWidgetItem(
+                    f"{ulangan_val} ta" if ulangan_val is not None else "—",
+                    sort_value=ulangan_val if ulangan_val is not None else -1
+                )
                 item_ulangan.setTextAlignment(Qt.AlignCenter)
+                if ulangan_val is not None and ulangan_val > 0:
+                    item_ulangan.setForeground(QColor("#10b981" if not is_light else "#059669"))
                 self.table.setItem(r_idx, 5, item_ulangan)
 
-                # 6. Rahbar Tel
-                item_raxbar = QTableWidgetItem(str(it.get("t", "-")))
-                item_raxbar.setTextAlignment(Qt.AlignCenter)
-                self.table.setItem(r_idx, 6, item_raxbar)
+                # 6. Litsenziya Holati
+                if aparat_val is not None and ulangan_val is not None:
+                    if aparat_val > 0 and ulangan_val >= aparat_val:
+                        st_txt = f"✅ To'liq ({ulangan_val}/{aparat_val})"
+                        st_sort = 1000 + (ulangan_val - aparat_val)
+                        st_col = "#10b981" if not is_light else "#059669"
+                    elif aparat_val > 0 and ulangan_val < aparat_val:
+                        diff = aparat_val - ulangan_val
+                        st_txt = f"⚠️ Kamomad: -{diff} ({ulangan_val}/{aparat_val})"
+                        st_sort = 500 - diff
+                        st_col = "#f59e0b" if not is_light else "#d97706"
+                    elif aparat_val == 0 and ulangan_val > 0:
+                        st_txt = f"🔷 Ortiqcha (+{ulangan_val})"
+                        st_sort = 800 + ulangan_val
+                        st_col = "#38bdf8" if not is_light else "#0284c7"
+                    else:
+                        st_txt = "⚪ 0 / 0"
+                        st_sort = 100
+                        st_col = "#94a3b8" if not is_light else "#64748b"
+                elif ulangan_val is not None and ulangan_val > 0:
+                    st_txt = f"🔗 {ulangan_val} ta ulangan"
+                    st_sort = 300 + ulangan_val
+                    st_col = "#38bdf8" if not is_light else "#0284c7"
+                elif aparat_val is not None and aparat_val > 0:
+                    st_txt = f"👥 {aparat_val} ta shtat"
+                    st_sort = 200 + aparat_val
+                    st_col = "#a78bfa" if not is_light else "#7c3aed"
+                else:
+                    st_txt = "⚪ Ma'lumotsiz"
+                    st_sort = 0
+                    st_col = "#94a3b8" if not is_light else "#64748b"
 
-                # 7. Buxgalter Tel
-                item_bux = QTableWidgetItem(str(it.get("bux_tel", "-")))
+                item_status = NumericTableWidgetItem(st_txt, sort_value=st_sort)
+                item_status.setTextAlignment(Qt.AlignCenter)
+                item_status.setForeground(QColor(st_col))
+                self.table.setItem(r_idx, 6, item_status)
+
+                # 7. Rahbar Tel
+                raxbar_str = str(it.get("t", "-")).strip() or "-"
+                item_raxbar = QTableWidgetItem(raxbar_str)
+                item_raxbar.setTextAlignment(Qt.AlignCenter)
+                self.table.setItem(r_idx, 7, item_raxbar)
+
+                # 8. Buxgalter Tel
+                bux_str = str(it.get("bux_tel", "-")).strip() or "-"
+                item_bux = QTableWidgetItem(bux_str)
                 item_bux.setTextAlignment(Qt.AlignCenter)
-                self.table.setItem(r_idx, 7, item_bux)
+                if bux_str != "-":
+                    item_bux.setForeground(QColor("#38bdf8" if not is_light else "#0284c7"))
+                self.table.setItem(r_idx, 8, item_bux)
 
             self.lbl_count.setText(f"Ko'rsatilmoqda: {len(self.filtered_data)} ta tashkilot")
         finally:
+            self.table.setSortingEnabled(True)
             self.table.blockSignals(False)
             self.table.setUpdatesEnabled(True)
 
@@ -470,10 +641,10 @@ class ContractsView(QWidget):
     def open_edit_dialog(self):
         """Tanlangan shartnoma ma'lumotini tahrirlash dialogi."""
         row = self.table.currentRow()
-        if row < 0 or row >= len(self.filtered_data):
+        item = self._get_item_by_row(row)
+        if not item:
             QMessageBox.information(self, "Ma'lumot", "Tahrirlash uchun jadvaldan tashkilotni tanlang.")
             return
-        item = self.filtered_data[row]
         dlg = ContractAddDialog(parent=self, app=self.app, item=item)
         if dlg.exec_() == ContractAddDialog.Accepted:
             if hasattr(self.app, "refresh_all_views"):
@@ -485,11 +656,20 @@ class ContractsView(QWidget):
     def show_context_menu(self, pos):
         """O'ng tugma kontekst menyusi."""
         row = self.table.currentRow()
-        if row < 0 or row >= len(self.filtered_data):
+        item = self._get_item_by_row(row)
+        if not item:
             return
 
-        item = self.filtered_data[row]
         menu = QMenu(self)
+
+        # Nusxalash amallari
+        act_copy_cells = menu.addAction("📋 Tanlangan kataklarni nusxalash (Ctrl+C)")
+        act_copy_cells.triggered.connect(self.copy_selected_cells)
+
+        act_copy_row = menu.addAction("📋 Butun qatorni nusxalash")
+        act_copy_row.triggered.connect(lambda: self._copy_entire_row(item))
+
+        menu.addSeparator()
 
         # Tahrirlash va qo'shish amallari
         act_edit = menu.addAction("✏ Tahrirlash")
@@ -547,9 +727,6 @@ class ContractsView(QWidget):
         act_cabinet = menu.addAction("🔑 Kabinetga dostup")
         act_cabinet.triggered.connect(lambda: open_cabinet_dialog(self.app, item))
 
-        act_copy_row = menu.addAction("📋 Butun qatorni nusxalash")
-        act_copy_row.triggered.connect(lambda: self._copy_entire_row(item))
-
         menu.exec_(self.table.viewport().mapToGlobal(pos))
 
     def _copy_and_toast(self, text: str, msg: str):
@@ -583,19 +760,27 @@ class ContractsView(QWidget):
 
             headers = [
                 "№", "Tashkilot Nomi", "INN", "Toifasi",
-                "Apparat Soni", "Ulangan Soni (Shartnomada)",
+                "Apparat Soni", "Ulangan Soni", "Litsenziya Holati",
                 "Rahbar Telefoni", "Buxgalter Telefoni"
             ]
             ws.append(headers)
 
             for idx, it in enumerate(self.filtered_data, 1):
+                ap = it.get("aparat_soni")
+                ul = it.get("ulangan_soni")
+                if ap is not None and ul is not None:
+                    holat = "To'liq" if ul >= ap else f"Kamomad: -{ap - ul}"
+                else:
+                    holat = "Ma'lumotsiz"
+
                 ws.append([
                     idx,
                     str(it.get("m", "")),
                     str(it.get("inn", "")),
                     str(it.get("s", "")),
-                    it.get("aparat_soni") or "",
-                    it.get("ulangan_soni") or "",
+                    ap or "",
+                    ul or "",
+                    holat,
                     str(it.get("t", "")),
                     str(it.get("bux_tel", ""))
                 ])
@@ -606,3 +791,4 @@ class ContractsView(QWidget):
             QMessageBox.information(self, "Muvaffaqiyatli", f"{len(self.filtered_data)} ta tashkilot shartnomalari Excelga saqlandi!")
         except Exception as e:
             QMessageBox.critical(self, "Xatolik", f"Excel saqlashda xatolik: {e}")
+

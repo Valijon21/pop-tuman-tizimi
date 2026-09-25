@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from ui_qt.styles import get_stylesheet
+from ui_qt.components.smart_completer import attach_smart_completer
 from core.logger import logger
 
 class HistoryView(QDialog):
@@ -54,6 +55,14 @@ class HistoryView(QDialog):
         self.txt_search.setPlaceholderText("Qidiruv (Mahalla, lavozim, ism-familiya)...")
         self.txt_search.textChanged.connect(self.filter_table)
         filter_box.addWidget(self.txt_search)
+
+        # Smart Completer
+        self.completer = attach_smart_completer(
+            self.txt_search,
+            items=[],
+            theme=self.current_theme,
+            on_selected=lambda _: self.filter_table()
+        )
 
         btn_refresh = QPushButton("🔄 Yangilash")
         btn_refresh.setProperty("class", "btn_primary")
@@ -104,6 +113,19 @@ class HistoryView(QDialog):
                 self.all_records = self.app.data_manager.sqlite.get_staff_history(mahalla=self.mahalla)
             except Exception as e:
                 logger.error(f"Tarixni olishda xatolik: {e}")
+
+        if hasattr(self, "completer"):
+            suggest_items = set()
+            for r in self.all_records:
+                m = r.get("mahalla") if isinstance(r, dict) else r["mahalla"]
+                old = r.get("old_name") if isinstance(r, dict) else r["old_name"]
+                new = r.get("new_name") if isinstance(r, dict) else r["new_name"]
+                role = r.get("role") if isinstance(r, dict) else r["role"]
+                if m: suggest_items.add(str(m))
+                if old: suggest_items.add(str(old))
+                if new: suggest_items.add(str(new))
+                if role: suggest_items.add(str(role))
+            self.completer.update_items(list(suggest_items))
 
         self.display_records(self.all_records)
 

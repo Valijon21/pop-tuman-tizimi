@@ -21,6 +21,7 @@ from ui_qt.views.verification_dialog import open_verification_dialog, copy_verif
 from services.search_service import SearchService
 from services.excel_service import export_organizations_to_excel
 from ui_qt.views.qr_dialog import open_qr_dialog
+from ui_qt.components.smart_completer import attach_smart_completer
 from core.logger import logger
 from core.threading_utils import WorkerThread
 
@@ -132,6 +133,14 @@ class TableView(QWidget):
         self.edit_search.returnPressed.connect(self.filter_data)
         self.edit_search.setMinimumWidth(140)
         toolbar.addWidget(self.edit_search, 1)
+
+        # Aqlli Auto-complete (Takliflar) tizimini ulash
+        self.completer = attach_smart_completer(
+            self.edit_search,
+            items=[],
+            theme=self.current_theme,
+            on_selected=lambda _: self.filter_data()
+        )
 
         self.btn_clear = QPushButton("✖")
         self.btn_clear.setFixedSize(26, 26)
@@ -283,11 +292,16 @@ class TableView(QWidget):
         # Category pills
         self.update_pill_selection(self.current_category)
 
+        if hasattr(self, "completer"):
+            self.completer.set_theme(self.current_theme)
+
         if hasattr(self, "izoh_delegate"):
             self.izoh_delegate.is_light = is_light
 
     def init_data(self):
         self.update_pill_selection("Barchasi")
+        if hasattr(self, "completer") and self.app and hasattr(self.app, "data"):
+            self.completer.update_items(SearchService.get_search_dictionary(self.app.data))
         self.filter_data()
 
     def update_pill_selection(self, selected_cat: str):

@@ -50,7 +50,7 @@
     "semantic_hash": ""
   },
   "mahalla_bazasi.json": {
-    "mtime": 1790330139.5110104,
+    "mtime": 1790334062.965415,
     "ast_hash": "d57068c763bd8b04e0ad92943895814b",
     "semantic_hash": ""
   },
@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   "services/search_service.py": {
-    "mtime": 1790146661.783921,
-    "ast_hash": "19182f4d60e2833346084f01e2e32c48",
+    "mtime": 1790334035.188664,
+    "ast_hash": "eee33f63caebffa3740aad7cfa9d13be",
     "semantic_hash": ""
   },
   "tests/__init__.py": {
@@ -110,8 +110,8 @@
     "semantic_hash": ""
   },
   "tests/test_services.py": {
-    "mtime": 1790330125.1229918,
-    "ast_hash": "455a3cfeef575bb49d27452aed96d0bd",
+    "mtime": 1790333908.5825558,
+    "ast_hash": "f58849d59a697393719be237bedd8d69",
     "semantic_hash": ""
   },
   "tests/test_validators.py": {
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1790315243.930663,
-    "ast_hash": "e9e509d5e051bb9968b2cdd2c07fe025",
+    "mtime": 1790334188.9924664,
+    "ast_hash": "bc156ade53099a061c74b8feea21f9fd",
     "semantic_hash": ""
   },
   "requirements.txt": {
@@ -235,8 +235,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/history_view.py": {
-    "mtime": 1790268728.366007,
-    "ast_hash": "c6ade3ce0c098964a5533c21a12210d4",
+    "mtime": 1790333896.967861,
+    "ast_hash": "87ffb54e193dc7379e5348a509104802",
     "semantic_hash": ""
   },
   "ui_qt/views/import_dialog.py": {
@@ -260,8 +260,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/table_view.py": {
-    "mtime": 1790328587.55223,
-    "ast_hash": "3c0e227e6d2c770c623e2146fd4e7134",
+    "mtime": 1790333859.7164347,
+    "ast_hash": "a0a7d896f26489128fd664611b83f28d",
     "semantic_hash": ""
   },
   "ui_qt/views/trash_view.py": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/contracts_view.py": {
-    "mtime": 1790270755.3267152,
-    "ast_hash": "1a8bff14315f6b9ff623dd26d8b7f81a",
+    "mtime": 1790333825.8390737,
+    "ast_hash": "aa7f12b373b1539aabd6cf0420a1d9c5",
     "semantic_hash": ""
   },
   "core/threading_utils.py": {
@@ -347,6 +347,11 @@
   "popdata_logo.PNG": {
     "mtime": 1790326528.3962631,
     "ast_hash": "0edccb9922f0351e816566c6af9ceada",
+    "semantic_hash": ""
+  },
+  "ui_qt/components/smart_completer.py": {
+    "mtime": 1790333747.215776,
+    "ast_hash": "2bced36bc8b273c7028b3767c55fddfe",
     "semantic_hash": ""
   }
 }

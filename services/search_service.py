@@ -1,21 +1,62 @@
 """
 Pop Tuman Tashkilotlari va INN Tizimi
 Tezkor Qidiruv va Filtrlash Xizmati (Search & Filter Service)
+Lotin va Kirill alifbosini aqlli transliteratsiya qilish, ko'p so'zli token qidiruvi va auto-complete takliflari.
 """
 import re
 from typing import List, Dict, Any, Optional
 
+CYRILLIC_TO_LATIN = {
+    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo',
+    'ж': 'j', 'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm',
+    'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u',
+    'ф': 'f', 'х': 'x', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sh',
+    'ъ': "'", 'ы': 'i', 'ь': "", 'э': 'e', 'ю': 'yu', 'я': 'ya',
+    'ғ': "g'", 'қ': 'q', 'ҳ': 'h', 'ў': "o'"
+}
+
+def transliterate_to_latin(text: str) -> str:
+    """Kirill yozuvidagi o'zbek matnini lotin yozuviga o'girish."""
+    if not text:
+        return ""
+    res = []
+    for ch in str(text).lower():
+        res.append(CYRILLIC_TO_LATIN.get(ch, ch))
+    return "".join(res)
+
 def normalize_text(text: str) -> str:
-    """Qidiruv uchun matnni normallashtirish (lotin, kirill va tutuq belgilari)."""
+    """Qidiruv uchun matnni to'liq normallashtirish (tutuq belgilari, kirill-lotin, oraliqlar)."""
     if not text:
         return ""
     text = str(text).lower()
-    # Tutuq belgilarini bir xil ko'rinishga keltirish: ', `, ‘, ’
-    text = re.sub(r"[`'‘ʼ’]", "'", text)
+    # Tutuq belgilarini yagona ' ko'rinishga keltirish: ', `, ‘, ’, ʻ, ʼ
+    text = re.sub(r"[`'‘ʼ’ʻ'´]", "'", text)
+    # Kirill bo'lsa lotinga o'girish
+    text = transliterate_to_latin(text)
+    # Bo'shliqlarni ixchamlashtirish
+    text = re.sub(r"\s+", " ", text)
     return text.strip()
 
+def smart_match_tokens(query_norm: str, target_norm: str) -> bool:
+    """Aqlli tokenli moslash: barcha so'zlar nishon ichida uchrashini tekshiradi."""
+    if not query_norm:
+        return True
+    if query_norm in target_norm:
+        return True
+    
+    # Chiziqchalarni bo'shliqqa aylantirib ham tekshirish (masalan: 1-maktab <-> 1 maktab)
+    t_clean = re.sub(r"[-_.,/]", " ", target_norm)
+    if query_norm in t_clean:
+        return True
+
+    tokens = [t for t in query_norm.split() if t]
+    if not tokens:
+        return True
+    
+    return all((tok in target_norm or tok in t_clean) for tok in tokens)
+
 class SearchService:
-    """Tashkilotlar bazasida tezkor qidiruv va filtrlash xizmati."""
+    """Tashkilotlar bazasida tezkor, aqlli qidiruv va filtrlash xizmati."""
 
     @staticmethod
     def match_category(item_cat: str, filter_cat: str) -> bool:
@@ -53,10 +94,11 @@ class SearchService:
     ) -> List[Dict[str, Any]]:
         """
         Ko'p maydonli aqlli qidiruv va filtrlash.
+        Lotin/Kirill transliteratsiyasi, so'zlar tartibiga bog'liq bo'lmagan token qidiruvi.
         Maydonlar: Nomi, F.I.SH, INN, Izoh, Barchasi.
         """
         query_norm = normalize_text(query)
-        digits_query = re.sub(r"\D", "", query_norm) if query_norm else ""
+        digits_query = re.sub(r"\D", "", str(query or "")) if query else ""
         results: List[Dict[str, Any]] = []
 
         for item in data:
@@ -69,27 +111,30 @@ class SearchService:
                 results.append(item)
                 continue
 
-            # 2. Maydonlar bo'yicha qidiruv
+            # 2. Maydonlar bo'yicha aqlli qidiruv
             m_norm = normalize_text(item.get("m", ""))
             f_norm = normalize_text(item.get("f", ""))
             izoh_norm = normalize_text(item.get("izoh", ""))
             inn_val = str(item.get("inn", "")).strip()
             phone_digits = re.sub(r"\D", "", str(item.get("t", "")))
+            bux_digits = re.sub(r"\D", "", str(item.get("bux_tel", "")))
 
             matched = False
             if field_type == "Nomi":
-                matched = (query_norm in m_norm)
+                matched = smart_match_tokens(query_norm, m_norm)
             elif field_type == "F.I.SH":
-                matched = (query_norm in f_norm)
+                matched = smart_match_tokens(query_norm, f_norm)
             elif field_type == "INN":
                 matched = (digits_query in inn_val) if digits_query else (query_norm in inn_val)
             elif field_type == "Izoh":
-                matched = (query_norm in izoh_norm)
+                matched = smart_match_tokens(query_norm, izoh_norm)
             else:  # Barchasi
-                if (query_norm in m_norm) or (query_norm in f_norm) or (query_norm in izoh_norm):
+                combined_text = f"{m_norm} {inn_val} {f_norm} {izoh_norm} {phone_digits} {bux_digits}"
+                if smart_match_tokens(query_norm, combined_text):
                     matched = True
-                elif digits_query and ((digits_query in inn_val) or (digits_query in phone_digits)):
-                    matched = True
+                elif digits_query and len(digits_query) >= 3 and query_norm.replace(" ", "").isdigit():
+                    if (digits_query in inn_val) or (digits_query in phone_digits) or (digits_query in bux_digits):
+                        matched = True
 
             if matched:
                 results.append(item)
@@ -99,6 +144,37 @@ class SearchService:
             results.sort(key=lambda x: str(x.get(sort_by, "")).lower(), reverse=reverse)
 
         return results
+
+    @staticmethod
+    def get_search_dictionary(data: List[Dict[str, Any]]) -> List[str]:
+        """Auto-complete takliflari uchun barcha unikal nomlar, INN va xodimlar ro'yxati."""
+        suggestions: List[str] = []
+        seen = set()
+
+        # 1. Tashkilot nomlari
+        for it in data:
+            m = str(it.get("m", "")).strip()
+            if m and m not in seen:
+                seen.add(m)
+                suggestions.append(m)
+
+        # 2. INN — Tashkilot Nomi
+        for it in data:
+            inn = str(it.get("inn", "")).strip()
+            m = str(it.get("m", "")).strip()
+            if inn and inn not in seen:
+                seen.add(inn)
+                suggestions.append(f"{inn} — {m}" if m else inn)
+
+        # 3. F.I.SH (Mas'ul xodimlar)
+        for it in data:
+            f = str(it.get("f", "")).strip()
+            m = str(it.get("m", "")).strip()
+            if f and f not in seen:
+                seen.add(f)
+                suggestions.append(f"{f} ({m})" if m else f)
+
+        return suggestions
 
     @staticmethod
     def get_stats(data: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -123,3 +199,4 @@ class SearchService:
             "with_inn": with_inn,
             "with_phone": with_phone
         }
+

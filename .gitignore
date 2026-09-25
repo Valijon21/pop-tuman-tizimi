@@ -37,6 +37,9 @@ Thumbs.db
 build/
 dist/
 *.spec
+*.rar
+*.zip
+
 
 # --- 7. RASMLAR VA STATIKA ---
 *.png
