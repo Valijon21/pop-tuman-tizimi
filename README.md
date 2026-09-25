@@ -32,15 +32,11 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
 * **Mustaqil Ko'p Tokenli Qidiruv:** So'zlar tartibi natijaga xalaqit qilmaydi (`"1 maktab"` = `"maktab 1"`).
 * **Interaktiv Takliflar (`SmartSearchCompleter`):** Qidiruv kiritilishi bilan mos keluvchi nomlar, INNlar va telefonlar chiroyli Fluent popup menyusida oniy taklif etiladi.
 
-### 📑 2. Shartnomalar va Litsenziyalar Monitoringi
-* **9 Ustunli Interaktiv Jadval:** `№`, `Tashkilot Nomi`, `INN`, `Toifasi`, `Apparat SHT`, `Ulangan`, `Litsenziya Holati`, `Rahbar Tel`, `Buxgalter Tel`.
-* **Professional Raqamli Saralash:** Ustun bosilganda raqamlar matn emas, matematik qiymati bo'yicha saralanadi (`NumericTableWidgetItem`).
-* **Litsenziya Kamomadi va Ortiqchaligi Ko'rsatkichlari:**
-  * `✅ To'liq ({ulangan}/{aparat})` — apparat shtati to'liq qamrab olingan.
-  * `⚠️ Kamomad: -{diff}` — litsenziyasi yetishmayotgan tashkilotlar (saralashda yuqori ustuvorlik).
-  * `🔷 Ortiqcha (+{diff})` — me'yordan ortiq ulanganlar.
-* **Kataklar Bo'yicha Erkin Nusxalash:** Istalgan kataklarni belgilab, `Ctrl+C` orqali to'g'ridan-to'g'ri nusxalash imkoniyati.
-* **Excel Eksport:** Barcha 9 ustunli ma'lumotlarni bir bosishda `.xlsx` faylga saqlash.
+### 📑 2. Shartnoma va Ulanishlar Monitoringi
+* **8 Ustunli Interaktiv Jadval:** `№`, `Tashkilot Nomi`, `INN`, `Toifasi`, `Apparat SHT`, `Ulangan`, `Rahbar Tel`, `Buxgalter Tel`.
+* **Professional Raqamli Saralash:** Ustun bosilganda raqamlar matn emas, matematik qiymati bo'yicha to'g'ri tartiblanadi (`NumericTableWidgetItem`).
+* **Kataklar Bo'yicha Erkin Nusxalash:** Istalgan kataklarni belgilab, `Ctrl+C` orqali to'g'ridan-to'g'ri nusxalash imkoniyati (`ExtendedSelection`).
+* **Excel Eksport:** Barcha ma'lumotlarni bir bosishda `.xlsx` faylga saqlash.
 
 ### 🏘 3. Mahalla "Yettiligi" 360° Raqamli Pasporti
 * Pop tumanining 74 ta MFYsi bo'yicha mas'ul rahbarlar: Rais, Hokim yordamchisi, Yoshlar yetakchisi, Xotin-qizlar faoli, Profilaktika inspektori, Soliqchi va Ijtimoiy xodim.

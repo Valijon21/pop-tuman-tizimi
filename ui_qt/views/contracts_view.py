@@ -161,12 +161,12 @@ class ContractsView(QWidget):
         cat_scroll.setWidget(cat_container)
         main_layout.addWidget(cat_scroll)
 
-        # 4. ASOSIY JADVAL (QTableWidget - Tartiblangan, 9 ustunli va interaktiv sortirovka bilan)
+        # 4. ASOSIY JADVAL (QTableWidget - Tartiblangan, 8 ustunli va interaktiv sortirovka bilan)
         self.table = QTableWidget()
-        self.table.setColumnCount(9)
+        self.table.setColumnCount(8)
         self.table.setHorizontalHeaderLabels([
             "№", "Tashkilot Nomi", "INN", "Toifasi",
-            "Apparat SHT", "Ulangan", "Litsenziya Holati", "Rahbar Tel", "Buxgalter Tel"
+            "Apparat SHT", "Ulangan", "Rahbar Tel", "Buxgalter Tel"
         ])
 
         header = self.table.horizontalHeader()
@@ -178,7 +178,6 @@ class ContractsView(QWidget):
         header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(7, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(8, QHeaderView.ResizeToContents)
 
         # Interaktiv ustun bosganda saralash (Sorting)
         header.setSortIndicatorShown(True)
@@ -571,56 +570,19 @@ class ContractsView(QWidget):
                     item_ulangan.setForeground(QColor("#10b981" if not is_light else "#059669"))
                 self.table.setItem(r_idx, 5, item_ulangan)
 
-                # 6. Litsenziya Holati
-                if aparat_val is not None and ulangan_val is not None:
-                    if aparat_val > 0 and ulangan_val >= aparat_val:
-                        st_txt = f"✅ To'liq ({ulangan_val}/{aparat_val})"
-                        st_sort = 1000 + (ulangan_val - aparat_val)
-                        st_col = "#10b981" if not is_light else "#059669"
-                    elif aparat_val > 0 and ulangan_val < aparat_val:
-                        diff = aparat_val - ulangan_val
-                        st_txt = f"⚠️ Kamomad: -{diff} ({ulangan_val}/{aparat_val})"
-                        st_sort = 500 - diff
-                        st_col = "#f59e0b" if not is_light else "#d97706"
-                    elif aparat_val == 0 and ulangan_val > 0:
-                        st_txt = f"🔷 Ortiqcha (+{ulangan_val})"
-                        st_sort = 800 + ulangan_val
-                        st_col = "#38bdf8" if not is_light else "#0284c7"
-                    else:
-                        st_txt = "⚪ 0 / 0"
-                        st_sort = 100
-                        st_col = "#94a3b8" if not is_light else "#64748b"
-                elif ulangan_val is not None and ulangan_val > 0:
-                    st_txt = f"🔗 {ulangan_val} ta ulangan"
-                    st_sort = 300 + ulangan_val
-                    st_col = "#38bdf8" if not is_light else "#0284c7"
-                elif aparat_val is not None and aparat_val > 0:
-                    st_txt = f"👥 {aparat_val} ta shtat"
-                    st_sort = 200 + aparat_val
-                    st_col = "#a78bfa" if not is_light else "#7c3aed"
-                else:
-                    st_txt = "⚪ Ma'lumotsiz"
-                    st_sort = 0
-                    st_col = "#94a3b8" if not is_light else "#64748b"
-
-                item_status = NumericTableWidgetItem(st_txt, sort_value=st_sort)
-                item_status.setTextAlignment(Qt.AlignCenter)
-                item_status.setForeground(QColor(st_col))
-                self.table.setItem(r_idx, 6, item_status)
-
-                # 7. Rahbar Tel
+                # 6. Rahbar Tel
                 raxbar_str = str(it.get("t", "-")).strip() or "-"
                 item_raxbar = QTableWidgetItem(raxbar_str)
                 item_raxbar.setTextAlignment(Qt.AlignCenter)
-                self.table.setItem(r_idx, 7, item_raxbar)
+                self.table.setItem(r_idx, 6, item_raxbar)
 
-                # 8. Buxgalter Tel
+                # 7. Buxgalter Tel
                 bux_str = str(it.get("bux_tel", "-")).strip() or "-"
                 item_bux = QTableWidgetItem(bux_str)
                 item_bux.setTextAlignment(Qt.AlignCenter)
                 if bux_str != "-":
                     item_bux.setForeground(QColor("#38bdf8" if not is_light else "#0284c7"))
-                self.table.setItem(r_idx, 8, item_bux)
+                self.table.setItem(r_idx, 7, item_bux)
 
             self.lbl_count.setText(f"Ko'rsatilmoqda: {len(self.filtered_data)} ta tashkilot")
         finally:
@@ -760,7 +722,7 @@ class ContractsView(QWidget):
 
             headers = [
                 "№", "Tashkilot Nomi", "INN", "Toifasi",
-                "Apparat Soni", "Ulangan Soni", "Litsenziya Holati",
+                "Apparat Soni", "Ulangan Soni",
                 "Rahbar Telefoni", "Buxgalter Telefoni"
             ]
             ws.append(headers)
@@ -768,19 +730,14 @@ class ContractsView(QWidget):
             for idx, it in enumerate(self.filtered_data, 1):
                 ap = it.get("aparat_soni")
                 ul = it.get("ulangan_soni")
-                if ap is not None and ul is not None:
-                    holat = "To'liq" if ul >= ap else f"Kamomad: -{ap - ul}"
-                else:
-                    holat = "Ma'lumotsiz"
 
                 ws.append([
                     idx,
                     str(it.get("m", "")),
                     str(it.get("inn", "")),
                     str(it.get("s", "")),
-                    ap or "",
-                    ul or "",
-                    holat,
+                    ap if ap is not None else "",
+                    ul if ul is not None else "",
                     str(it.get("t", "")),
                     str(it.get("bux_tel", ""))
                 ])

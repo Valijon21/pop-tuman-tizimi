@@ -1,7 +1,7 @@
 # Graph Report - tashkilotlar INN tizim  (2026-09-25)
 
 ## Corpus Check
-- 66 files · ~104,760 words
+- 66 files · ~104,092 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `787f0827`
+- Built from commit: `6644caff`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -143,7 +143,7 @@ Nodes (8): Test TableView search, pill selection, category filters., Test Contra
 
 ### Community 9 - "Application Lifecycle & Entry Points"
 Cohesion: 0.10
-Nodes (19): 1. 🔍 Aqlli Qidiruv va Avto-taklif Tizimi (Smart Search & Auto-complete), 1. Repozitoriyni klonlash, 2. 📑 Shartnoma & Ulanishlar Monitoringi (Professional Tartiblangan Jadval), 2. Virtual muhit yaratish va kutubxonalarni o'rnatish, 3. Dasturni ishga tushirish, 3. 🖥 PyQt5 Modern Fluent UI (Senior Desktop Edition), 4. 📇 Kontakt QR-kod Standartlari (RFC & MeCard), 5. 🏘 Mahalla "Yettiligi" 360° Raqamli Pasporti (+11 more)
+Nodes (19): 🔍 1. Aqlli Qidiruv va Mos Nomlar Taklifi (Smart Search Engine), 1. Repozitoriyni klonlash, 2. Bog'liqliklarni o'rnatish, 📑 2. Shartnoma va Ulanishlar Monitoringi, 3. Dasturni ishga tushirish, 🏘 3. Mahalla "Yettiligi" 360° Raqamli Pasporti, 📇 4. Xalqaro Aloqa va QR Standartlari, 💾 5. Dual-Storage & Avtomatik Zaxiralash (+11 more)
 
 ### Community 14 - "Services Package Architecture"
 Cohesion: 0.12
@@ -286,7 +286,7 @@ Cohesion: 0.40
 Nodes (3): Telefon raqamini tekshirish.          Qaytaradi: (to'g'riligi: bool, formatlan, validate_phone(), Tashkilot ma'lumotlarini biznes qoidalari bo'yicha tekshirish.
 
 ## Knowledge Gaps
-- **18 isolated node(s):** `graphify`, `Workflow: graphify`, `1. 🔍 Aqlli Qidiruv va Avto-taklif Tizimi (Smart Search & Auto-complete)`, `2. 📑 Shartnoma & Ulanishlar Monitoringi (Professional Tartiblangan Jadval)`, `3. 🖥 PyQt5 Modern Fluent UI (Senior Desktop Edition)` (+13 more)
+- **18 isolated node(s):** `graphify`, `Workflow: graphify`, `Enterprise Desktop Platformasi (v4.0 Pro)`, `📊 Asosiy Ko'rsatkichlar`, `🔍 1. Aqlli Qidiruv va Mos Nomlar Taklifi (Smart Search Engine)` (+13 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
