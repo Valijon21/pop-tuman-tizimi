@@ -40,6 +40,8 @@ def build():
     app_name = "PopTumanTizimi"
     main_script = os.path.join(BASE_DIR, "main_qt.py")
     icon_file = os.path.join(BASE_DIR, "popdata.png")
+    ico_file = os.path.join(BASE_DIR, "popdata.ico")
+    logo_file = os.path.join(BASE_DIR, "popdata_logo.png")
 
     # Eski kesh va yig'ilgan fayllarni tozalash (Clean build)
     build_dir = os.path.join(BASE_DIR, "build")
@@ -60,8 +62,17 @@ def build():
         f"--name={app_name}",
     ]
 
+    if os.path.exists(ico_file):
+        args.append(f"--icon={ico_file}")
+    elif os.path.exists(icon_file):
+        args.append(f"--icon={icon_file}")
+
     if os.path.exists(icon_file):
         args.append(f"--add-data={icon_file};.")
+    if os.path.exists(ico_file):
+        args.append(f"--add-data={ico_file};.")
+    if os.path.exists(logo_file):
+        args.append(f"--add-data={logo_file};.")
 
     # Yashirin kutubxonalar (Hidden imports)
     hidden_imports = [
@@ -115,7 +126,8 @@ def build():
         "ui_qt.views.import_dialog",
         "ui_qt.views.org_edit_dialog",
         "ui_qt.views.qr_dialog",
-        "ui_qt.views.contract_add_dialog"
+        "ui_qt.views.contract_add_dialog",
+        "ui_qt.views.password_dialog"
     ]
     for h in hidden_imports:
         args.append(f"--hidden-import={h}")
@@ -136,6 +148,8 @@ def build():
             "categories.json",
             "settings.json",
             "popdata.png",
+            "popdata.ico",
+            "popdata_logo.png",
             "sync_config.json",
             "service_account.json"
         ]

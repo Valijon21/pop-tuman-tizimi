@@ -1,8 +1,10 @@
 {
     "font_size": 15,
     "passwords": {
-        "admin": "e4454da7c8e2872f158cfd2633a9b03793405a6574b68111a7803d48a5538924",
-        "operator": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b"
+        "edit": "pbkdf2:sha256:100000:2b0107cd9dbe52dacb1e3c021b6009d8:986654d7085e20606a12f56f79e1ae6d24258f49ffc2449281b3a4d20d6badd2",
+        "settings": "pbkdf2:sha256:100000:15071e8ad0788133b299ee1669b12663:df7bea7dd916138de7129168f02c5bee75cb2c88dc596330549de6021f380ed5",
+        "admin": "pbkdf2:sha256:100000:15071e8ad0788133b299ee1669b12663:df7bea7dd916138de7129168f02c5bee75cb2c88dc596330549de6021f380ed5",
+        "operator": "pbkdf2:sha256:100000:2b0107cd9dbe52dacb1e3c021b6009d8:986654d7085e20606a12f56f79e1ae6d24258f49ffc2449281b3a4d20d6badd2"
     },
     "telegram_bot_token": "YOUR_TELEGRAM_BOT_TOKEN_HERE"
 }

@@ -44,6 +44,8 @@ SERVICE_ACCOUNT_FILE = (
     or os.path.join(BASE_DIR, "service_account.json")
 )
 ICON_PATH = os.path.join(BASE_DIR, "popdata.png")
+ICON_ICO_PATH = os.path.join(BASE_DIR, "popdata.ico")
+LOGO_PATH = os.path.join(BASE_DIR, "popdata_logo.png")
 
 # Oyna parametrlari
 APP_TITLE = "Pop Tumani Smart Boshqaruv Tizimi (PRO)"

@@ -5,16 +5,19 @@ toifalar taqsimoti, tezkor amallar va so'nggi audit jurnali.
 Kunduzgi (Light) va Tungi (Dark) rejimlarni to'liq, mukammal qo'llab-quvvatlaydi.
 """
 from typing import Any, List, Dict, Tuple
+import os
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
     QPushButton, QScrollArea, QFrame, QHeaderView, QTableWidget,
     QTableWidgetItem, QSizePolicy
 )
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from core.config import ICON_PATH
 from ui_qt.components.widgets import (
     ClickableCard, CategoryDonutChart, CategoryLegend, CategoryBarChart
 )
-from ui_qt.styles import hex_to_rgba
+from ui_qt.styles import hex_to_rgba, create_crisp_pixmap
 
 class DashboardView(QWidget):
     """PyQt5 Zamonaviy, Professional Dashboard Ekrani."""
@@ -53,9 +56,21 @@ class DashboardView(QWidget):
         h_layout.setContentsMargins(16, 12, 16, 12)
         h_layout.setSpacing(14)
 
+        if os.path.exists(ICON_PATH):
+            self.lbl_hero_icon = QLabel()
+            pix = create_crisp_pixmap(ICON_PATH, target_width=48, target_height=48, supersample=3.0)
+            self.lbl_hero_icon.setPixmap(pix)
+            self.lbl_hero_icon.setStyleSheet(
+                "background: rgba(255, 255, 255, 0.08); "
+                "border: 1px solid rgba(255, 255, 255, 0.16); "
+                "border-radius: 10px; "
+                "padding: 3px;"
+            )
+            h_layout.addWidget(self.lbl_hero_icon)
+
         banner_text = QVBoxLayout()
         banner_text.setSpacing(3)
-        self.title_lbl = QLabel("🏛 Pop Tumani Tashkilotlari va INN Tizimi")
+        self.title_lbl = QLabel("Pop Tumani Tashkilotlari va INN Tizimi")
         self.title_lbl.setStyleSheet("font-size: 15px; font-weight: 800; color: #ffffff; letter-spacing: 0.3px;")
         self.sub_lbl = QLabel("Raqamli boshqaruv, Mahalla 'Yettiligi' 360° Pasporti va tahliliy monitoring markazi")
         self.sub_lbl.setStyleSheet("font-size: 11px; color: #bfdbfe; font-weight: 500;")

@@ -18,6 +18,14 @@ def main() -> int:
     # 1. Global xatoliklarni tutuvchini o'rnatish
     install_global_exception_handler()
 
+    # Windows taskbar uchun ilova identifikatorini o'rnatish
+    if sys.platform == "win32":
+        try:
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("poptuman.tashkilot.inn.v4")
+        except Exception:
+            pass
+
     # 2. Tizim va dastur ma'lumotlarini loglash
     is_frozen = getattr(sys, "frozen", False)
     logger.info("=" * 60)

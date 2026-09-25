@@ -23,6 +23,10 @@ if hasattr(sys.stderr, "reconfigure"):
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE_DIR)
 
+# Test muhiti sozlamalari
+os.environ["QT_QPA_PLATFORM"] = "offscreen"
+os.environ["TESTING"] = "1"
+
 def run_all_tests():
     print("=" * 60)
     print("[TEST] POP TUMAN TIZIMI: AVTOMATLASHTIRILGAN TESTLAR BOSHLANDI")

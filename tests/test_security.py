@@ -2,7 +2,7 @@ import unittest
 from core.security import (
     hash_password, hash_password_salted, verify_password,
     authenticate_user, is_rate_limited, reset_failed_attempts,
-    record_failed_attempt
+    record_failed_attempt, verify_action_password, DEFAULT_PASSWORDS
 )
 
 class TestSecurity(unittest.TestCase):
@@ -11,10 +11,12 @@ class TestSecurity(unittest.TestCase):
     def setUp(self):
         reset_failed_attempts("test_user")
         reset_failed_attempts("global")
+        reset_failed_attempts("test_action")
 
     def tearDown(self):
         reset_failed_attempts("test_user")
         reset_failed_attempts("global")
+        reset_failed_attempts("test_action")
 
     def test_hash_password(self):
         h1 = hash_password("123")
@@ -48,6 +50,31 @@ class TestSecurity(unittest.TestCase):
         # Noto'g'ri parol
         self.assertIsNone(authenticate_user("wrong_password", stored, identifier="test_user"))
         self.assertIsNone(authenticate_user("", stored, identifier="test_user"))
+
+    def test_verify_action_password(self):
+        """Amallar bo'yicha parollarni (edit va settings) tekshirish."""
+        # Standart parollar tekshiruvi
+        ok, msg = verify_action_password("edit", DEFAULT_PASSWORDS["edit"], identifier="test_action")
+        self.assertTrue(ok)
+
+        ok, msg = verify_action_password("settings", DEFAULT_PASSWORDS["settings"], identifier="test_action")
+        self.assertTrue(ok)
+
+        # Noto'g'ri parol
+        ok, msg = verify_action_password("edit", "noto_g_ri_parol", identifier="test_action")
+        self.assertFalse(ok)
+        self.assertIn("Noto'g'ri", msg)
+
+        # Maxsus PBKDF2 hash bilan tekshirish
+        custom_dict = {
+            "edit": hash_password_salted("maxsus_edit_parol"),
+            "settings": hash_password_salted("maxsus_settings_parol")
+        }
+        ok, msg = verify_action_password("edit", "maxsus_edit_parol", custom_dict, identifier="test_action")
+        self.assertTrue(ok)
+
+        ok, msg = verify_action_password("settings", "maxsus_settings_parol", custom_dict, identifier="test_action")
+        self.assertTrue(ok)
 
     def test_brute_force_rate_limiting(self):
         stored = {"admin": hash_password("correct_admin")}

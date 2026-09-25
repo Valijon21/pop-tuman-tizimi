@@ -288,6 +288,9 @@ class TableView(QWidget):
         self.open_edit_dialog()
 
     def open_add_dialog(self):
+        if self.app and hasattr(self.app, "check_permission"):
+            if not self.app.check_permission("edit", parent=self):
+                return
         dlg = OrgEditDialog(parent=self, app=self.app)
         if dlg.exec_() == OrgEditDialog.Accepted:
             self.filter_data()
@@ -299,6 +302,10 @@ class TableView(QWidget):
         if not item:
             QMessageBox.information(self, "Ma'lumot", "Tahrirlash uchun jadvaldan tashkilotni tanlang.")
             return
+
+        if self.app and hasattr(self.app, "check_permission"):
+            if not self.app.check_permission("edit", parent=self):
+                return
 
         dlg = OrgEditDialog(parent=self, app=self.app, item=item)
         if dlg.exec_() == OrgEditDialog.Accepted:
@@ -444,6 +451,9 @@ class TableView(QWidget):
             self.app.show_toast("Qator xotiraga nusxalandi! 📋", "success")
 
     def delete_item(self, item: Dict[str, Any]):
+        if self.app and hasattr(self.app, "check_permission"):
+            if not self.app.check_permission("edit", parent=self):
+                return
         reply = QMessageBox.question(
             self, "Tasdiqlash",
             f"'{item.get('m')}' tashkilotini chiqindi qutisiga tashlamoqchimisiz?",

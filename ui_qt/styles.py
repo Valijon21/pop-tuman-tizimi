@@ -892,3 +892,44 @@ QProgressBar::chunk {{
 # Standart importlar uchun qulay o'zgaruvchilar
 DARK_THEME = get_stylesheet("dark", 12)
 LIGHT_THEME = get_stylesheet("light", 12)
+
+
+def create_crisp_pixmap(
+    image_path: str,
+    target_width: int = 0,
+    target_height: int = 0,
+    supersample: float = 3.0
+):
+    """
+    Retina / 4K / High-DPI o'lchamli kristall tiniqlikdagi QPixmap yaratish.
+    Windows 125%, 150%, 175%, 200% masshtablarida ham rasmlar xira (blurry/hira)
+    bo'lib qolmasligi uchun apparat piksellarida yuqori aniqlikda (supersampling)
+    masshtablaydi va Qt setDevicePixelRatio ni o'rnatadi.
+    """
+    from PyQt5.QtCore import Qt
+    from PyQt5.QtGui import QPixmap
+
+    if not image_path:
+        return QPixmap()
+
+    pix = QPixmap(image_path)
+    if pix.isNull():
+        return pix
+
+    scale = max(1.0, float(supersample))
+    if target_width > 0 and target_height > 0:
+        phys_w = int(target_width * scale)
+        phys_h = int(target_height * scale)
+        scaled = pix.scaled(phys_w, phys_h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+    elif target_width > 0:
+        phys_w = int(target_width * scale)
+        scaled = pix.scaledToWidth(phys_w, Qt.SmoothTransformation)
+    elif target_height > 0:
+        phys_h = int(target_height * scale)
+        scaled = pix.scaledToHeight(phys_h, Qt.SmoothTransformation)
+    else:
+        scaled = pix
+
+    scaled.setDevicePixelRatio(scale)
+    return scaled
+

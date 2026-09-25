@@ -14,11 +14,14 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QPoint, QLockFile
 from PyQt5.QtGui import QIcon, QPixmap, QColor
 
-from core.config import APP_TITLE, ICON_PATH, DEFAULT_WINDOW_SIZE, MIN_WINDOW_SIZE
+from core.config import (
+    APP_TITLE, ICON_PATH, ICON_ICO_PATH, LOGO_PATH,
+    DEFAULT_WINDOW_SIZE, MIN_WINDOW_SIZE
+)
 from core.logger import logger
 from core.threading_utils import WorkerThread
 from database.data_manager import DataManager
-from ui_qt.styles import get_stylesheet
+from ui_qt.styles import get_stylesheet, create_crisp_pixmap
 from ui_qt.views.dashboard_view import DashboardView
 from ui_qt.views.table_view import TableView
 from ui_qt.views.contracts_view import ContractsView
@@ -55,9 +58,17 @@ class MainWindow(QMainWindow):
             "settings": True
         }
 
-        # Ikonka
+        # Ilova va Oyna ikonasi (Tepa panel va Windows Taskbar uchun)
+        self.app_icon = QIcon()
+        if os.path.exists(ICON_ICO_PATH):
+            self.app_icon.addFile(ICON_ICO_PATH)
         if os.path.exists(ICON_PATH):
-            self.setWindowIcon(QIcon(ICON_PATH))
+            self.app_icon.addFile(ICON_PATH)
+        if not self.app_icon.isNull():
+            self.setWindowIcon(self.app_icon)
+
+        # Sessiya autentifikatsiyasi (edit va settings parollari uchun)
+        self._session_authenticated: Dict[str, bool] = {}
 
         # UI tuzilishi
         self.setup_ui()
@@ -90,24 +101,42 @@ class MainWindow(QMainWindow):
         self.sidebar_layout.setContentsMargins(8, 12, 8, 10)
         self.sidebar_layout.setSpacing(2)
 
-        # Logo va Sarlavha
-        if os.path.exists(ICON_PATH):
+        # Logo va Sarlavha (Ichki brend logotipi - POP DATA)
+        if os.path.exists(LOGO_PATH):
+            brand_box = QWidget()
+            brand_box.setObjectName("sidebar_brand_box")
+            b_layout = QVBoxLayout(brand_box)
+            b_layout.setContentsMargins(4, 2, 4, 6)
+            b_layout.setSpacing(0)
+            b_layout.setAlignment(Qt.AlignCenter)
+
             logo_lbl = QLabel()
-            pixmap = QPixmap(ICON_PATH).scaled(38, 38, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = create_crisp_pixmap(LOGO_PATH, target_width=176, supersample=3.0)
             logo_lbl.setPixmap(pixmap)
             logo_lbl.setAlignment(Qt.AlignCenter)
+            logo_lbl.setStyleSheet("background: transparent; border: none;")
+            b_layout.addWidget(logo_lbl)
+
+            self.sidebar_layout.addWidget(brand_box)
+            self.sidebar_layout.addSpacing(4)
+        elif os.path.exists(ICON_PATH):
+            logo_lbl = QLabel()
+            pixmap = create_crisp_pixmap(ICON_PATH, target_width=42, target_height=42, supersample=3.0)
+            logo_lbl.setPixmap(pixmap)
+            logo_lbl.setAlignment(Qt.AlignCenter)
+            logo_lbl.setStyleSheet("background: transparent; border: none;")
             self.sidebar_layout.addWidget(logo_lbl)
 
-        title_lbl = QLabel("POP TUMANI")
-        title_lbl.setObjectName("sidebar_title")
-        title_lbl.setAlignment(Qt.AlignCenter)
-        subtitle_lbl = QLabel("SMART TIZIM v2.0")
-        subtitle_lbl.setObjectName("sidebar_subtitle")
-        subtitle_lbl.setAlignment(Qt.AlignCenter)
+            title_lbl = QLabel("POP TUMANI")
+            title_lbl.setObjectName("sidebar_title")
+            title_lbl.setAlignment(Qt.AlignCenter)
+            subtitle_lbl = QLabel("SMART TIZIM v2.0")
+            subtitle_lbl.setObjectName("sidebar_subtitle")
+            subtitle_lbl.setAlignment(Qt.AlignCenter)
 
-        self.sidebar_layout.addWidget(title_lbl)
-        self.sidebar_layout.addWidget(subtitle_lbl)
-        self.sidebar_layout.addSpacing(8)
+            self.sidebar_layout.addWidget(title_lbl)
+            self.sidebar_layout.addWidget(subtitle_lbl)
+            self.sidebar_layout.addSpacing(8)
 
         # Navigatsiya tugmalari guruhi
         self.nav_buttons = {}
@@ -285,7 +314,16 @@ class MainWindow(QMainWindow):
             self._dirty_views["trash"] = False
         self.content_stack.setCurrentIndex(3)
 
+    def check_permission(self, action: str = "edit", parent=None) -> bool:
+        """Belgilangan amal ('edit' yoki 'settings') uchun xavfsizlik parolini tekshirish."""
+        from ui_qt.views.password_dialog import request_password
+        return request_password(parent or self, self, action=action)
+
     def show_settings(self):
+        """Sozlamalar sahifasini ochish (773423321v paroli bilan himoyalangan)."""
+        if not self.check_permission("settings"):
+            self.set_active_nav_btn(self._last_page_key)
+            return
         self.set_active_nav_btn("settings")
         if self._dirty_views.get("settings", True):
             self.settings_view.load_settings()
@@ -297,6 +335,9 @@ class MainWindow(QMainWindow):
         self.table_view.on_category_clicked(cat_key)
 
     def open_add_dialog(self):
+        """Yangi tashkilot qo'shish (1234567 paroli bilan himoyalangan)."""
+        if not self.check_permission("edit"):
+            return
         dlg = OrgEditDialog(parent=self, app=self)
         if dlg.exec_() == OrgEditDialog.Accepted:
             self.refresh_all_views()
@@ -318,6 +359,8 @@ class MainWindow(QMainWindow):
         open_staff_history_dialog(self, mahalla=mahalla)
 
     def open_import(self):
+        if not self.check_permission("edit"):
+            return
         open_batch_import_dialog(self)
 
     def open_qr(self, item: Optional[Dict[str, Any]] = None, phone: str = "", org_name: str = "", person_name: str = "", role: str = "", inn: str = ""):
@@ -326,6 +369,8 @@ class MainWindow(QMainWindow):
 
     def start_background_bot(self):
         """Telegram botni fon rejimida (asinxron) ishga tushirish."""
+        if os.environ.get("QT_QPA_PLATFORM") == "offscreen" or os.environ.get("TESTING") == "1":
+            return
         try:
             token = self.data_manager.settings.get("telegram_bot_token", "").strip()
             if token and len(token) > 15:
@@ -445,7 +490,15 @@ class MainWindow(QMainWindow):
         event.accept()
 
 def run_qt_app():
-    """PyQt5 ilovasini ishga tushirish (High-DPI va Yagona Nusxa / Single Instance himoyasi bilan)."""
+    """PyQt5 ilovasini ishga tushirish (High-DPI, AppUserModelID va Yagona Nusxa / Single Instance himoyasi bilan)."""
+    # Windows taskbar uchun alohida ilova identifikatorini o'rnatish
+    if sys.platform == "win32":
+        try:
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("poptuman.tashkilot.inn.v4")
+        except Exception:
+            pass
+
     # High-DPI masshtab
     if hasattr(Qt, "AA_EnableHighDpiScaling"):
         QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
@@ -454,6 +507,15 @@ def run_qt_app():
 
     app = QApplication(sys.argv)
     app.setApplicationName("Pop Tuman Tizimi")
+
+    # Global ilova ikonasi (barcha oyna va modal dialoglar uchun)
+    app_icon = QIcon()
+    if os.path.exists(ICON_ICO_PATH):
+        app_icon.addFile(ICON_ICO_PATH)
+    if os.path.exists(ICON_PATH):
+        app_icon.addFile(ICON_PATH)
+    if not app_icon.isNull():
+        app.setWindowIcon(app_icon)
 
     # Yagona nusxa (Single Instance Guard) tekshiruvi:
     # Bir vaqtning o'zida bir nechta dastur ochilishini, DB konfliktini va Telegram Bot 409 xatosini oldini olish

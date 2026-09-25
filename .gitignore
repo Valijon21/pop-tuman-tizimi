@@ -40,9 +40,14 @@ dist/
 
 # --- 7. RASMLAR VA STATIKA ---
 *.png
+*.PNG
 *.jpg
 *.jpeg
 !popdata.png
+!popdata.PNG
+!popdata_logo.png
+!popdata_logo.PNG
+!popdata.ico
 
 # --- 8. IDE VA MUHARRIR FAYLLARI ---
 .vscode/

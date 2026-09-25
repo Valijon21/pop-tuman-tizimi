@@ -68,6 +68,7 @@ class TestQtArchitecture(unittest.TestCase):
         from ui_qt.views.table_view import TableView
         from ui_qt.views.contract_add_dialog import ContractAddDialog
         from ui_qt.views.qr_dialog import QRDialog
+        from ui_qt.views.password_dialog import PasswordPromptDialog, request_password
         from ui_qt.app_window import MainWindow
 
         self.assertIsNotNone(OrgEditDialog)
@@ -84,7 +85,33 @@ class TestQtArchitecture(unittest.TestCase):
         self.assertIsNotNone(TableView)
         self.assertIsNotNone(ContractAddDialog)
         self.assertIsNotNone(QRDialog)
+        self.assertIsNotNone(PasswordPromptDialog)
+        self.assertIsNotNone(request_password)
         self.assertIsNotNone(MainWindow)
+
+    def test_password_permission_check(self):
+        from ui_qt.views.password_dialog import PasswordPromptDialog, request_password
+
+        class MockDataMgr:
+            settings = {"passwords": {}}
+
+        class MockApp:
+            current_theme = "dark"
+            font_size = 12
+            data_manager = MockDataMgr()
+            _session_authenticated = {}
+
+        mock_app = MockApp()
+        # Offscreen yoki sessiya avtorizatsiyasida True qaytarishi kerak
+        self.assertTrue(request_password(None, mock_app, action="edit"))
+        self.assertTrue(request_password(None, mock_app, action="settings"))
+
+        dlg = PasswordPromptDialog(parent=None, app=mock_app, action="edit")
+        self.assertEqual(dlg.action, "edit")
+        dlg.edit_pwd.setText("1234567")
+        dlg.submit_password()
+        self.assertTrue(mock_app._session_authenticated.get("edit", False))
+        dlg.close()
 
     def test_cabinet_quick_copy(self):
         from ui_qt.views.cabinet_dialog import copy_cabinet_quick

@@ -264,3 +264,11 @@ class OrgEditDialog(QDialog):
                 self.app.data_manager.add_organization(data_to_save)
 
         self.accept()
+
+    def exec_(self) -> int:
+        """Oynani ochishdan oldin tahrirlash paroli (1234567) ruxsatini tekshirish."""
+        if self.app and hasattr(self.app, "check_permission"):
+            if not self.app.check_permission("edit", parent=self.parent() or self):
+                return QDialog.Rejected
+        return super().exec_()
+

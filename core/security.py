@@ -115,6 +115,14 @@ def reset_failed_attempts(identifier: str = "global") -> None:
     _FAILED_ATTEMPTS.pop(identifier, None)
 
 
+DEFAULT_PASSWORDS: Dict[str, str] = {
+    "edit": "1234567",
+    "settings": "773423321v",
+    "admin": "773423321v",
+    "operator": "1234567"
+}
+
+
 def authenticate_user(entered_password: str, passwords_dict: Dict[str, str], identifier: str = "global") -> Optional[str]:
     """
     Kiritilgan parol bo'yicha foydalanuvchi rolini (admin/operator) aniqlash.
@@ -128,17 +136,71 @@ def authenticate_user(entered_password: str, passwords_dict: Dict[str, str], ide
     if blocked:
         return None
 
-    admin_hash = passwords_dict.get("admin", hash_password("123"))
-    operator_hash = passwords_dict.get("operator", hash_password("1"))
+    admin_hash = passwords_dict.get("admin") or passwords_dict.get("settings") or hash_password(DEFAULT_PASSWORDS["admin"])
+    operator_hash = passwords_dict.get("operator") or passwords_dict.get("edit") or hash_password(DEFAULT_PASSWORDS["operator"])
 
-    if verify_password(entered_password, admin_hash, fallback_plain="123"):
+    if verify_password(entered_password, admin_hash, fallback_plain=DEFAULT_PASSWORDS["admin"]) or (
+        # Moslik uchun eski 123
+        verify_password(entered_password, admin_hash, fallback_plain="123")
+    ):
         reset_failed_attempts(identifier)
         return "admin"
 
-    if verify_password(entered_password, operator_hash, fallback_plain="1"):
+    if verify_password(entered_password, operator_hash, fallback_plain=DEFAULT_PASSWORDS["operator"]) or (
+        # Moslik uchun eski 1
+        verify_password(entered_password, operator_hash, fallback_plain="1")
+    ):
         reset_failed_attempts(identifier)
         return "operator"
 
     # Noto'g'ri parol bo'lsa urinishni qayd qilish
     record_failed_attempt(identifier)
     return None
+
+
+def verify_action_password(
+    action: str,
+    entered_password: str,
+    passwords_dict: Optional[Dict[str, str]] = None,
+    identifier: str = "global"
+) -> Tuple[bool, str]:
+    """
+    Muayyan amal ('edit' yoki 'settings') uchun parolni tekshirish.
+    action='edit' uchun standart: '1234567'
+    action='settings' uchun standart: '773423321v'
+    Qaytaradi: (muvaffaqiyatlimi, xabar)
+    """
+    if not entered_password:
+        return False, "Parol kiritilmadi!"
+
+    # Brute-force tekshiruvi
+    blocked, wait_sec = is_rate_limited(identifier)
+    if blocked:
+        return False, f"Ko'p xato urinish! Iltimos, {wait_sec} soniya kuting."
+
+    p_dict = passwords_dict or {}
+    expected_hash = p_dict.get(action)
+    fallback = DEFAULT_PASSWORDS.get(action, "")
+
+    if not expected_hash:
+        if action == "edit":
+            expected_hash = p_dict.get("operator")
+        elif action == "settings":
+            expected_hash = p_dict.get("admin")
+
+    is_valid = False
+    if expected_hash:
+        is_valid = verify_password(entered_password, expected_hash, fallback_plain=fallback)
+    else:
+        is_valid = (entered_password == fallback)
+
+    if is_valid:
+        reset_failed_attempts(identifier)
+        return True, "Parol to'g'ri tasdiqlandi."
+
+    record_failed_attempt(identifier)
+    blocked_now, remaining = is_rate_limited(identifier)
+    if blocked_now:
+        return False, f"Xavfsizlik: 5 ta xato urinish sababli {remaining} soniyaga bloklandingiz!"
+    return False, "Noto'g'ri parol! Qayta urinib ko'ring."
+

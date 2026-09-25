@@ -1,7 +1,7 @@
 {
   "build_exe.py": {
-    "mtime": 1790252874.724232,
-    "ast_hash": "25ea6c922489b4a1e594c42876d518de",
+    "mtime": 1790311412.5824194,
+    "ast_hash": "f4a815fab0a3e682a29e3beea0482736",
     "semantic_hash": ""
   },
   "categories.json": {
@@ -15,8 +15,8 @@
     "semantic_hash": "299698c538ed7b0e630365ede1766c6d"
   },
   "core/config.py": {
-    "mtime": 1790252859.1501791,
-    "ast_hash": "f97ef1b94f8d285e3b04edb5477bc9d5",
+    "mtime": 1790311279.903598,
+    "ast_hash": "c519dd8631ddfdc4b8587385422901d7",
     "semantic_hash": ""
   },
   "core/logger.py": {
@@ -25,8 +25,8 @@
     "semantic_hash": "e5a52fc4056d34cb9958d601b73d3253"
   },
   "core/security.py": {
-    "mtime": 1790183574.0972962,
-    "ast_hash": "ca5c4177f8e82a6cafc45559f0eb6aa2",
+    "mtime": 1790304538.863332,
+    "ast_hash": "1a3434ca6a9dbff8df8e42284d3d308b",
     "semantic_hash": ""
   },
   "core/validators.py": {
@@ -50,7 +50,7 @@
     "semantic_hash": ""
   },
   "mahalla_bazasi.json": {
-    "mtime": 1790275635.821709,
+    "mtime": 1790314771.168991,
     "ast_hash": "4223b35ed80f61c07f6d09b7d44716cb",
     "semantic_hash": ""
   },
@@ -60,9 +60,9 @@
     "semantic_hash": ""
   },
   "run_tests.py": {
-    "mtime": 1790139071.8237321,
-    "ast_hash": "ff8caf013ea0e43564937a51588f0fb0",
-    "semantic_hash": "ff8caf013ea0e43564937a51588f0fb0"
+    "mtime": 1790314762.0153978,
+    "ast_hash": "e56123db40854a4e92460220518ea05d",
+    "semantic_hash": ""
   },
   "services/__init__.py": {
     "mtime": 1790147246.718814,
@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "tests/test_security.py": {
-    "mtime": 1790183588.6840508,
-    "ast_hash": "fa73e7ff7bc45b8526532c4703023e4e",
+    "mtime": 1790308409.8436325,
+    "ast_hash": "520fb6b517c048143cac3a73f9b5bd6d",
     "semantic_hash": ""
   },
   "tests/test_services.py": {
@@ -140,8 +140,8 @@
     "semantic_hash": ""
   },
   "popdata.png": {
-    "mtime": 1770373824.83718,
-    "ast_hash": "e5ce2e78032a4a5a61ff1301b3ebf490",
+    "mtime": 1790314731.3563733,
+    "ast_hash": "cfc697367556206bfb7a214ba5519354",
     "semantic_hash": ""
   },
   "services/verification_service.py": {
@@ -180,13 +180,13 @@
     "semantic_hash": ""
   },
   "main_qt.py": {
-    "mtime": 1790203051.786939,
-    "ast_hash": "4748df215de9a081abd025da1ae08847",
+    "mtime": 1790311423.8487465,
+    "ast_hash": "f139ac6375fa551028f81660f8d6175a",
     "semantic_hash": ""
   },
   "tests/test_qt_views.py": {
-    "mtime": 1790268132.3450854,
-    "ast_hash": "47edc267fac14e68b016619dea75018d",
+    "mtime": 1790308421.2037754,
+    "ast_hash": "1ea225372534b6601bfaad1406420cb8",
     "semantic_hash": ""
   },
   "ui_qt/__init__.py": {
@@ -195,8 +195,8 @@
     "semantic_hash": ""
   },
   "ui_qt/app_window.py": {
-    "mtime": 1790275558.4071734,
-    "ast_hash": "b22a8623a45234b5e27085a4491692a3",
+    "mtime": 1790313079.1992962,
+    "ast_hash": "177ba4c8da8fa0e19c1988ae579b1f68",
     "semantic_hash": ""
   },
   "ui_qt/components/__init__.py": {
@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "ui_qt/styles.py": {
-    "mtime": 1790267226.8241856,
-    "ast_hash": "5e84403609a448b19734a7f70653a3ca",
+    "mtime": 1790313052.2274864,
+    "ast_hash": "6657406bbd06a89c967da25c563bb474",
     "semantic_hash": ""
   },
   "ui_qt/views/__init__.py": {
@@ -230,8 +230,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/dashboard_view.py": {
-    "mtime": 1790268120.0460439,
-    "ast_hash": "3f2f96232ce2defded1a54447d7625bb",
+    "mtime": 1790313096.2123196,
+    "ast_hash": "7a77751e5dbd77ed771079a98150d35f",
     "semantic_hash": ""
   },
   "ui_qt/views/history_view.py": {
@@ -240,8 +240,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/import_dialog.py": {
-    "mtime": 1790268742.8798592,
-    "ast_hash": "0af4d518f05dd25cd5c892eb6020aec4",
+    "mtime": 1790308387.708487,
+    "ast_hash": "0f005c678fe69982047af695c019112c",
     "semantic_hash": ""
   },
   "ui_qt/views/mahalla_passport_view.py": {
@@ -250,23 +250,23 @@
     "semantic_hash": ""
   },
   "ui_qt/views/org_edit_dialog.py": {
-    "mtime": 1790265644.370243,
-    "ast_hash": "098c3ccd02210f9323b475c3c66e0694",
+    "mtime": 1790304656.0473619,
+    "ast_hash": "914eed6405b572a9e025fbdfdf104f4e",
     "semantic_hash": ""
   },
   "ui_qt/views/settings_view.py": {
-    "mtime": 1790275593.851258,
-    "ast_hash": "8b16ba2f7509a66cd68bac21717b78e8",
+    "mtime": 1790313117.3051445,
+    "ast_hash": "804442ef4f8c29b37f69075f18ba994b",
     "semantic_hash": ""
   },
   "ui_qt/views/table_view.py": {
-    "mtime": 1790268671.124175,
-    "ast_hash": "3bc4eabfc6b65a9c8098f08fd3c126ca",
+    "mtime": 1790308361.7615588,
+    "ast_hash": "a360dd8c78172957582603e8ed0c5cb4",
     "semantic_hash": ""
   },
   "ui_qt/views/trash_view.py": {
-    "mtime": 1790270826.9049265,
-    "ast_hash": "dca4a66c21f2c01e86f9a596047f5614",
+    "mtime": 1790308373.0657296,
+    "ast_hash": "454367930f97e647895f51ee167590c3",
     "semantic_hash": ""
   },
   "ui_qt/views/verification_dialog.py": {
@@ -300,8 +300,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/contract_add_dialog.py": {
-    "mtime": 1790265654.2059052,
-    "ast_hash": "aaa8e2debda30da4d56817475cb9e98c",
+    "mtime": 1790308379.1960447,
+    "ast_hash": "42629115fca0ec25927004d6a5ea5d1a",
     "semantic_hash": ""
   },
   "ui_qt/views/qr_dialog.py": {
@@ -322,6 +322,16 @@
   "tests/test_features_12346.py": {
     "mtime": 1790275628.3987288,
     "ast_hash": "3331c0d506b8493ab85ed0220147e0e3",
+    "semantic_hash": ""
+  },
+  "ui_qt/views/password_dialog.py": {
+    "mtime": 1790305541.6590621,
+    "ast_hash": "3cda509652f4cc26f3f9216fa0f61a7f",
+    "semantic_hash": ""
+  },
+  "popdata_logo.png": {
+    "mtime": 1790314732.923304,
+    "ast_hash": "e3052c2002707f1b914e0f9ed58a6959",
     "semantic_hash": ""
   }
 }

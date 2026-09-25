@@ -118,6 +118,10 @@ class TrashView(QWidget):
 
     def restore_selected(self):
         """Tanlangan yozuvlarni bir martalik atomik tranzaksiyada bazaga qayta tiklash."""
+        if self.app and hasattr(self.app, "check_permission"):
+            if not self.app.check_permission("edit", parent=self):
+                return
+
         selected_rows = sorted(set(idx.row() for idx in self.table.selectedIndexes()), reverse=True)
         if not selected_rows:
             QMessageBox.information(self, "Ma'lumot", "Qayta tiklash uchun jadvaldan qator tanlang.")
@@ -149,6 +153,10 @@ class TrashView(QWidget):
 
     def perm_delete_selected(self):
         """Tanlangan yozuvlarni bir martalik to'plamli operatsiyada butunlay o'chirish."""
+        if self.app and hasattr(self.app, "check_permission"):
+            if not self.app.check_permission("edit", parent=self):
+                return
+
         selected_rows = sorted(set(idx.row() for idx in self.table.selectedIndexes()), reverse=True)
         if not selected_rows:
             QMessageBox.information(self, "Ma'lumot", "O'chirish uchun jadvaldan qator tanlang.")
@@ -184,6 +192,10 @@ class TrashView(QWidget):
 
     def empty_trash(self):
         """Chiqindi qutisini ommaviy atomik operatsiya bilan to'liq tozalash (disk va SQLite)."""
+        if self.app and hasattr(self.app, "check_permission"):
+            if not self.app.check_permission("edit", parent=self):
+                return
+
         trash = self.app.data_manager.trash
         if not trash:
             return

@@ -3,7 +3,7 @@
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![PyQt5](https://img.shields.io/badge/GUI-PyQt5%20Fluent%20UI-0284c7.svg)](https://riverbankcomputing.com/software/pyqt/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite%20WAL%20(Dual--Storage)-10b981.svg)](https://www.sqlite.org/)
-[![Tests](https://img.shields.io/badge/Tests-56%20Passed%20(100%25)-success.svg)](https://github.com/Valijon21/pop-tuman-tizimi)
+[![Tests](https://img.shields.io/badge/Tests-73%20Passed%20(100%25)-success.svg)](https://github.com/Valijon21/pop-tuman-tizimi)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)](https://github.com/Valijon21/pop-tuman-tizimi)
 
 **Pop Tuman Tashkilotlari va INN Tizimi** — Pop tumanidagi barcha 680+ ta tashkilot, mahalla fuqarolar yig'inlari (MFY), maktablar, maktabgacha ta'lim tashkilotlari (MTT), tibbiyot muassasalari va boshqa davlat idoralari ma'lumotlarini markazlashtirilgan tarzda boshqarish, tahlil qilish hamda monitoring olib borish uchun maxsus ishlab chiqilgan yuqori tezlikdagi professional **Desktop dasturiy ta'minot**.

@@ -10,9 +10,12 @@ from PyQt5.QtWidgets import (
     QMessageBox, QFileDialog, QScrollArea, QFrame, QCheckBox
 )
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from core.config import LOGO_PATH, ICON_PATH
 from core.security import hash_password
 from core.logger import logger
 from core.threading_utils import WorkerThread
+from ui_qt.styles import create_crisp_pixmap
 from services.gsheet_service import (
     get_gspread_client, upload_data_to_sheet, download_data_from_sheet,
     is_service_account_available
@@ -189,20 +192,39 @@ class SettingsView(QWidget):
         c_layout.addWidget(self.grp_tg)
 
         # 3. XAVFSIZLIK VA PAROL
-        self.grp_sec = QGroupBox("🔒 Xavfsizlik va Admin Paroli")
+        self.grp_sec = QGroupBox("🔒 Xavfsizlik va Kirish Parollari")
         sec_layout = QGridLayout(self.grp_sec)
         sec_layout.setSpacing(10)
 
-        sec_layout.addWidget(QLabel("Yangi Admin Paroli:"), 0, 0)
-        self.edit_new_pass = QLineEdit()
-        self.edit_new_pass.setEchoMode(QLineEdit.Password)
-        self.edit_new_pass.setPlaceholderText("Yangi parolni kiriting...")
-        sec_layout.addWidget(self.edit_new_pass, 0, 1)
+        # 1. Tahrirlash paroli
+        sec_layout.addWidget(QLabel("✏️ Tahrirlash Paroli:"), 0, 0)
+        self.edit_pass_edit = QLineEdit()
+        self.edit_pass_edit.setEchoMode(QLineEdit.Password)
+        self.edit_pass_edit.setPlaceholderText("Yangi tahrirlash paroli (standart: 1234567)...")
+        sec_layout.addWidget(self.edit_pass_edit, 0, 1)
 
-        btn_pass = QPushButton("🔑 Parolni Yangilash")
-        btn_pass.setProperty("class", "btn_danger")
-        btn_pass.clicked.connect(self.update_password)
-        sec_layout.addWidget(btn_pass, 0, 2)
+        btn_pass_edit = QPushButton("💾 Saqlash")
+        btn_pass_edit.setProperty("class", "btn_primary")
+        btn_pass_edit.setCursor(Qt.PointingHandCursor)
+        btn_pass_edit.clicked.connect(self.update_edit_password)
+        sec_layout.addWidget(btn_pass_edit, 0, 2)
+
+        # 2. Sozlamalar paroli
+        sec_layout.addWidget(QLabel("⚙️ Sozlamalar Paroli:"), 1, 0)
+        self.edit_pass_settings = QLineEdit()
+        self.edit_pass_settings.setEchoMode(QLineEdit.Password)
+        self.edit_pass_settings.setPlaceholderText("Yangi sozlamalar paroli (standart: 773423321v)...")
+        sec_layout.addWidget(self.edit_pass_settings, 1, 1)
+
+        btn_pass_settings = QPushButton("💾 Saqlash")
+        btn_pass_settings.setProperty("class", "btn_danger")
+        btn_pass_settings.setCursor(Qt.PointingHandCursor)
+        btn_pass_settings.clicked.connect(self.update_settings_password)
+        sec_layout.addWidget(btn_pass_settings, 1, 2)
+
+        self.lbl_sec_status = QLabel("Standart: Tahrirlash = 1234567 | Sozlamalar = 773423321v (PBKDF2-HMAC-SHA256)")
+        self.lbl_sec_status.setStyleSheet("color: #94a3b8; font-size: 11px;")
+        sec_layout.addWidget(self.lbl_sec_status, 2, 0, 1, 3)
 
         c_layout.addWidget(self.grp_sec)
 
@@ -227,6 +249,43 @@ class SettingsView(QWidget):
 
         ui_layout.addStretch()
         c_layout.addWidget(self.grp_ui)
+
+        # 5. DASTUR HAQIDA (POP DATA BRENDI)
+        self.grp_about = QGroupBox("ℹ️ Tizim Haqida (POP DATA)")
+        self.grp_about.setStyleSheet("QGroupBox { font-size: 14px; font-weight: 700; color: #38bdf8; }")
+        about_layout = QHBoxLayout(self.grp_about)
+        about_layout.setContentsMargins(16, 12, 16, 12)
+        about_layout.setSpacing(16)
+
+        if os.path.exists(LOGO_PATH):
+            self.lbl_about_logo = QLabel()
+            pix = create_crisp_pixmap(LOGO_PATH, target_width=140, supersample=3.0)
+            self.lbl_about_logo.setPixmap(pix)
+            self.lbl_about_logo.setStyleSheet("background: transparent; border: none;")
+            about_layout.addWidget(self.lbl_about_logo)
+        elif os.path.exists(ICON_PATH):
+            self.lbl_about_logo = QLabel()
+            pix = create_crisp_pixmap(ICON_PATH, target_width=64, target_height=64, supersample=3.0)
+            self.lbl_about_logo.setPixmap(pix)
+            self.lbl_about_logo.setStyleSheet("background: transparent; border: none;")
+            about_layout.addWidget(self.lbl_about_logo)
+
+        about_text = QVBoxLayout()
+        about_text.setSpacing(4)
+        self.lbl_about_title = QLabel("Pop Tumani Tashkilotlari va INN Tizimi")
+        self.lbl_about_title.setStyleSheet("font-size: 14px; font-weight: 800; color: #0284c7;")
+        self.lbl_about_desc = QLabel("Pop tumani barcha davlat va nodavlat tashkilotlari, rahbarlar, INN, kabinetlar va Mahalla 'Yettiligi' 360° boshqaruv platformasi.")
+        self.lbl_about_desc.setStyleSheet("font-size: 11px; color: #64748b;")
+        self.lbl_about_desc.setWordWrap(True)
+        self.lbl_about_ver = QLabel("Versiya: 4.0 Pro Enterprise | PyQt5 Modern Fluent UI | SQLite WAL (ACID)")
+        self.lbl_about_ver.setStyleSheet("font-size: 10.5px; font-weight: 600; color: #10b981;")
+
+        about_text.addWidget(self.lbl_about_title)
+        about_text.addWidget(self.lbl_about_desc)
+        about_text.addWidget(self.lbl_about_ver)
+        about_layout.addLayout(about_text, 1)
+
+        c_layout.addWidget(self.grp_about)
 
         c_layout.addStretch()
         scroll.setWidget(container)
@@ -254,6 +313,12 @@ class SettingsView(QWidget):
             self.chk_auto_backup.setStyleSheet(f"font-size: 11.5px; font-weight: 700; color: {chk_color};")
         if hasattr(self, "lbl_last_backup"):
             self.lbl_last_backup.setStyleSheet(f"color: {'#64748b' if is_light else '#94a3b8'}; font-size: 11px;")
+        if hasattr(self, "lbl_sec_status"):
+            self.lbl_sec_status.setStyleSheet(f"color: {'#64748b' if is_light else '#94a3b8'}; font-size: 11px;")
+        if hasattr(self, "lbl_about_desc"):
+            self.lbl_about_desc.setStyleSheet(f"font-size: 11px; color: {'#64748b' if is_light else '#94a3b8'};")
+        if hasattr(self, "lbl_about_title"):
+            self.lbl_about_title.setStyleSheet(f"font-size: 14px; font-weight: 800; color: {'#0284c7' if is_light else '#38bdf8'};")
 
         if hasattr(self, "combo_theme"):
             self.combo_theme.blockSignals(True)
@@ -426,18 +491,47 @@ class SettingsView(QWidget):
         if hasattr(self.app, "show_toast"):
             self.app.show_toast("Telegram bot qayta ishga tushirildi! 🔄", "success")
 
-    def update_password(self):
-        new_pwd = self.edit_new_pass.text().strip()
+    def update_edit_password(self):
+        """Tahrirlash parolini yangilash (standart: 1234567)."""
+        new_pwd = self.edit_pass_edit.text().strip()
         if not new_pwd:
-            QMessageBox.warning(self, "Xato", "Parol bo'sh bo'lishi mumkin emas!")
+            QMessageBox.warning(self, "Xato", "Tahrirlash paroli bo'sh bo'lishi mumkin emas!")
             return
 
+        from core.security import hash_password_salted
         if "passwords" not in self.app.data_manager.settings:
             self.app.data_manager.settings["passwords"] = {}
-        self.app.data_manager.settings["passwords"]["admin"] = hash_password(new_pwd)
+        salted = hash_password_salted(new_pwd)
+        self.app.data_manager.settings["passwords"]["edit"] = salted
+        self.app.data_manager.settings["passwords"]["operator"] = salted
         self.app.data_manager.save_settings()
-        self.edit_new_pass.clear()
-        QMessageBox.information(self, "Muvaffaqiyatli", "Admin paroli muvaffaqiyatli yangilandi!")
+        self.edit_pass_edit.clear()
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast("Tahrirlash paroli muvaffaqiyatli yangilandi! ✏️", "success")
+        QMessageBox.information(self, "Muvaffaqiyatli", "Tahrirlash paroli muvaffaqiyatli yangilandi!")
+
+    def update_settings_password(self):
+        """Sozlamalar parolini yangilash (standart: 773423321v)."""
+        new_pwd = self.edit_pass_settings.text().strip()
+        if not new_pwd:
+            QMessageBox.warning(self, "Xato", "Sozlamalar paroli bo'sh bo'lishi mumkin emas!")
+            return
+
+        from core.security import hash_password_salted
+        if "passwords" not in self.app.data_manager.settings:
+            self.app.data_manager.settings["passwords"] = {}
+        salted = hash_password_salted(new_pwd)
+        self.app.data_manager.settings["passwords"]["settings"] = salted
+        self.app.data_manager.settings["passwords"]["admin"] = salted
+        self.app.data_manager.save_settings()
+        self.edit_pass_settings.clear()
+        if hasattr(self.app, "show_toast"):
+            self.app.show_toast("Sozlamalar paroli muvaffaqiyatli yangilandi! ⚙️", "success")
+        QMessageBox.information(self, "Muvaffaqiyatli", "Sozlamalar paroli muvaffaqiyatli yangilandi!")
+
+    def update_password(self):
+        """Eski interfeyslar bilan moslik uchun alias."""
+        self.update_settings_password()
 
     def on_theme_changed(self, idx: int):
         theme = "dark" if idx == 0 else "light"
