@@ -50,7 +50,7 @@
     "semantic_hash": ""
   },
   "mahalla_bazasi.json": {
-    "mtime": 1790335816.5295205,
+    "mtime": 1790336604.2041292,
     "ast_hash": "d57068c763bd8b04e0ad92943895814b",
     "semantic_hash": ""
   },
@@ -130,8 +130,8 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1790335809.8933146,
-    "ast_hash": "ed0f00336bc6eaf7212682ceb8eecb17",
+    "mtime": 1790336689.9921095,
+    "ast_hash": "f8f84e301efe4e35ab412b180a4ee5e2",
     "semantic_hash": ""
   },
   "requirements.txt": {
@@ -150,8 +150,8 @@
     "semantic_hash": ""
   },
   "database/sqlite_manager.py": {
-    "mtime": 1790270365.7750123,
-    "ast_hash": "bc7d9aeb22012430da9f1f999d46f06c",
+    "mtime": 1790336307.9691992,
+    "ast_hash": "ac509f297a90a41a42aadc7d10cd935e",
     "semantic_hash": ""
   },
   "services/telegram_bot.py": {
@@ -205,8 +205,8 @@
     "semantic_hash": ""
   },
   "ui_qt/components/table_model.py": {
-    "mtime": 1790328500.8113403,
-    "ast_hash": "21987482e4534d71efb3e4e269612181",
+    "mtime": 1790336328.3104477,
+    "ast_hash": "e750b8cce7b8029675cc259fa87d6816",
     "semantic_hash": ""
   },
   "ui_qt/styles.py": {
@@ -250,8 +250,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/org_edit_dialog.py": {
-    "mtime": 1790304656.0473619,
-    "ast_hash": "914eed6405b572a9e025fbdfdf104f4e",
+    "mtime": 1790336571.213425,
+    "ast_hash": "3e1f9dd26ffe119e742a474fce854f14",
     "semantic_hash": ""
   },
   "ui_qt/views/settings_view.py": {
@@ -260,8 +260,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/table_view.py": {
-    "mtime": 1790333859.7164347,
-    "ast_hash": "a0a7d896f26489128fd664611b83f28d",
+    "mtime": 1790336432.4526439,
+    "ast_hash": "9c496726d95e188bd2f82a63374b8a6f",
     "semantic_hash": ""
   },
   "ui_qt/views/trash_view.py": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/contracts_view.py": {
-    "mtime": 1790335798.444777,
-    "ast_hash": "6d75d0027e240ba3ec2ed6b694024082",
+    "mtime": 1790336535.0623584,
+    "ast_hash": "0249c3eb9f6fb72ff82407739c7bb3d5",
     "semantic_hash": ""
   },
   "core/threading_utils.py": {
@@ -352,6 +352,16 @@
   "ui_qt/components/smart_completer.py": {
     "mtime": 1790333747.215776,
     "ast_hash": "2bced36bc8b273c7028b3767c55fddfe",
+    "semantic_hash": ""
+  },
+  "tests/test_custom_columns.py": {
+    "mtime": 1790336585.4467816,
+    "ast_hash": "0b0015a27674a53a55f150332f1e847d",
+    "semantic_hash": ""
+  },
+  "ui_qt/components/column_manager_dialog.py": {
+    "mtime": 1790336344.8236785,
+    "ast_hash": "ed5a6d1c1e6be69f614748f00e51a6d4",
     "semantic_hash": ""
   }
 }

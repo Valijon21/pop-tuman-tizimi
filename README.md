@@ -9,7 +9,7 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
   <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+">
   <img src="https://img.shields.io/badge/GUI-PyQt5%20Fluent-0284c7?style=for-the-badge&logo=qt&logoColor=white" alt="PyQt5">
   <img src="https://img.shields.io/badge/Storage-SQLite%20WAL-10b981?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite WAL">
-  <img src="https://img.shields.io/badge/Tests-75%20Passed%20(100%25)-success?style=for-the-badge&logo=githubactions&logoColor=white" alt="Tests">
+  <img src="https://img.shields.io/badge/Tests-80%20Passed%20(100%25)-success?style=for-the-badge&logo=githubactions&logoColor=white" alt="Tests">
   <img src="https://img.shields.io/badge/OS-Windows%2010%2F11-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows 10/11">
 </p>
 
@@ -27,30 +27,38 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
 
 ## 🌟 Asosiy Imkoniyatlar
 
-### 🔍 1. Aqlli Qidiruv va Mos Nomlar Taklifi (Smart Search Engine)
+### ⚙️ 1. Professional Dinamik Ustunlar Menejeri (Column Manager)
+* **Tashkilotlar va Shartnomalar jadvaliga erkin ustun qo'shish:**
+  * **Tizim maydonlari:** Buxgalter tel, Apparat shtat soni, Ulangan apparatlar, Rahbar lavozimi, JSHSHIR, Pasport seriya kabi maydonlarni bitta bosishda yoqish/o'chirish.
+  * **Maxsus yangi ustunlar:** Istalgan yangi ustun yaratish (nomi, kengligi va kalitini belgilagan holda, masalan: *Shartnoma sanasi*, *Manzil*, *Email*, *Qo'shimcha izoh*).
+* **Avtomatik SQLite Sxema Migratsiyasi:** Yangi ustun qo'shilishi bilan SQLite bazasida `ALTER TABLE` orqali to'liq struktura yangilanadi va ma'lumotlar doimiy saqlanadi.
+* **Inline Katak Tahrirlash (In-Place Edit):** Jadvaldagi yangi ustunlar yoki izoh ustuniga sichqoncha bilan ikki marta bosib to'g'ridan-to'g'ri o'zgartirish va `Enter` orqali saqlash.
+* **Dinamik Excel Eksport:** Qo'shilgan barcha maxsus ustunlar avtomatik ravishda Excel hisobotiga qo'shiladi.
+
+### 🔍 2. Aqlli Qidiruv va Mos Nomlar Taklifi (Smart Search Engine)
 * **Lotin ⇄ Kirill Transliteratsiyasi:** Qidiruv maydonida so'z qaysi alifboda yozilishidan qat'i nazar (`maktab` yoki `мактаб`, `chorkesar` yoki `чоркесар`) tashkilot bir zumda topiladi.
 * **Mustaqil Ko'p Tokenli Qidiruv:** So'zlar tartibi natijaga xalaqit qilmaydi (`"1 maktab"` = `"maktab 1"`).
 * **Interaktiv Takliflar (`SmartSearchCompleter`):** Qidiruv kiritilishi bilan mos keluvchi nomlar, INNlar va telefonlar chiroyli Fluent popup menyusida oniy taklif etiladi.
 
-### 📑 2. Shartnoma va Ulanishlar Monitoringi
-* **8 Ustunli Interaktiv Jadval:** `№`, `Tashkilot Nomi`, `INN`, `Toifasi`, `Apparat SHT`, `Ulangan`, `Rahbar Tel`, `Buxgalter Tel`.
+### 📑 3. Shartnoma va Ulanishlar Monitoringi
+* **Interaktiv Jadval & Dinamik Ustunlar:** `№`, `Tashkilot Nomi`, `INN`, `Toifasi`, `Apparat SHT`, `Ulangan`, `Rahbar Tel`, `Buxgalter Tel` + istalgan maxsus ustunlar.
 * **Professional Raqamli Saralash:** Ustun bosilganda raqamlar matn emas, matematik qiymati bo'yicha to'g'ri tartiblanadi (`NumericTableWidgetItem`).
 * **Kataklar Bo'yicha Erkin Nusxalash:** Istalgan kataklarni belgilab, `Ctrl+C` orqali to'g'ridan-to'g'ri nusxalash imkoniyati (`ExtendedSelection`).
-* **Excel Eksport:** Barcha ma'lumotlarni bir bosishda `.xlsx` faylga saqlash.
+* **Excel Eksport:** Barcha ma'lumotlarni (yangi qo'shilgan ustunlar bilan birga) bir bosishda `.xlsx` faylga saqlash.
 
-### 🏘 3. Mahalla "Yettiligi" 360° Raqamli Pasporti
+### 🏘 4. Mahalla "Yettiligi" 360° Raqamli Pasporti
 * Pop tumanining 74 ta MFYsi bo'yicha mas'ul rahbarlar: Rais, Hokim yordamchisi, Yoshlar yetakchisi, Xotin-qizlar faoli, Profilaktika inspektori, Soliqchi va Ijtimoiy xodim.
 * Bir bosishda **"Verifikatsiya so'rovi"** va **"Kabinetga dostup"** rasmiy shablonlarini generatsiya qilish va Telegram orqali yuborish.
 
-### 📇 4. Xalqaro Aloqa va QR Standartlari
+### 📇 5. Xalqaro Aloqa va QR Standartlari
 * **Toza E.164 Formati:** Raqamlarda xato prefikslar qo'shilishining oldini oluvchi toza `+998...` standarti.
 * **Universal QR-kodlar:** Android va iOS qurilmalari bilan to'liq mos NTT DoCoMo MeCard va RFC 2426 vCard 3.0 kontakt kartochkalari.
 
-### 💾 5. Dual-Storage & Avtomatik Zaxiralash
+### 💾 6. Dual-Storage & Avtomatik Zaxiralash
 * **ACID Kafolati:** Har bir amal SQLite (WAL rejimida) hamda atomik JSON fayliga birdek yoziladi.
 * **Avto-zaxira (Rolling Backups):** Har 30 daqiqada va dastur yopilganda SQLite (`.db`) va JSON (`.json`) nusxalari avtomatik arxivlanadi.
 
-### 🛠 6. Yordamchi Dasturlar (Tools)
+### 🛠 7. Yordamchi Dasturlar (Tools)
 * **UzCrypto va AnyDesk:** Bitta tugma orqali dastur papkasini ochish yoki dasturni tizim almashish buferiga (clipboard) nusxalash (`Ctrl+V` orqali xohlagan joyga joylash).
 
 ---
@@ -86,7 +94,7 @@ Namangan viloyati Pop tumanidagi davlat idoralari, MFYlar, maktablar, bog'chalar
 ```text
 pop-tuman-tizimi/
 ├── main.py                     # Asosiy kirish nuqtasi (PyQt5 GUI)
-├── run_tests.py                # Avtomatlashtirilgan test tizimi (75 ta test)
+├── run_tests.py                # Avtomatlashtirilgan test tizimi (80 ta test)
 ├── build_exe.py                # Standalone Windows .exe yig'uvchi
 ├── mahalla_tizimi.db           # SQLite asosiy bazasi (WAL)
 ├── mahalla_bazasi.json         # Atomik JSON sinxronizatsiya bazasi
@@ -97,7 +105,7 @@ pop-tuman-tizimi/
 ├── ui_qt/                      # Fluent interfeys, ko'rinishlar va dialoglar
 │   ├── components/             # SmartCompleter, jadvallar va diagrammalar
 │   └── views/                  # Dashboard, Jadval, Shartnomalar, MFY pasporti
-└── tests/                      # 75 ta to'liq qamrovli avtotestlar to'plami
+└── tests/                      # 80 ta to'liq qamrovli avtotestlar to'plami
 ```
 
 ---

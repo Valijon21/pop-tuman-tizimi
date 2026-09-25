@@ -51,6 +51,8 @@ class ContractsView(QWidget):
         self.current_category: str = "Barchasi"
         self.contracts_data: List[Dict[str, Any]] = []
         self.filtered_data: List[Dict[str, Any]] = []
+        self.BASE_COLUMNS = ["№", "Tashkilot Nomi", "INN", "Toifasi", "Apparat SHT", "Ulangan", "Rahbar Tel", "Buxgalter Tel"]
+        self.custom_columns: List[Dict[str, Any]] = self._load_custom_columns()
 
         # 250ms Debounce taymeri
         self.search_timer = QTimer(self)
@@ -59,6 +61,58 @@ class ContractsView(QWidget):
 
         self.setup_ui()
         self.load_data()
+
+    def _load_custom_columns(self) -> List[Dict[str, Any]]:
+        if self.app and hasattr(self.app, "data_manager"):
+            return self.app.data_manager.settings.get("contracts_custom_columns", [])
+        return []
+
+    def setup_table_columns(self):
+        """Jadval ustunlari va sarlavhalarini baza + maxsus ustunlar bilan sozlash."""
+        headers = list(self.BASE_COLUMNS)
+        for c in self.custom_columns:
+            headers.append(str(c.get("name", "Ustun")))
+
+        self.table.setColumnCount(len(headers))
+        self.table.setHorizontalHeaderLabels(headers)
+
+        header = self.table.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(7, QHeaderView.ResizeToContents)
+
+        for idx in range(8, len(headers)):
+            header.setSectionResizeMode(idx, QHeaderView.Interactive)
+            w = self.custom_columns[idx - 8].get("width", 150)
+            self.table.setColumnWidth(idx, w)
+
+        header.setSortIndicatorShown(True)
+        self.table.setSortingEnabled(True)
+        try:
+            header.sectionClicked.disconnect(self._on_section_sorted)
+        except Exception:
+            pass
+        header.sectionClicked.connect(self._on_section_sorted)
+
+        self.table.setAlternatingRowColors(True)
+        self.table.setSelectionBehavior(QTableWidget.SelectItems)
+        self.table.setSelectionMode(QTableWidget.ExtendedSelection)
+        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.table.setContextMenuPolicy(Qt.CustomContextMenu)
+        try:
+            self.table.customContextMenuRequested.disconnect(self.show_context_menu)
+            self.table.doubleClicked.disconnect(self.on_table_double_clicked)
+        except Exception:
+            pass
+        self.table.customContextMenuRequested.connect(self.show_context_menu)
+        self.table.doubleClicked.connect(self.on_table_double_clicked)
+        self.table.verticalHeader().setVisible(False)
+        self.table.installEventFilter(self)
 
     def setup_ui(self):
         main_layout = QVBoxLayout(self)
@@ -91,6 +145,12 @@ class ContractsView(QWidget):
         self.btn_export.setCursor(Qt.PointingHandCursor)
         self.btn_export.clicked.connect(self.export_to_excel)
         head_layout.addWidget(self.btn_export)
+
+        self.btn_columns = QPushButton("⚙ Ustunlar")
+        self.btn_columns.setProperty("class", "btn_secondary")
+        self.btn_columns.setCursor(Qt.PointingHandCursor)
+        self.btn_columns.clicked.connect(self.open_column_manager)
+        head_layout.addWidget(self.btn_columns)
 
         main_layout.addLayout(head_layout)
 
@@ -161,38 +221,9 @@ class ContractsView(QWidget):
         cat_scroll.setWidget(cat_container)
         main_layout.addWidget(cat_scroll)
 
-        # 4. ASOSIY JADVAL (QTableWidget - Tartiblangan, 8 ustunli va interaktiv sortirovka bilan)
+        # 4. ASOSIY JADVAL (QTableWidget - Tartiblangan, dinamik ustunlar bilan)
         self.table = QTableWidget()
-        self.table.setColumnCount(8)
-        self.table.setHorizontalHeaderLabels([
-            "№", "Tashkilot Nomi", "INN", "Toifasi",
-            "Apparat SHT", "Ulangan", "Rahbar Tel", "Buxgalter Tel"
-        ])
-
-        header = self.table.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(7, QHeaderView.ResizeToContents)
-
-        # Interaktiv ustun bosganda saralash (Sorting)
-        header.setSortIndicatorShown(True)
-        self.table.setSortingEnabled(True)
-        header.sectionClicked.connect(self._on_section_sorted)
-
-        self.table.setAlternatingRowColors(True)
-        self.table.setSelectionBehavior(QTableWidget.SelectItems)
-        self.table.setSelectionMode(QTableWidget.ExtendedSelection)
-        self.table.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.table.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.table.customContextMenuRequested.connect(self.show_context_menu)
-        self.table.doubleClicked.connect(self.on_table_double_clicked)
-        self.table.verticalHeader().setVisible(False)
-        self.table.installEventFilter(self)
+        self.setup_table_columns()
 
         # Klaviaturadan qidiruvga o'tish (Ctrl+F)
         self.shortcut_search = QShortcut(QKeySequence("Ctrl+F"), self)
@@ -508,14 +539,54 @@ class ContractsView(QWidget):
     def on_table_double_clicked(self):
         """Jadvalda 2 marta bosilganda tahrirlash oynasini ochish."""
         row = self.table.currentRow()
+        col = self.table.currentColumn()
         item = self._get_item_by_row(row)
-        if item:
-            from ui_qt.views.org_edit_dialog import OrgEditDialog
-            dlg = OrgEditDialog(parent=self, app=self.app, item=item)
-            if dlg.exec_() == OrgEditDialog.Accepted:
-                if hasattr(self.app, "refresh_all_views"):
-                    self.app.refresh_all_views()
-                self.load_data()
+        if not item:
+            return
+
+        # Agar maxsus ustun bo'lsa (col >= 8), to'g'ridan-to'g'ri tezkor kiritish dialogi
+        if col >= 8 and (col - 8) < len(self.custom_columns):
+            c_info = self.custom_columns[col - 8]
+            col_name = c_info.get("name", "Ustun")
+            col_key = c_info.get("key", "")
+            current_val = str(item.get(col_key) or "")
+            from PyQt5.QtWidgets import QInputDialog
+            new_val, ok = QInputDialog.getText(
+                self, f"Tahrirlash: {col_name}",
+                f"'{item.get('m')}' uchun {col_name}:",
+                text=current_val
+            )
+            if ok:
+                item[col_key] = new_val.strip()
+                if self.app and hasattr(self.app, "data_manager"):
+                    self.app.data_manager.update_organization(item, user="ADMIN")
+                self.render_table_rows()
+                if hasattr(self.app, "show_toast"):
+                    self.app.show_toast(f"'{col_name}' saqlandi! ✅", "success")
+            return
+
+        from ui_qt.views.org_edit_dialog import OrgEditDialog
+        dlg = OrgEditDialog(parent=self, app=self.app, item=item)
+        if dlg.exec_() == OrgEditDialog.Accepted:
+            if hasattr(self.app, "refresh_all_views"):
+                self.app.refresh_all_views()
+            self.load_data()
+
+    def open_column_manager(self):
+        """Shartnomalar jadvaliga ustun qo'shish va boshqarish dialogi."""
+        from ui_qt.components.column_manager_dialog import ColumnManagerDialog
+        cur_cols = self._load_custom_columns()
+        dlg = ColumnManagerDialog(view_type="contracts", current_columns=cur_cols, parent=self, app=self.app)
+        if dlg.exec_() == ColumnManagerDialog.Accepted:
+            new_cols = dlg.get_columns()
+            self.custom_columns = new_cols
+            if self.app and hasattr(self.app, "data_manager"):
+                self.app.data_manager.settings["contracts_custom_columns"] = new_cols
+                self.app.data_manager.save_settings()
+            self.setup_table_columns()
+            self.render_table_rows()
+            if hasattr(self.app, "show_toast"):
+                self.app.show_toast("Shartnoma jadvali ustunlari muvaffaqiyatli yangilandi! ⚙", "success")
 
     def render_table_rows(self):
         """Jadval qatorlarini professional, tartibli va rangli nishonlar bilan chizish."""
@@ -583,6 +654,24 @@ class ContractsView(QWidget):
                 if bux_str != "-":
                     item_bux.setForeground(QColor("#38bdf8" if not is_light else "#0284c7"))
                 self.table.setItem(r_idx, 7, item_bux)
+
+                # 8+. Maxsus qo'shilgan ustunlar
+                for c_idx, c_info in enumerate(self.custom_columns):
+                    col_key = c_info.get("key", "")
+                    val = it.get(col_key)
+                    val_str = str(val).strip() if val is not None else ""
+                    display_txt = val_str if val_str else "—"
+
+                    if col_key in ("aparat_soni", "ulangan_soni"):
+                        s_val = int(val) if val not in (None, "") else -1
+                        item_c = NumericTableWidgetItem(f"{val} ta" if val is not None else "—", sort_value=s_val)
+                    elif val_str.isdigit():
+                        item_c = NumericTableWidgetItem(val_str, sort_value=int(val_str))
+                    else:
+                        item_c = QTableWidgetItem(display_txt)
+
+                    item_c.setTextAlignment(Qt.AlignCenter)
+                    self.table.setItem(r_idx, 8 + c_idx, item_c)
 
             self.lbl_count.setText(f"Ko'rsatilmoqda: {len(self.filtered_data)} ta tashkilot")
         finally:
@@ -725,13 +814,15 @@ class ContractsView(QWidget):
                 "Apparat Soni", "Ulangan Soni",
                 "Rahbar Telefoni", "Buxgalter Telefoni"
             ]
+            for c in self.custom_columns:
+                headers.append(str(c.get("name", "Ustun")))
             ws.append(headers)
 
             for idx, it in enumerate(self.filtered_data, 1):
                 ap = it.get("aparat_soni")
                 ul = it.get("ulangan_soni")
 
-                ws.append([
+                row_vals = [
                     idx,
                     str(it.get("m", "")),
                     str(it.get("inn", "")),
@@ -740,7 +831,11 @@ class ContractsView(QWidget):
                     ul if ul is not None else "",
                     str(it.get("t", "")),
                     str(it.get("bux_tel", ""))
-                ])
+                ]
+                for c in self.custom_columns:
+                    val = it.get(c.get("key", ""))
+                    row_vals.append(str(val if val is not None else ""))
+                ws.append(row_vals)
 
             wb.save(path)
             if hasattr(self.app, "show_toast"):

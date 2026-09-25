@@ -153,36 +153,73 @@ class SQLiteManager:
             logger.error(f"[SQLITE] Tashkilotlarni o'qishda xatolik: {e}")
             return []
 
+    def get_table_columns(self, table_name: str = "organizations", conn=None) -> List[str]:
+        """Jadval ustunlari ro'yxatini olish."""
+        close_conn = False
+        if conn is None:
+            conn = self.get_connection()
+            close_conn = True
+        try:
+            cursor = conn.cursor()
+            cursor.execute(f"PRAGMA table_info({table_name});")
+            return [row["name"] if isinstance(row, sqlite3.Row) else row[1] for row in cursor.fetchall()]
+        finally:
+            if close_conn:
+                conn.close()
+
+    def ensure_column_exists(self, col_name: str, col_type: str = "TEXT") -> bool:
+        """Jadvalga yangi ustunni xavfsiz qo'shish (organizations va trash jadvallariga)."""
+        safe_col = "".join(c for c in str(col_name) if c.isalnum() or c == "_").lower()
+        if not safe_col or safe_col in ("id", "rowid"):
+            return False
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.cursor()
+                for tbl in ("organizations", "trash"):
+                    cursor.execute(f"PRAGMA table_info({tbl});")
+                    existing = [row["name"] if isinstance(row, sqlite3.Row) else row[1] for row in cursor.fetchall()]
+                    if safe_col not in existing:
+                        cursor.execute(f"ALTER TABLE {tbl} ADD COLUMN {safe_col} {col_type};")
+                conn.commit()
+                logger.info(f"[SQLITE] Yangi ustun qo'shildi: {safe_col} ({col_type})")
+                return True
+        except Exception as e:
+            logger.error(f"[SQLITE] Ustun qo'shishda xatolik ({safe_col}): {e}")
+            return False
+
     def save_all_organizations(self, orgs: List[Dict[str, Any]]) -> None:
-        """Barcha tashkilotlarni atomik tranzaksiya bilan xavfsiz saqlash/yangilash (buzilmasdan)."""
+        """Barcha tashkilotlarni atomik tranzaksiya bilan xavfsiz saqlash/yangilash (dinamik ustunlar bilan)."""
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        current_ids = [str(o.get("id") or o.get("uuid") or "") for o in orgs if (o.get("id") or o.get("uuid"))]
         try:
             with self.get_connection() as conn:
                 cursor = conn.cursor()
                 if orgs:
-                    cursor.executemany("""
-                    INSERT OR REPLACE INTO organizations (id, s, m, f, t, inn, izoh, jshr, seriya, lavozim, bux_tel, aparat_soni, ulangan_soni, updated_at)
-                    VALUES (:id, :s, :m, :f, :t, :inn, :izoh, :jshr, :seriya, :lavozim, :bux_tel, :aparat_soni, :ulangan_soni, :updated_at);
-                    """, [
-                        {
-                            "id": str(o.get("id") or o.get("uuid") or ""),
-                            "s": str(o.get("s") or ""),
-                            "m": str(o.get("m") or ""),
-                            "f": str(o.get("f") or ""),
-                            "t": str(o.get("t") or ""),
-                            "inn": str(o.get("inn") or ""),
-                            "izoh": str(o.get("izoh") or ""),
-                            "jshr": str(o.get("jshr") or ""),
-                            "seriya": str(o.get("seriya") or ""),
-                            "lavozim": str(o.get("lavozim") or ""),
-                            "bux_tel": str(o.get("bux_tel") or ""),
-                            "aparat_soni": int(o.get("aparat_soni")) if o.get("aparat_soni") not in (None, "") else None,
-                            "ulangan_soni": int(o.get("ulangan_soni")) if o.get("ulangan_soni") not in (None, "") else None,
-                            "updated_at": o.get("updated_at") or now
-                        } for o in orgs
-                    ])
-                    # 2. Xotiradan olib tashlangan yozuvlarni SQLite dan xavfsiz tozalash (Vaqtinchalik jadval yordamida - cheksiz masshtab)
+                    cols = self.get_table_columns("organizations", conn)
+                    rows_data = []
+                    for o in orgs:
+                        row_dict = {}
+                        for c in cols:
+                            if c == "id":
+                                row_dict["id"] = str(o.get("id") or o.get("uuid") or "")
+                            elif c == "updated_at":
+                                row_dict["updated_at"] = o.get("updated_at") or now
+                            elif c in ("aparat_soni", "ulangan_soni"):
+                                val = o.get(c)
+                                row_dict[c] = int(val) if val not in (None, "") else None
+                            else:
+                                val = o.get(c)
+                                row_dict[c] = str(val) if val is not None else ""
+                        rows_data.append(row_dict)
+
+                    col_names = list(cols)
+                    placeholders = ", ".join([f":{c}" for c in col_names])
+                    cols_str = ", ".join(col_names)
+                    cursor.executemany(f"""
+                    INSERT OR REPLACE INTO organizations ({cols_str})
+                    VALUES ({placeholders});
+                    """, rows_data)
+
+                    # 2. Xotiradan olib tashlangan yozuvlarni SQLite dan xavfsiz tozalash (Vaqtinchalik jadval yordamida)
                     cursor.execute("CREATE TEMP TABLE IF NOT EXISTS _active_ids (id TEXT PRIMARY KEY);")
                     cursor.execute("DELETE FROM _active_ids;")
                     current_ids = [(str(o.get("id") or o.get("uuid") or ""),) for o in orgs if (o.get("id") or o.get("uuid"))]
@@ -232,30 +269,32 @@ class SQLiteManager:
             return False
 
     def insert_or_replace_organization(self, o: Dict[str, Any]) -> None:
-        """Bitta tashkilotni qo'shish yoki yangilash."""
+        """Bitta tashkilotni qo'shish yoki yangilash (dinamik ustunlar bilan)."""
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         try:
             with self.get_connection() as conn:
+                cols = self.get_table_columns("organizations", conn)
+                row_dict = {}
+                for c in cols:
+                    if c == "id":
+                        row_dict["id"] = str(o.get("id") or o.get("uuid") or "")
+                    elif c == "updated_at":
+                        row_dict["updated_at"] = o.get("updated_at") or now
+                    elif c in ("aparat_soni", "ulangan_soni"):
+                        val = o.get(c)
+                        row_dict[c] = int(val) if val not in (None, "") else None
+                    else:
+                        val = o.get(c)
+                        row_dict[c] = str(val) if val is not None else ""
+
+                col_names = list(row_dict.keys())
+                placeholders = ", ".join([f":{c}" for c in col_names])
+                cols_str = ", ".join(col_names)
                 cursor = conn.cursor()
-                cursor.execute("""
-                INSERT OR REPLACE INTO organizations (id, s, m, f, t, inn, izoh, jshr, seriya, lavozim, bux_tel, aparat_soni, ulangan_soni, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-                """, (
-                    str(o.get("id") or o.get("uuid") or ""),
-                    str(o.get("s") or ""),
-                    str(o.get("m") or ""),
-                    str(o.get("f") or ""),
-                    str(o.get("t") or ""),
-                    str(o.get("inn") or ""),
-                    str(o.get("izoh") or ""),
-                    str(o.get("jshr") or ""),
-                    str(o.get("seriya") or ""),
-                    str(o.get("lavozim") or ""),
-                    str(o.get("bux_tel") or ""),
-                    int(o.get("aparat_soni")) if o.get("aparat_soni") not in (None, "") else None,
-                    int(o.get("ulangan_soni")) if o.get("ulangan_soni") not in (None, "") else None,
-                    now
-                ))
+                cursor.execute(f"""
+                INSERT OR REPLACE INTO organizations ({cols_str})
+                VALUES ({placeholders});
+                """, row_dict)
                 conn.commit()
         except Exception as e:
             logger.error(f"[SQLITE] Tashkilotni yozishda xatolik: {e}")

@@ -164,6 +164,7 @@ class TableView(QWidget):
         self.btn_verif = add_tool_btn("🛡 Verifikatsiya", self.open_verification, "btn_info", 86)
         self.btn_qr = add_tool_btn("📱 QR Kod", self.open_qr, "btn_purple", 74)
         self.btn_excel = add_tool_btn("📊 Excel", self.export_excel, "btn_success", 66)
+        self.btn_columns = add_tool_btn("⚙ Ustunlar", self.open_column_manager, "btn_secondary", 80)
 
         # Qo'shimcha amallar menyu tugmasi
         self.btn_more = QPushButton("⚡ Boshqa ▾")
@@ -218,6 +219,7 @@ class TableView(QWidget):
         self.table_view = QTableView()
         self.table_model = OrganizationTableModel()
         self.table_model.on_izoh_changed = self.on_inline_izoh_saved
+        self.table_model.on_cell_changed = self.on_inline_cell_saved
         self.table_view.setModel(self.table_model)
 
         self.table_view.setAlternatingRowColors(True)
@@ -226,19 +228,16 @@ class TableView(QWidget):
         self.table_view.setSortingEnabled(True)
         self.table_view.verticalHeader().setVisible(False)
 
-        # Izoh uchun maxsus inline delegate (ikki marta bosganda yozish va Enter bilan saqlash)
+        # Izoh va maxsus ustunlar uchun maxsus inline delegate
         self.izoh_delegate = IzohDelegate(self.table_view, is_light=is_light)
         self.table_view.setItemDelegateForColumn(6, self.izoh_delegate)
 
-        # Ustunlar kengligi
-        header = self.table_view.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QHeaderView.Stretch)
-        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(6, QHeaderView.Stretch)
+        # Dinamik maxsus ustunlarni yuklash va kengliklarni o'rnatish
+        custom_cols = []
+        if self.app and hasattr(self.app, "data_manager"):
+            custom_cols = self.app.data_manager.settings.get("table_custom_columns", [])
+        self.table_model.set_custom_columns(custom_cols)
+        self.apply_column_widths()
 
         # Hodisalar
         self.table_view.doubleClicked.connect(self.on_table_double_clicked)
@@ -376,7 +375,7 @@ class TableView(QWidget):
     def on_table_double_clicked(self, index: QModelIndex):
         if not index.isValid():
             return
-        if index.column() == 6:  # Izoh ustuni: to'g'ridan-to'g'ri yozish va Enter bilan saqlash
+        if index.column() >= 6:  # Izoh va maxsus ustunlar: to'g'ridan-to'g'ri yozish va Enter bilan saqlash
             self.table_view.edit(index)
         else:
             self.open_edit_dialog()
@@ -389,6 +388,48 @@ class TableView(QWidget):
                 self.app.status_bar.showMessage(
                     f"✅ '{m_name}' tashkiloti izohi saqlandi: \"{new_izoh}\"", 4000
                 )
+
+    def on_inline_cell_saved(self, item: Dict[str, Any], field_key: str, new_val: str):
+        if self.app and hasattr(self.app, "data_manager"):
+            self.app.data_manager.update_organization(item, user="ADMIN")
+            m_name = item.get("m", "Tashkilot")
+            if hasattr(self.app, "show_toast"):
+                self.app.show_toast(f"✅ '{m_name}' ma'lumoti saqlandi!", "success")
+
+    def apply_column_widths(self):
+        """Baza va maxsus ustunlar kengliklarini moslashtirish."""
+        header = self.table_view.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QHeaderView.Stretch)
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(6, QHeaderView.Stretch)
+
+        all_cols = self.table_model.get_all_columns()
+        for idx in range(7, len(all_cols)):
+            header.setSectionResizeMode(idx, QHeaderView.Interactive)
+            self.table_view.setColumnWidth(idx, all_cols[idx][1])
+            self.table_view.setItemDelegateForColumn(idx, self.izoh_delegate)
+
+    def open_column_manager(self):
+        """Tashkilotlar jadvali ustunlarini boshqarish va yangi ustun qo'shish."""
+        from ui_qt.components.column_manager_dialog import ColumnManagerDialog
+        cur_cols = []
+        if self.app and hasattr(self.app, "data_manager"):
+            cur_cols = self.app.data_manager.settings.get("table_custom_columns", [])
+
+        dlg = ColumnManagerDialog(view_type="table", current_columns=cur_cols, parent=self, app=self.app)
+        if dlg.exec_() == ColumnManagerDialog.Accepted:
+            new_cols = dlg.get_columns()
+            if self.app and hasattr(self.app, "data_manager"):
+                self.app.data_manager.settings["table_custom_columns"] = new_cols
+                self.app.data_manager.save_settings()
+            self.table_model.set_custom_columns(new_cols)
+            self.apply_column_widths()
+            if hasattr(self.app, "show_toast"):
+                self.app.show_toast("Ustunlar sozlamasi muvaffaqiyatli saqlandi! ⚙", "success")
 
     def copy_selected_cells(self):
         """Tanlangan katak(lar) yoki ko'kartirib belgilangan matnlarni buferga nusxalash (Ctrl+C)."""

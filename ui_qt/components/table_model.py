@@ -1,37 +1,59 @@
 """
 ui_qt.components.table_model: Yuqori unumdorlikka ega QAbstractTableModel.
-60 FPS tezlik, xotirani tejash va o'n minglab yozuvlarni bir zumda qayta ishlash.
+60 FPS tezlik, xotirani tejash, saralash va dinamik maxsus ustunlar qo'llab-quvvatlashi.
 """
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 from PyQt5.QtCore import QAbstractTableModel, Qt, QModelIndex, QVariant
 
 class OrganizationTableModel(QAbstractTableModel):
-    """Tashkilotlar jadvali uchun maxsus optimallashgan Qt Model."""
+    """Tashkilotlar jadvali uchun maxsus optimallashgan Qt Model (Dinamik ustunlar bilan)."""
 
-    COLUMNS = [
-        ("№", 50),
-        ("Turi", 110),
-        ("Tashkilot Nomi", 280),
-        ("F.I.SH", 210),
-        ("Telefon", 130),
-        ("INN", 100),
-        ("Izoh", 220),
+    BASE_COLUMNS: List[Tuple[str, int, str]] = [
+        ("№", 50, "_idx"),
+        ("Turi", 110, "s"),
+        ("Tashkilot Nomi", 280, "m"),
+        ("F.I.SH", 210, "f"),
+        ("Telefon", 130, "t"),
+        ("INN", 100, "inn"),
+        ("Izoh", 220, "izoh"),
     ]
 
-    FIELD_KEYS = ["_idx", "s", "m", "f", "t", "inn", "izoh"]
+    # Orqaga moslik (Backward compatibility)
+    COLUMNS = [(c[0], c[1]) for c in BASE_COLUMNS]
+    FIELD_KEYS = [c[2] for c in BASE_COLUMNS]
 
-    def __init__(self, data: Optional[List[Dict[str, Any]]] = None):
+    def __init__(self, data: Optional[List[Dict[str, Any]]] = None, custom_columns: Optional[List[Dict[str, Any]]] = None):
         super().__init__()
         self._data: List[Dict[str, Any]] = data or []
         self._sort_column: int = -1
         self._sort_order: Qt.SortOrder = Qt.AscendingOrder
         self.on_izoh_changed = None
+        self.on_cell_changed = None
+        self._custom_columns: List[Dict[str, Any]] = custom_columns or []
+
+    def get_all_columns(self) -> List[Tuple[str, int, str]]:
+        """Baza va maxsus qo'shilgan barcha ustunlar ro'yxatini olish."""
+        cols = list(self.BASE_COLUMNS)
+        for cc in self._custom_columns:
+            name = str(cc.get("name", "Ustun"))
+            width = int(cc.get("width", 150))
+            key = str(cc.get("key", ""))
+            cols.append((name, width, key))
+        return cols
+
+    def set_custom_columns(self, custom_columns: List[Dict[str, Any]]) -> None:
+        """Dinamik ustunlar ro'yxatini yangilash va jadvalni qayta render qilish."""
+        self.beginResetModel()
+        self._custom_columns = list(custom_columns)
+        self.endResetModel()
 
     def flags(self, index: QModelIndex) -> Qt.ItemFlags:
         if not index.isValid():
             return Qt.NoItemFlags
         base_flags = Qt.ItemIsEnabled | Qt.ItemIsSelectable
-        if index.column() == 6:  # Izoh ustuni to'g'ridan-to'g'ri tahrirlanuvchan
+        col = index.column()
+        # Izoh (col 6) yoki maxsus qo'shilgan ustunlar (col >= 7) tahrirlanuvchan
+        if col == 6 or col >= len(self.BASE_COLUMNS):
             return base_flags | Qt.ItemIsEditable
         return base_flags
 
@@ -41,16 +63,22 @@ class OrganizationTableModel(QAbstractTableModel):
 
         row = index.row()
         col = index.column()
-        if col == 6 and 0 <= row < len(self._data):
-            new_val = str(value or "").strip()
-            item = self._data[row]
-            old_val = str(item.get("izoh") or "").strip()
-            if new_val != old_val:
-                item["izoh"] = new_val
-                self.dataChanged.emit(index, index, [Qt.DisplayRole, Qt.EditRole])
-                if self.on_izoh_changed and callable(self.on_izoh_changed):
-                    self.on_izoh_changed(item, new_val)
-            return True
+        if 0 <= row < len(self._data):
+            cols = self.get_all_columns()
+            if 0 <= col < len(cols):
+                _, _, col_key = cols[col]
+                if col_key == "izoh" or col >= len(self.BASE_COLUMNS):
+                    new_val = str(value or "").strip()
+                    item = self._data[row]
+                    old_val = str(item.get(col_key) or "").strip()
+                    if new_val != old_val:
+                        item[col_key] = new_val
+                        self.dataChanged.emit(index, index, [Qt.DisplayRole, Qt.EditRole])
+                        if col_key == "izoh" and self.on_izoh_changed and callable(self.on_izoh_changed):
+                            self.on_izoh_changed(item, new_val)
+                        if self.on_cell_changed and callable(self.on_cell_changed):
+                            self.on_cell_changed(item, col_key, new_val)
+                    return True
         return False
 
     def rowCount(self, parent: QModelIndex = QModelIndex()) -> int:
@@ -61,7 +89,7 @@ class OrganizationTableModel(QAbstractTableModel):
     def columnCount(self, parent: QModelIndex = QModelIndex()) -> int:
         if parent.isValid():
             return 0
-        return len(self.COLUMNS)
+        return len(self.get_all_columns())
 
     def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Any:
         if not index.isValid():
@@ -74,51 +102,39 @@ class OrganizationTableModel(QAbstractTableModel):
             return QVariant()
 
         item = self._data[row]
+        cols = self.get_all_columns()
+        if col < 0 or col >= len(cols):
+            return QVariant()
+
+        _, _, col_key = cols[col]
 
         if role == Qt.DisplayRole:
-            if col == 0:
+            if col_key == "_idx":
                 return str(row + 1)
-            elif col == 1:
-                return str(item.get("s", "") or "-")
-            elif col == 2:
-                return str(item.get("m", "") or "-")
-            elif col == 3:
-                return str(item.get("f", "") or "-")
-            elif col == 4:
-                return str(item.get("t", "") or "-")
-            elif col == 5:
-                return str(item.get("inn", "") or "-")
-            elif col == 6:
-                return str(item.get("izoh", "") or "")
+            val = item.get(col_key)
+            if val is None:
+                return "-" if col < len(self.BASE_COLUMNS) - 1 else ""
+            val_str = str(val).strip()
+            if not val_str:
+                return "-" if col < len(self.BASE_COLUMNS) - 1 else ""
+            return val_str
 
         elif role == Qt.TextAlignmentRole:
-            if col in (0, 1, 4, 5):
+            if col_key in ("_idx", "s", "t", "inn", "bux_tel", "aparat_soni", "ulangan_soni"):
                 return Qt.AlignCenter
             return Qt.AlignLeft | Qt.AlignVCenter
 
         elif role == Qt.ToolTipRole:
-            inn = item.get("inn", "-")
-            jshr = item.get("jshr", "-")
-            seriya = item.get("seriya", "-")
-            lavozim = item.get("lavozim", "-")
-            return (
-                f"Tashkilot: {item.get('m', '-')}\n"
-                f"Turi: {item.get('s', '-')}\n"
-                f"Rahbar: {item.get('f', '-')}\n"
-                f"Lavozimi: {lavozim}\n"
-                f"Tel: {item.get('t', '-')}\n"
-                f"INN: {inn}\n"
-                f"JSHSHIR: {jshr}\n"
-                f"Pasport: {seriya}\n"
-                f"Izoh: {item.get('izoh', '-')}"
-            )
+            lines = [f"{c[0]}: {item.get(c[2], '-')}" for c in cols if c[2] != "_idx"]
+            return "\n".join(lines[:10])
 
         return QVariant()
 
     def headerData(self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole) -> Any:
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            if 0 <= section < len(self.COLUMNS):
-                return self.COLUMNS[section][0]
+            cols = self.get_all_columns()
+            if 0 <= section < len(cols):
+                return cols[section][0]
         return QVariant()
 
     def set_data(self, new_data: List[Dict[str, Any]]) -> None:
@@ -134,8 +150,12 @@ class OrganizationTableModel(QAbstractTableModel):
         return None
 
     def sort(self, column: int, order: Qt.SortOrder = Qt.AscendingOrder) -> None:
-        """Jadval ustunlari bo'yicha professional saralash."""
+        """Jadval ustunlari bo'yicha professional saralash (barcha ustunlar uchun)."""
         if not self._data:
+            return
+
+        cols = self.get_all_columns()
+        if column < 0 or column >= len(cols):
             return
 
         self.layoutAboutToBeChanged.emit()
@@ -143,25 +163,24 @@ class OrganizationTableModel(QAbstractTableModel):
         self._sort_order = order
 
         reverse = (order == Qt.DescendingOrder)
+        _, _, col_key = cols[column]
 
-        if column == 0:
-            # Qator tartib raqami
+        if col_key == "_idx":
             pass
-        elif column == 1:
-            self._data.sort(key=lambda x: str(x.get("s", "")).lower(), reverse=reverse)
-        elif column == 2:
-            self._data.sort(key=lambda x: str(x.get("m", "")).lower(), reverse=reverse)
-        elif column == 3:
-            self._data.sort(key=lambda x: str(x.get("f", "")).lower(), reverse=reverse)
-        elif column == 4:
-            self._data.sort(key=lambda x: str(x.get("t", "")).lower(), reverse=reverse)
-        elif column == 5:
-            # INN bo'yicha raqamli saralash
+        elif col_key == "inn":
             def inn_key(x):
                 val = str(x.get("inn", "")).strip()
                 return int(val) if val.isdigit() else 0
             self._data.sort(key=inn_key, reverse=reverse)
-        elif column == 6:
-            self._data.sort(key=lambda x: str(x.get("izoh", "")).lower(), reverse=reverse)
+        elif col_key in ("aparat_soni", "ulangan_soni"):
+            def num_key(x):
+                val = x.get(col_key)
+                try:
+                    return int(val) if val not in (None, "") else -1
+                except Exception:
+                    return -1
+            self._data.sort(key=num_key, reverse=reverse)
+        else:
+            self._data.sort(key=lambda x: str(x.get(col_key, "") or "").lower(), reverse=reverse)
 
         self.layoutChanged.emit()

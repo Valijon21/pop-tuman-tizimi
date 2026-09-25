@@ -132,6 +132,24 @@ class OrgEditDialog(QDialog):
         self.edit_izoh.setMaximumHeight(48)
         form_grid.addWidget(self.edit_izoh, 9, 1)
 
+        # Maxsus qo'shilgan dinamik ustunlar maydonlari
+        self.custom_inputs: Dict[str, QLineEdit] = {}
+        row_cur = 10
+        table_custom_cols = []
+        if self.app and hasattr(self.app, "data_manager"):
+            table_custom_cols = self.app.data_manager.settings.get("table_custom_columns", [])
+
+        for c_info in table_custom_cols:
+            k = c_info.get("key")
+            if k and k.startswith("col_"):
+                lbl = QLabel(f"{c_info.get('name')}:")
+                inp = QLineEdit()
+                inp.setPlaceholderText(f"{c_info.get('name')}...")
+                form_grid.addWidget(lbl, row_cur, 0)
+                form_grid.addWidget(inp, row_cur, 1)
+                self.custom_inputs[k] = inp
+                row_cur += 1
+
         scroll.setWidget(form_widget)
         layout.addWidget(scroll, 1)
 
@@ -177,6 +195,9 @@ class OrgEditDialog(QDialog):
         self.edit_jshr.setText(str(self.item.get("jshr", "") or ""))
         self.edit_seriya.setText(str(self.item.get("seriya", "") or ""))
         self.edit_izoh.setPlainText(str(self.item.get("izoh", "") or ""))
+
+        for k, inp in getattr(self, "custom_inputs", {}).items():
+            inp.setText(str(self.item.get(k, "") or ""))
 
     def save(self):
         """Ma'lumotlarni validatsiya qilish va saqlash."""
@@ -229,6 +250,10 @@ class OrgEditDialog(QDialog):
             "seriya": seriya,
             "izoh": self.edit_izoh.toPlainText().strip()
         }
+
+        # Maxsus qo'shilgan ustunlar qiymatlarini ham qo'shish
+        for k, inp in getattr(self, "custom_inputs", {}).items():
+            data_to_save[k] = inp.text().strip()
 
         if self.is_edit:
             data_to_save["id"] = self.item.get("id")
