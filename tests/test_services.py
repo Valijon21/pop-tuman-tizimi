@@ -60,18 +60,39 @@ class TestServices(unittest.TestCase):
         self.assertIsInstance(img, Image.Image)
         self.assertEqual(img.size, (200, 200))
 
+        # Anti-835 vanity filter testi
+        corrupted_phone = clean_phone_number("835998911234567")
+        self.assertEqual(corrupted_phone, "+998911234567")
+
     def test_vcard_qr_service(self):
-        from services.qr_service import generate_vcard_data, generate_vcard_qr_image
+        from services.qr_service import (
+            generate_vcard_data,
+            generate_vcard_qr_image,
+            generate_mecard_data,
+            generate_mecard_qr_image
+        )
         vcard = generate_vcard_data(name="Karimov Sardor", phone="901234567", org="Chorkesar MFY", title="Rais", inn="301234567")
         self.assertIn("BEGIN:VCARD", vcard)
         self.assertIn("FN:Karimov Sardor", vcard)
+        self.assertIn("N:Karimov;Sardor;;;", vcard)
         self.assertIn("ORG:Chorkesar MFY", vcard)
         self.assertIn("TITLE:Rais", vcard)
         self.assertIn("END:VCARD", vcard)
+        self.assertIn("\r\n", vcard)
 
         img = generate_vcard_qr_image(name="Karimov Sardor", phone="901234567", org="Chorkesar MFY", title="Rais", inn="301234567", size=220)
         self.assertIsInstance(img, Image.Image)
         self.assertEqual(img.size, (220, 220))
+
+        # MeCard testi
+        mecard = generate_mecard_data(name="Karimov Sardor", phone="901234567", org="Chorkesar MFY", title="Rais", inn="301234567")
+        self.assertTrue(mecard.startswith("MECARD:"))
+        self.assertIn("TEL:+998901234567;", mecard)
+        self.assertIn("N:Karimov Sardor;", mecard)
+
+        img_mecard = generate_mecard_qr_image(name="Karimov Sardor", phone="901234567", size=220)
+        self.assertIsInstance(img_mecard, Image.Image)
+        self.assertEqual(img_mecard.size, (220, 220))
 
     def test_excel_export(self):
         with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as tmp:

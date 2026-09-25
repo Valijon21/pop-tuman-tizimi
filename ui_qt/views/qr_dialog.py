@@ -17,7 +17,8 @@ from PyQt5.QtGui import QPixmap, QImage
 from services.qr_service import (
     clean_phone_number,
     generate_phone_qr_image,
-    generate_vcard_qr_image
+    generate_vcard_qr_image,
+    generate_mecard_qr_image
 )
 from ui_qt.styles import get_stylesheet
 from core.logger import logger
@@ -50,8 +51,8 @@ class QRDialog(QDialog):
         self.app = app
         self.current_theme = getattr(app, "current_theme", "dark")
         self.setWindowTitle("📱 QR Kod — Mobil Kontakt & Qo'ng'iroq")
-        self.resize(380, 520)
-        self.setMinimumSize(340, 480)
+        self.resize(400, 540)
+        self.setMinimumSize(360, 500)
         self.setStyleSheet(get_stylesheet(self.current_theme))
 
         # Ma'lumotlarni to'ldirish
@@ -69,7 +70,7 @@ class QRDialog(QDialog):
             self.inn = inn.strip()
 
         self.clean_tel = clean_phone_number(self.phone)
-        self.current_mode = "tel"  # 'tel' yoki 'vcard'
+        self.current_mode = "tel"  # 'tel', 'mecard' yoki 'vcard'
         self.current_pil_img: Optional[Image.Image] = None
 
         self.setup_ui()
@@ -99,17 +100,21 @@ class QRDialog(QDialog):
 
         # 2. Rejim tanlash (Radio tugmalar)
         mode_box = QHBoxLayout()
-        mode_box.setSpacing(12)
+        mode_box.setSpacing(8)
         mode_box.setAlignment(Qt.AlignCenter)
 
         self.btn_grp = QButtonGroup(self)
-        self.rad_tel = QRadioButton("📞 Tezkor Qo'ng'iroq")
-        self.rad_vcard = QRadioButton("📇 Kontakt (vCard)")
+        self.rad_tel = QRadioButton("📞 Qo'ng'iroq")
+        self.rad_mecard = QRadioButton("📱 MeCard")
+        self.rad_vcard = QRadioButton("📇 vCard")
         self.rad_tel.setChecked(True)
 
         self.btn_grp.addButton(self.rad_tel)
+        self.btn_grp.addButton(self.rad_mecard)
         self.btn_grp.addButton(self.rad_vcard)
         self.rad_tel.toggled.connect(self._on_mode_toggled)
+        self.rad_mecard.toggled.connect(self._on_mode_toggled)
+        self.rad_vcard.toggled.connect(self._on_mode_toggled)
 
         rad_style = f"""
             QRadioButton {{
@@ -119,9 +124,11 @@ class QRDialog(QDialog):
             }}
         """
         self.rad_tel.setStyleSheet(rad_style)
+        self.rad_mecard.setStyleSheet(rad_style)
         self.rad_vcard.setStyleSheet(rad_style)
 
         mode_box.addWidget(self.rad_tel)
+        mode_box.addWidget(self.rad_mecard)
         mode_box.addWidget(self.rad_vcard)
         layout.addLayout(mode_box)
 
@@ -137,11 +144,17 @@ class QRDialog(QDialog):
         """)
         qr_layout = QVBoxLayout(self.qr_frame)
         qr_layout.setContentsMargins(8, 8, 8, 8)
+        qr_layout.setSpacing(4)
 
         self.lbl_qr_image = QLabel()
         self.lbl_qr_image.setAlignment(Qt.AlignCenter)
         self.lbl_qr_image.setFixedSize(220, 220)
         qr_layout.addWidget(self.lbl_qr_image, alignment=Qt.AlignCenter)
+
+        self.lbl_tip = QLabel("✅ Toza xalqaro format — 835 raqami qo'shilmaydi")
+        self.lbl_tip.setStyleSheet("font-size: 10px; color: #059669; font-weight: 700;")
+        self.lbl_tip.setAlignment(Qt.AlignCenter)
+        qr_layout.addWidget(self.lbl_tip)
 
         layout.addWidget(self.qr_frame, alignment=Qt.AlignCenter)
 
@@ -207,7 +220,15 @@ class QRDialog(QDialog):
         layout.addLayout(btn_layout)
 
     def _on_mode_toggled(self, checked: bool):
-        self.current_mode = "tel" if self.rad_tel.isChecked() else "vcard"
+        if self.rad_tel.isChecked():
+            self.current_mode = "tel"
+            self.lbl_tip.setText("✅ Toza xalqaro format (+998...) — 835 vanity xatosi bo'lmaydi")
+        elif hasattr(self, "rad_mecard") and self.rad_mecard.isChecked():
+            self.current_mode = "mecard"
+            self.lbl_tip.setText("📱 MeCard — barcha mobil kameralar uchun universal kontakt")
+        else:
+            self.current_mode = "vcard"
+            self.lbl_tip.setText("📇 vCard 3.0 — RFC 2426 xalqaro standartidagi kontakt")
         self.update_qr()
 
     def update_qr(self):
@@ -226,9 +247,18 @@ class QRDialog(QDialog):
                     inn=self.inn,
                     size=220
                 )
+            elif self.current_mode == "mecard":
+                self.current_pil_img = generate_mecard_qr_image(
+                    name=self.person_name,
+                    phone=self.clean_tel or self.phone,
+                    org=self.org_name,
+                    title=self.role,
+                    inn=self.inn,
+                    size=220
+                )
             else:
                 target_phone = self.clean_tel or self.phone
-                self.current_pil_img = generate_phone_qr_image(target_phone, size=220, as_uri=True)
+                self.current_pil_img = generate_phone_qr_image(target_phone, size=220, as_uri=False)
 
             pix = pil_to_qpixmap(self.current_pil_img)
             self.lbl_qr_image.setPixmap(pix)
@@ -250,7 +280,7 @@ class QRDialog(QDialog):
         if not self.current_pil_img:
             return
 
-        def_name = f"QR_{self.org_name or self.clean_tel or 'telefon'}.png"
+        def_name = f"QR_{self.org_name or self.clean_tel or 'telefon'}_{self.current_mode}.png"
         clean_filename = "".join(c for c in def_name if c.isalnum() or c in (" ", ".", "_", "-")).strip()
 
         file_path, _ = QFileDialog.getSaveFileName(
@@ -271,8 +301,17 @@ class QRDialog(QDialog):
                         inn=self.inn,
                         size=500
                     )
+                elif self.current_mode == "mecard":
+                    export_img = generate_mecard_qr_image(
+                        name=self.person_name,
+                        phone=self.clean_tel or self.phone,
+                        org=self.org_name,
+                        title=self.role,
+                        inn=self.inn,
+                        size=500
+                    )
                 else:
-                    export_img = generate_phone_qr_image(self.clean_tel or self.phone, size=500, as_uri=True)
+                    export_img = generate_phone_qr_image(self.clean_tel or self.phone, size=500, as_uri=False)
 
                 export_img.save(file_path, format="PNG")
                 if hasattr(self.app, "show_toast"):

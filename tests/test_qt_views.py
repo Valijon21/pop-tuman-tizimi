@@ -422,6 +422,11 @@ class TestQtArchitecture(unittest.TestCase):
         self.assertEqual(dlg.current_mode, "vcard")
         self.assertIsNotNone(dlg.current_pil_img)
 
+        # MeCard rejimiga o'tkazish
+        dlg.rad_mecard.setChecked(True)
+        self.assertEqual(dlg.current_mode, "mecard")
+        self.assertIsNotNone(dlg.current_pil_img)
+
         dlg.close()
 
     def test_contract_add_dialog(self):
