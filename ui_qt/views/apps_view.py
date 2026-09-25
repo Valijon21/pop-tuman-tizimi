@@ -1,6 +1,6 @@
 """
 ui_qt.views.apps_view: Yordamchi va Kommunal Dasturlar (Utilities & Tools) Sahifasi (PyQt5).
-UzCrypto (E-IMZO) va AnyDesk dasturlarini professional boshqarish, ishga tushirish va monitoring qilish.
+UzCrypto (E-IMZO) va AnyDesk dasturlarini professional boshqarish, ishga tushirish, buferga nusxalash (Ctrl+V) va monitoring qilish.
 """
 import os
 import sys
@@ -11,11 +11,91 @@ from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel,
     QPushButton, QScrollArea, QFrame, QMessageBox, QApplication
 )
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtCore import Qt, QTimer, QUrl, QMimeData
 
 from core.config import UZCRYPTO_PATH, ANYDESK_PATH, BASE_DIR
 from core.logger import logger
+
+
+def copy_file_to_windows_clipboard(file_path: str) -> bool:
+    """
+    Faylni Windows tizim buferiga (Clipboard) to'g'ridan-to'g'ri nusxalash (CF_HDROP).
+    Foydalanuvchi istalgan papka, Ish stoli (Desktop) yoki fleshkaga borib
+    Ctrl + V (yoki sichqonchaning o'ng tugmasi -> 'Vstavit / Paste') bosganda
+    haqiqiy EXE faylining o'zi nusxalanib joylashadi.
+    """
+    if not os.path.exists(file_path):
+        return False
+
+    abs_path = os.path.abspath(file_path).replace("/", "\\")
+
+    # 1. Qt Clipboard (QMimeData orqali cross-platform va Qt ichki dasturlari uchun)
+    try:
+        mime = QMimeData()
+        mime.setUrls([QUrl.fromLocalFile(abs_path)])
+        mime.setText(abs_path)
+        QApplication.clipboard().setMimeData(mime)
+    except Exception as e:
+        logger.warning(f"[CLIPBOARD] Qt setMimeData xatolik: {e}")
+
+    # 2. Windows Native CF_HDROP (Windows Explorer da Ctrl+V to'liq ishlashi uchun)
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        kernel32 = ctypes.windll.kernel32
+        user32 = ctypes.windll.user32
+
+        kernel32.GlobalAlloc.argtypes = [wintypes.UINT, ctypes.c_size_t]
+        kernel32.GlobalAlloc.restype = wintypes.HGLOBAL
+        kernel32.GlobalLock.argtypes = [wintypes.HGLOBAL]
+        kernel32.GlobalLock.restype = ctypes.c_void_p
+        kernel32.GlobalUnlock.argtypes = [wintypes.HGLOBAL]
+        kernel32.GlobalUnlock.restype = wintypes.BOOL
+        kernel32.GlobalFree.argtypes = [wintypes.HGLOBAL]
+        kernel32.GlobalFree.restype = wintypes.HGLOBAL
+
+        user32.OpenClipboard.argtypes = [wintypes.HWND]
+        user32.OpenClipboard.restype = wintypes.BOOL
+        user32.EmptyClipboard.argtypes = []
+        user32.EmptyClipboard.restype = wintypes.BOOL
+        user32.SetClipboardData.argtypes = [wintypes.UINT, wintypes.HANDLE]
+        user32.SetClipboardData.restype = wintypes.HANDLE
+        user32.CloseClipboard.argtypes = []
+        user32.CloseClipboard.restype = wintypes.BOOL
+
+        file_bytes = (abs_path + "\0\0").encode("utf-16le")
+        offset = 20
+        total_size = offset + len(file_bytes)
+
+        GMEM_MOVEABLE = 0x0002
+        GMEM_ZEROINIT = 0x0040
+        GHND = GMEM_MOVEABLE | GMEM_ZEROINIT
+
+        h_global = kernel32.GlobalAlloc(GHND, total_size)
+        if h_global:
+            p_global = kernel32.GlobalLock(h_global)
+            if p_global:
+                header = bytearray(20)
+                header[0:4] = (20).to_bytes(4, "little")  # pFiles offset
+                header[16:20] = (1).to_bytes(4, "little")  # fWide = TRUE (Unicode)
+                ctypes.memmove(p_global, bytes(header), 20)
+                ctypes.memmove(p_global + 20, file_bytes, len(file_bytes))
+                kernel32.GlobalUnlock(h_global)
+
+                if user32.OpenClipboard(0):
+                    user32.EmptyClipboard()
+                    CF_HDROP = 15
+                    user32.SetClipboardData(CF_HDROP, h_global)
+                    user32.CloseClipboard()
+                    logger.info(f"[CLIPBOARD] Fayl Windows buferiga nusxalandi: {abs_path}")
+                    return True
+                else:
+                    kernel32.GlobalFree(h_global)
+    except Exception as e:
+        logger.warning(f"[CLIPBOARD] Win32 CF_HDROP xatolik: {e}")
+
+    return True
 
 
 class AppsView(QWidget):
@@ -76,7 +156,6 @@ class AppsView(QWidget):
 
         # OS info
         os_info = f"{platform.system()} {platform.release()} ({platform.machine()})"
-        py_ver = f"Python {platform.python_version()}"
         self.lbl_os_info = QLabel(f"🖥 <b>Operatsion tizim:</b> {os_info} | <b>Arxitektura:</b> 64-bit / 32-bit mos | <b>GUI:</b> PyQt5 PRO")
         self.lbl_os_info.setStyleSheet("color: #cbd5e1; font-size: 11.5px;")
         b_layout.addWidget(self.lbl_os_info)
@@ -181,7 +260,7 @@ class AppsView(QWidget):
 
         self.lbl_uzcrypto_status = QLabel("Holat: Aniqlanmoqda...")
         self.lbl_uzcrypto_status.setStyleSheet("font-size: 11px; font-weight: 700; color: #10b981;")
-        self.lbl_uzcrypto_file = QLabel(f"Fayl: uzcrypto-2.2.3.41-x32-setup.exe")
+        self.lbl_uzcrypto_file = QLabel("Fayl: uzcrypto-2.2.3.41-x32-setup.exe")
         self.lbl_uzcrypto_file.setStyleSheet("font-size: 10.5px; color: #94a3b8;")
         self.lbl_uzcrypto_size = QLabel("Hajmi: 14.5 MB (14,556,569 bayt)")
         self.lbl_uzcrypto_size.setStyleSheet("font-size: 10.5px; color: #94a3b8;")
@@ -194,20 +273,29 @@ class AppsView(QWidget):
         sb_layout.addWidget(self.lbl_uzcrypto_portals)
         layout.addWidget(spec_box)
 
-        # Action Buttons
+        # Action Buttons (O'rnatish, Kopiya, Papkani ochish)
         btn_layout = QHBoxLayout()
         btn_layout.setSpacing(8)
 
         self.btn_run_uzcrypto = QPushButton("▶ O'rnatishni boshlash (Setup)")
         self.btn_run_uzcrypto.setProperty("class", "btn_success")
         self.btn_run_uzcrypto.setCursor(Qt.PointingHandCursor)
-        self.btn_run_uzcrypto.setStyleSheet("font-weight: 700; padding: 7px 14px;")
+        self.btn_run_uzcrypto.setStyleSheet("font-weight: 700; padding: 7px 12px;")
         self.btn_run_uzcrypto.clicked.connect(self.launch_uzcrypto)
         btn_layout.addWidget(self.btn_run_uzcrypto, 2)
+
+        self.btn_copy_uzcrypto = QPushButton("📋 Nusxa olish (Kopiya)")
+        self.btn_copy_uzcrypto.setProperty("class", "btn_primary")
+        self.btn_copy_uzcrypto.setCursor(Qt.PointingHandCursor)
+        self.btn_copy_uzcrypto.setToolTip("UzCrypto faylini buferga nusxalash (Istalgan papkada Ctrl+V bosib joylash uchun)")
+        self.btn_copy_uzcrypto.setStyleSheet("font-weight: 600; padding: 7px 10px;")
+        self.btn_copy_uzcrypto.clicked.connect(self.copy_uzcrypto_file)
+        btn_layout.addWidget(self.btn_copy_uzcrypto, 2)
 
         self.btn_folder_uzcrypto = QPushButton("📁 Papkani ochish")
         self.btn_folder_uzcrypto.setProperty("class", "btn_secondary")
         self.btn_folder_uzcrypto.setCursor(Qt.PointingHandCursor)
+        self.btn_folder_uzcrypto.setStyleSheet("font-weight: 600; padding: 7px 10px;")
         self.btn_folder_uzcrypto.clicked.connect(self.open_uzcrypto_folder)
         btn_layout.addWidget(self.btn_folder_uzcrypto, 1)
 
@@ -295,20 +383,29 @@ class AppsView(QWidget):
         sb_layout.addWidget(self.lbl_anydesk_feature)
         layout.addWidget(spec_box)
 
-        # Action Buttons
+        # Action Buttons (Ishga tushirish, Kopiya, Papkani ochish)
         btn_layout = QHBoxLayout()
         btn_layout.setSpacing(8)
 
         self.btn_run_anydesk = QPushButton("🚀 AnyDesk ni ishga tushirish (Run)")
         self.btn_run_anydesk.setProperty("class", "btn_primary")
         self.btn_run_anydesk.setCursor(Qt.PointingHandCursor)
-        self.btn_run_anydesk.setStyleSheet("font-weight: 700; padding: 7px 14px;")
+        self.btn_run_anydesk.setStyleSheet("font-weight: 700; padding: 7px 12px;")
         self.btn_run_anydesk.clicked.connect(self.launch_anydesk)
         btn_layout.addWidget(self.btn_run_anydesk, 2)
+
+        self.btn_copy_anydesk = QPushButton("📋 Nusxa olish (Kopiya)")
+        self.btn_copy_anydesk.setProperty("class", "btn_secondary")
+        self.btn_copy_anydesk.setCursor(Qt.PointingHandCursor)
+        self.btn_copy_anydesk.setToolTip("AnyDesk faylini buferga nusxalash (Istalgan papkada Ctrl+V bosib joylash uchun)")
+        self.btn_copy_anydesk.setStyleSheet("font-weight: 600; padding: 7px 10px;")
+        self.btn_copy_anydesk.clicked.connect(self.copy_anydesk_file)
+        btn_layout.addWidget(self.btn_copy_anydesk, 2)
 
         self.btn_folder_anydesk = QPushButton("📁 Papkani ochish")
         self.btn_folder_anydesk.setProperty("class", "btn_secondary")
         self.btn_folder_anydesk.setCursor(Qt.PointingHandCursor)
+        self.btn_folder_anydesk.setStyleSheet("font-weight: 600; padding: 7px 10px;")
         self.btn_folder_anydesk.clicked.connect(self.open_anydesk_folder)
         btn_layout.addWidget(self.btn_folder_anydesk, 1)
 
@@ -337,8 +434,9 @@ class AppsView(QWidget):
 
         tips = [
             "<b>1. E-IMZO / UzCrypto o'rnatish:</b> Setup tugmasini bosganingizdan so'ng chiqqan oynada 'Далее' tugmalarini ketma-ket bosing. O'rnatish tugagach tizim patnisida (tray) E-IMZO doimiy faol bo'lib turadi.",
-            "<b>2. AnyDesk orqali ulanish:</b> AnyDesk oynasi ochilganda 'Ushbu ish stoli (This Desk)' ostidagi 9 xonali identifikator raqamini dasturchiga taqdim eting va ulanish so'rovi kelganda 'Ruxsat berish (Accept)' tugmasini bosing.",
-            "<b>3. Xavfsizlik kafolati:</b> Dasturlar rasmiy sertifikatlangan bo'lib, tashkilot ma'lumotlar bazasi va shaxsiy ma'lumotlarning butunligiga to'liq kafolat beriladi."
+            "<b>2. Fayldan nusxa olish (Ctrl+V):</b> '📋 Nusxa olish (Kopiya)' tugmasini bosganingizda dastur to'g'ridan-to'g'ri Windows buferiga olinadi. Istalgan papkaga, Ish stoli (Desktop) yoki Telegramga o'tib Ctrl+V (yoki Paste) tugmasini bosing.",
+            "<b>3. AnyDesk orqali ulanish:</b> AnyDesk oynasi ochilganda 'Ushbu ish stoli (This Desk)' ostidagi 9 xonali identifikator raqamini dasturchiga taqdim eting va ulanish so'rovi kelganda 'Ruxsat berish (Accept)' tugmasini bosing.",
+            "<b>4. Xavfsizlik kafolati:</b> Barcha dasturlar rasmiy sertifikatlangan bo'lib, tashkilot ma'lumotlar bazasi va shaxsiy ma'lumotlarning butunligiga to'liq kafolat beriladi."
         ]
 
         for tip in tips:
@@ -355,29 +453,33 @@ class AppsView(QWidget):
         if os.path.exists(UZCRYPTO_PATH):
             size_bytes = os.path.getsize(UZCRYPTO_PATH)
             mb = size_bytes / (1024 * 1024)
-            self.lbl_uzcrypto_status.setText(f"🟢 O'rnatishga tayyor (Mavjud)")
+            self.lbl_uzcrypto_status.setText("🟢 O'rnatishga tayyor (Mavjud)")
             self.lbl_uzcrypto_status.setStyleSheet("font-size: 11px; font-weight: 700; color: #10b981;")
             self.lbl_uzcrypto_size.setText(f"Hajmi: {mb:.2f} MB ({size_bytes:,} bayt)")
             self.btn_run_uzcrypto.setEnabled(True)
+            self.btn_copy_uzcrypto.setEnabled(True)
             self.btn_folder_uzcrypto.setEnabled(True)
         else:
             self.lbl_uzcrypto_status.setText("🔴 Fayl topilmadi!")
             self.lbl_uzcrypto_status.setStyleSheet("font-size: 11px; font-weight: 700; color: #ef4444;")
             self.btn_run_uzcrypto.setEnabled(False)
+            self.btn_copy_uzcrypto.setEnabled(False)
 
         # 2. AnyDesk
         if os.path.exists(ANYDESK_PATH):
             size_bytes = os.path.getsize(ANYDESK_PATH)
             mb = size_bytes / (1024 * 1024)
-            self.lbl_anydesk_status.setText(f"🟢 Ishga tushirishga tayyor (Mavjud)")
+            self.lbl_anydesk_status.setText("🟢 Ishga tushirishga tayyor (Mavjud)")
             self.lbl_anydesk_status.setStyleSheet("font-size: 11px; font-weight: 700; color: #10b981;")
             self.lbl_anydesk_size.setText(f"Hajmi: {mb:.2f} MB ({size_bytes:,} bayt)")
             self.btn_run_anydesk.setEnabled(True)
+            self.btn_copy_anydesk.setEnabled(True)
             self.btn_folder_anydesk.setEnabled(True)
         else:
             self.lbl_anydesk_status.setText("🔴 Fayl topilmadi!")
             self.lbl_anydesk_status.setStyleSheet("font-size: 11px; font-weight: 700; color: #ef4444;")
             self.btn_run_anydesk.setEnabled(False)
+            self.btn_copy_anydesk.setEnabled(False)
 
     def launch_uzcrypto(self):
         """UzCrypto o'rnatish dasturini ishga tushirish."""
@@ -405,6 +507,26 @@ class AppsView(QWidget):
                 "Ishga tushirishda xatolik",
                 f"UzCrypto dasturini ishga tushirib bo'lmadi:\n{str(e)}"
             )
+
+    def copy_uzcrypto_file(self):
+        """UzCrypto faylini Windows buferiga nusxalash (Ctrl+V paste uchun)."""
+        if not os.path.exists(UZCRYPTO_PATH):
+            QMessageBox.warning(
+                self,
+                "Fayl Topilmadi",
+                f"UzCrypto o'rnatish fayli quyidagi manzilda topilmadi:\n{UZCRYPTO_PATH}"
+            )
+            return
+
+        ok = copy_file_to_windows_clipboard(UZCRYPTO_PATH)
+        if ok:
+            orig_text = "📋 Nusxa olish (Kopiya)"
+            self.btn_copy_uzcrypto.setText("✅ Nusxalandi! (Ctrl+V)")
+            self.btn_copy_uzcrypto.setStyleSheet("background-color: #059669; color: #ffffff; font-weight: 700; padding: 7px 10px;")
+            QTimer.singleShot(2500, lambda: self._restore_copy_btn(self.btn_copy_uzcrypto, orig_text))
+
+            if self.app and hasattr(self.app, "show_toast"):
+                self.app.show_toast("UzCrypto buferga nusxalandi! Istalgan papkaga o'tib Ctrl+V bosing 📋", "success")
 
     def open_uzcrypto_folder(self):
         """UzCrypto fayli joylashgan papkani Windows Explorer da ko'rsatish."""
@@ -436,6 +558,30 @@ class AppsView(QWidget):
                 "Ishga tushirishda xatolik",
                 f"AnyDesk dasturini ishga tushirib bo'lmadi:\n{str(e)}"
             )
+
+    def copy_anydesk_file(self):
+        """AnyDesk faylini Windows buferiga nusxalash (Ctrl+V paste uchun)."""
+        if not os.path.exists(ANYDESK_PATH):
+            QMessageBox.warning(
+                self,
+                "Fayl Topilmadi",
+                f"AnyDesk dasturi quyidagi manzilda topilmadi:\n{ANYDESK_PATH}"
+            )
+            return
+
+        ok = copy_file_to_windows_clipboard(ANYDESK_PATH)
+        if ok:
+            orig_text = "📋 Nusxa olish (Kopiya)"
+            self.btn_copy_anydesk.setText("✅ Nusxalandi! (Ctrl+V)")
+            self.btn_copy_anydesk.setStyleSheet("background-color: #059669; color: #ffffff; font-weight: 700; padding: 7px 10px;")
+            QTimer.singleShot(2500, lambda: self._restore_copy_btn(self.btn_copy_anydesk, orig_text))
+
+            if self.app and hasattr(self.app, "show_toast"):
+                self.app.show_toast("AnyDesk buferga nusxalandi! Istalgan papkaga o'tib Ctrl+V bosing 📋", "success")
+
+    def _restore_copy_btn(self, btn: QPushButton, text: str):
+        btn.setText(text)
+        btn.setStyleSheet("")
 
     def open_anydesk_folder(self):
         """AnyDesk fayli joylashgan papkani Windows Explorer da ko'rsatish."""

@@ -50,7 +50,7 @@
     "semantic_hash": ""
   },
   "mahalla_bazasi.json": {
-    "mtime": 1790317976.7863016,
+    "mtime": 1790319548.4232168,
     "ast_hash": "4223b35ed80f61c07f6d09b7d44716cb",
     "semantic_hash": ""
   },
@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "tests/test_qt_views.py": {
-    "mtime": 1790317960.2606962,
-    "ast_hash": "75780f3540ac2e6351f30817668d1283",
+    "mtime": 1790319540.920385,
+    "ast_hash": "0aca429ce09ae7ae8323ac8741d03770",
     "semantic_hash": ""
   },
   "ui_qt/__init__.py": {
@@ -195,8 +195,8 @@
     "semantic_hash": ""
   },
   "ui_qt/app_window.py": {
-    "mtime": 1790317859.108849,
-    "ast_hash": "67f245f1824e240367bb0dd8ae5ebb50",
+    "mtime": 1790319467.7504766,
+    "ast_hash": "ff6619c4c07b40171fbeed8e5a8d133a",
     "semantic_hash": ""
   },
   "ui_qt/components/__init__.py": {
@@ -335,8 +335,8 @@
     "semantic_hash": ""
   },
   "ui_qt/views/apps_view.py": {
-    "mtime": 1790317743.7076948,
-    "ast_hash": "f24704a1a338087f35ae5ded594d3f1a",
+    "mtime": 1790319503.5472796,
+    "ast_hash": "d63d9d796d041518944a15edc9c3b2bd",
     "semantic_hash": ""
   },
   "popdata.PNG": {
@@ -345,8 +345,8 @@
     "semantic_hash": ""
   },
   "popdata_logo.PNG": {
-    "mtime": 1790317694.9188466,
-    "ast_hash": "a769caf29094bc8c2f30ebbd8a90bfbc",
+    "mtime": 1790319412.8365195,
+    "ast_hash": "27398dd43a3c951ae3cdcea14d3febcd",
     "semantic_hash": ""
   }
 }
